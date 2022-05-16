@@ -18,33 +18,8 @@ class Image {
   std::vector<Pixel> buffer;
 
 public:
-  void test(unsigned int width, unsigned int height) {
-    this->buffer.reserve(width * height);
-    for (unsigned int i = 0; i < width; i++) {
-      for (unsigned int j = 0; j < height; j++) {
-        float r = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
-        float g = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
-        float b = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
-        this->buffer.push_back({r, g, b});
-      }
-    }
-  }
-
-  void write(std::string path, unsigned int width, unsigned int height) {
-    std::ofstream myfile;
-    myfile.open(path);
-    myfile << "P6\n";
-    myfile << width << " " << height << "\n";
-    myfile << "255\n";
-
-    for (const auto p : this->buffer) {
-      myfile << (unsigned char)(sqrt(p.r) * 255.0);
-      myfile << (unsigned char)(sqrt(p.g) * 255.0);
-      myfile << (unsigned char)(sqrt(p.b) * 255.0);
-    }
-
-    myfile.close();
-  }
+  void test(unsigned int width, unsigned int height);
+  void write(std::string path, unsigned int width, unsigned int height);
 };
 
 #endif // IMAGE_H
