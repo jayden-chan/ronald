@@ -11,19 +11,21 @@ int main(int argc, char **argv) {
   // Declare the supported options.
   po::options_description desc("Allowed options");
 
-  std::vector<int> myVec;
-
   /* clang-format off */
   desc.add_options()
-      ("help", "produce help message")
-      ("width", po::value<unsigned int>()->required(), "width of the output image in pixels")
-      ("height", po::value<unsigned int>()->required(), "height of the output image in pixels")
-      ("out",
-          po::value<std::string>()->default_value(std::string("./image.ppm")),
-          "path to the output file")
-      ("samples", po::value<unsigned int>()->required(), "number of samples per pixel")
-      ("threads", po::value<unsigned int>()->default_value(1),
-          "number of threads to spawn when running in multithreaded mode");
+    ("help", "produce help message")
+    ("width", po::value<unsigned int>()->required(), "width of the output image in pixels")
+    ("height", po::value<unsigned int>()->required(), "height of the output image in pixels")
+    (
+      "out",
+      po::value<std::string>()->default_value(std::string("./image.ppm")),
+      "path to the output file"
+    )
+    ("samples", po::value<unsigned int>()->required(), "number of samples per pixel")
+    (
+      "threads", po::value<unsigned int>()->default_value(1),
+      "number of threads to spawn when running in multithreaded mode"
+    );
   /* clang-format on */
 
   po::variables_map vm;
@@ -56,7 +58,7 @@ int main(int argc, char **argv) {
   std::cout << "\tsamples: " << samples << "\n";
   std::cout << "\tthreads: " << threads << "\n";
 
-  Image im;
-  im.test(width, height);
-  im.write(out, width, height);
+  Image im(width, height);
+  im.test();
+  im.write(out);
 }
