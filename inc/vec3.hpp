@@ -49,6 +49,7 @@ class Vec3 {
 public:
   float x, y, z;
 
+  Vec3();
   Vec3(const float x, const float y, const float z) {
     this->x = x;
     this->y = y;

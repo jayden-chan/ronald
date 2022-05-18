@@ -14,14 +14,10 @@
  * along with path_tracer. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef RAND_H
-#define RAND_H
+#include "rand.hpp"
 
-#include <random>
-
-/**
- * Generate a random float.
- */
-float random_float();
-
-#endif // RAND_H
+float random_float() {
+  static thread_local std::mt19937 generator;
+  std::uniform_real_distribution<float> distribution(0.0, 1.0);
+  return distribution(generator);
+}

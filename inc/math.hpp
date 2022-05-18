@@ -14,14 +14,27 @@
  * along with path_tracer. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef RAND_H
-#define RAND_H
+#ifndef MATH_H
+#define MATH_H
 
-#include <random>
+#include "vec3.hpp"
 
 /**
- * Generate a random float.
+ * Produce a random 2D vector inside of a disk with
+ * radius 1.
  */
-float random_float();
+Vec3 random_in_unit_disk();
 
-#endif // RAND_H
+/**
+ * Produce a random 3D vector inside of a sphere with
+ * radius 1
+ */
+Vec3 random_in_unit_sphere();
+
+/**
+ * Produce a random 3D vector which lies on the surface
+ * of a sphere with radius 1
+ */
+Vec3 random_on_unit_sphere();
+
+#endif // MATH_H
