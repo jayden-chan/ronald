@@ -5,7 +5,7 @@ Path tracing rendering engine in C++20
 Basic Feature Set
 * [x] CLI parsing
 * [x] PPM image generation
-* [ ] Vec3 class implementation
+* [x] Vec3 class implementation
 * [ ] Ray/Sphere intersection calculation
 * [ ] Diffuse material scatter function
 * [ ] Light source material
