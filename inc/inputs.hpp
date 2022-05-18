@@ -1,3 +1,6 @@
+#ifndef INPUTS_H
+#define INPUTS_H
+
 #include <boost/program_options/parsers.hpp>
 #include <boost/program_options/positional_options.hpp>
 #include <boost/program_options/variables_map.hpp>
@@ -26,3 +29,5 @@ public:
 
   void print();
 };
+
+#endif // INPUTS_H
