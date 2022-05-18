@@ -1,18 +1,19 @@
-#include <boost/program_options/parsers.hpp>
-#include <boost/program_options/positional_options.hpp>
-#include <boost/program_options/variables_map.hpp>
+#include "inputs.hpp"
+#include <iostream>
 
 namespace po = boost::program_options;
 
-struct Inputs {
-  int width;
-  int height;
-  std::string out;
-  int samples;
-  int threads;
-};
+void Config::print() {
+  std::cerr << "Using config: \n";
 
-Inputs validate_inputs(po::variables_map vm) {
+  std::cerr << "\twidth: " << width << "\n";
+  std::cerr << "\theight: " << height << "\n";
+  std::cerr << "\toutput: " << out << "\n";
+  std::cerr << "\tsamples: " << samples << "\n";
+  std::cerr << "\tthreads: " << threads << "\n";
+}
+
+Config validate_inputs(po::variables_map vm) {
   auto width = vm["width"].as<int>();
   auto height = vm["height"].as<int>();
   auto out = vm["out"].as<std::string>();
@@ -35,5 +36,5 @@ Inputs validate_inputs(po::variables_map vm) {
     throw "Currently only exactly one thread is supported";
   }
 
-  return {width, height, out, samples, threads};
+  return Config(width, height, out, samples, threads);
 }

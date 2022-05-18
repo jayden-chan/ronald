@@ -5,7 +5,7 @@
  * and a green gradient along the Y axis.
  */
 void Image::test() {
-  buffer.reserve(width * height);
+  buffer.reserve((size_t)width * (size_t)height);
   for (auto i = 0; i < height; i++) {
     for (auto j = 0; j < width; j++) {
       float r = static_cast<float>(j) / static_cast<float>(width);

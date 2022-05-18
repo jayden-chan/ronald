@@ -1,5 +1,5 @@
 #include "image.hpp"
-#include "inputs.cpp"
+#include "inputs.hpp"
 
 #include <boost/program_options/parsers.hpp>
 #include <boost/program_options/positional_options.hpp>
@@ -44,17 +44,17 @@ int main(int argc, char **argv) {
     return 1;
   }
 
-  auto inputs = validate_inputs(vm);
+  Config config;
+  try {
+    config = validate_inputs(vm);
+  } catch (const char *err) {
+    std::cerr << "Input validation error: " << err << '\n';
+    return 1;
+  }
 
-  std::cerr << "Using config: \n";
+  config.print();
 
-  std::cerr << "\twidth: " << inputs.width << "\n";
-  std::cerr << "\theight: " << inputs.height << "\n";
-  std::cerr << "\toutput: " << inputs.out << "\n";
-  std::cerr << "\tsamples: " << inputs.samples << "\n";
-  std::cerr << "\tthreads: " << inputs.threads << "\n";
-
-  Image im(inputs.width, inputs.height);
+  Image im(config.width, config.height);
   im.test();
-  im.write(inputs.out);
+  im.write(config.out);
 }
