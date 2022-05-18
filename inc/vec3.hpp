@@ -11,21 +11,21 @@
  * https://en.wikipedia.org/wiki/Fast_inverse_square_root
  */
 // clang-format off
-float Q_rsqrt( float number )
+inline float Q_rsqrt( float number )
 {
-	long i;
-	float x2, y;
-	const float threehalfs = 1.5F;
+    long i;
+    float x2, y;
+    const float threehalfs = 1.5F;
 
-	x2 = number * 0.5F;
-	y  = number;
-	i  = * ( long * ) &y;                       // evil floating point bit level hacking
-	i  = 0x5f3759df - ( i >> 1 );               // what the fuck? 
-	y  = * ( float * ) &i;
-	y  = y * ( threehalfs - ( x2 * y * y ) );   // 1st iteration
-//	y  = y * ( threehalfs - ( x2 * y * y ) );   // 2nd iteration, this can be removed
+    x2 = number * 0.5F;
+    y  = number;
+    i  = * ( long * ) &y;                       // evil floating point bit level hacking
+    i  = 0x5f3759df - ( i >> 1 );               // what the fuck?
+    y  = * ( float * ) &i;
+    y  = y * ( threehalfs - ( x2 * y * y ) );   // 1st iteration
+//    y  = y * ( threehalfs - ( x2 * y * y ) );   // 2nd iteration, this can be removed
 
-	return y;
+    return y;
 }
 // clang-format on
 
@@ -82,12 +82,14 @@ public:
   /**
    * dot product of two vectors
    */
-  inline float dot(const Vec3 rhs) { return x * rhs.x + y * rhs.y + z * rhs.z; }
+  inline float dot(const Vec3 &rhs) {
+    return x * rhs.x + y * rhs.y + z * rhs.z;
+  }
 
   /**
    * cross product of two vectors
    */
-  Vec3 cross(const Vec3 rhs) {
+  inline Vec3 cross(const Vec3 &rhs) {
     return Vec3(y * rhs.z - z * rhs.y, z * rhs.x - x * rhs.z,
                 x * rhs.y - y * rhs.x);
   }
@@ -146,18 +148,18 @@ inline Vec3 operator*(const Vec3 &u, const Vec3 &v) {
 /**
  * Multiply a vector by a constant element-wise
  */
-inline Vec3 operator*(float t, const Vec3 &v) {
+inline Vec3 operator*(const float t, const Vec3 &v) {
   return Vec3(t * v.x, t * v.y, t * v.z);
 }
 
 /**
  * Multiply a vector by a constant element-wise
  */
-inline Vec3 operator*(const Vec3 &v, float t) { return t * v; }
+inline Vec3 operator*(const Vec3 &v, const float t) { return t * v; }
 
 /**
  * Divide a vector by a constant
  */
-inline Vec3 operator/(Vec3 v, float t) { return (1 / t) * v; }
+inline Vec3 operator/(const Vec3 v, const float t) { return (1 / t) * v; }
 
 #endif // VEC3_H
