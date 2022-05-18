@@ -10,31 +10,35 @@ void Config::print() {
   std::cerr << "\theight: " << height << "\n";
   std::cerr << "\toutput: " << out << "\n";
   std::cerr << "\tsamples: " << samples << "\n";
-  std::cerr << "\tthreads: " << threads << "\n";
+  std::cerr << "\tthreads: " << threads << std::endl;
 }
 
-Config validate_inputs(po::variables_map vm) {
-  auto width = vm["width"].as<int>();
-  auto height = vm["height"].as<int>();
-  auto out = vm["out"].as<std::string>();
-  auto samples = vm["samples"].as<int>();
-  auto threads = vm["threads"].as<int>();
+Config::Config(const po::variables_map vm) {
+  auto vm_width = vm["width"].as<int>();
+  auto vm_height = vm["height"].as<int>();
+  auto vm_out = vm["out"].as<std::string>();
+  auto vm_samples = vm["samples"].as<int>();
+  auto vm_threads = vm["threads"].as<int>();
 
-  if (width <= 0) {
+  if (vm_width <= 0) {
     throw "Width must be greater than zero";
   }
 
-  if (height <= 0) {
+  if (vm_height <= 0) {
     throw "Height must be greater than zero";
   }
 
-  if (samples <= 0) {
+  if (vm_samples <= 0) {
     throw "Number of samples must be greater than zero";
   }
 
-  if (threads != 1) {
+  if (vm_threads != 1) {
     throw "Currently only exactly one thread is supported";
   }
 
-  return Config(width, height, out, samples, threads);
+  this->width = vm_width;
+  this->height = vm_height;
+  this->out = vm_out;
+  this->samples = vm_samples;
+  this->threads = vm_threads;
 }

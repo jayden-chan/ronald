@@ -30,9 +30,9 @@ void Image::write(const std::string path) {
   myfile << "255\n";
 
   for (const auto p : buffer) {
-    myfile << (unsigned char)(sqrt(p.r) * 255.0);
-    myfile << (unsigned char)(sqrt(p.g) * 255.0);
-    myfile << (unsigned char)(sqrt(p.b) * 255.0);
+    myfile << (unsigned char)(sqrt(p.r) * 255.99);
+    myfile << (unsigned char)(sqrt(p.g) * 255.99);
+    myfile << (unsigned char)(sqrt(p.b) * 255.99);
   }
 
   myfile.close();

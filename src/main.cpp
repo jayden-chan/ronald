@@ -46,7 +46,7 @@ int main(int argc, char **argv) {
 
   Config config;
   try {
-    config = validate_inputs(vm);
+    config = Config(vm);
   } catch (const char *err) {
     std::cerr << "Input validation error: " << err << '\n';
     return 1;

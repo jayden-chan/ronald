@@ -14,7 +14,9 @@ public:
   int threads;
 
   Config() = default;
-  Config(int width, int height, std::string out, int samples, int threads) {
+  Config(const po::variables_map vm);
+  Config(const int width, const int height, const std::string out,
+         const int samples, const int threads) {
     this->width = width;
     this->height = height;
     this->out = out;
@@ -24,5 +26,3 @@ public:
 
   void print();
 };
-
-Config validate_inputs(po::variables_map vm);
