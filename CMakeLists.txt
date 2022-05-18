@@ -16,8 +16,8 @@ set(CMAKE_OBJDUMP      "/usr/bin/llvm-objdump")
 set(CMAKE_RANLIB       "/usr/bin/llvm-ranlib")
 
 set(CMAKE_CXX_FLAGS         "-Wall -Wextra -Wpedantic -Wshadow -Wconversion")
-set(CMAKE_CXX_FLAGS_DEBUG   "-O3 -fsanitize=address -fsanitize=undefined")
-set(CMAKE_CXX_FLAGS_RELEASE "-O3 -flto=thin")
+set(CMAKE_CXX_FLAGS_DEBUG   "-O3 -g -fsanitize=address -fsanitize=undefined")
+set(CMAKE_CXX_FLAGS_RELEASE "-O3 -flto=thin -DNDEBUG")
 
 set(CMAKE_CXX_LINK_OPTIONS_DEBUG "-fsanitize=address -fsanitize=undefined -rdynamic")
 set(CMAKE_CXX_LINK_OPTIONS_RELEASE "")

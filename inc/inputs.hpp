@@ -43,7 +43,7 @@ public:
     this->threads = threads;
   }
 
-  void print();
+  void print() const;
 };
 
 #endif // INPUTS_H

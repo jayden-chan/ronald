@@ -76,7 +76,7 @@ public:
   /**
    * Return a vector with the same direction but with length 1
    */
-  Vec3 normalize() {
+  Vec3 normalize() const {
     auto mag_inv = Q_rsqrt((x * x) + (y * y) + (z * z));
     return Vec3(x * mag_inv, y * mag_inv, z * mag_inv);
   }
@@ -84,29 +84,29 @@ public:
   /**
    * 1 / sqrt(mag(vector))
    */
-  inline float inv_mag() { return Q_rsqrt((x * x) + (y * y) + (z * z)); }
+  inline float inv_mag() const { return Q_rsqrt((x * x) + (y * y) + (z * z)); }
 
   /**
    * Length of the vector
    */
-  inline float length() { return sqrtf(this->length_squared()); }
+  inline float length() const { return sqrtf(this->length_squared()); }
 
   /**
    * Length squared (faster than length since it avoids the sqrt)
    */
-  inline float length_squared() { return x * x + y * y + z * z; }
+  inline float length_squared() const { return x * x + y * y + z * z; }
 
   /**
    * dot product of two vectors
    */
-  inline float dot(const Vec3 &rhs) {
+  inline float dot(const Vec3 &rhs) const {
     return x * rhs.x + y * rhs.y + z * rhs.z;
   }
 
   /**
    * cross product of two vectors
    */
-  inline Vec3 cross(const Vec3 &rhs) {
+  inline Vec3 cross(const Vec3 &rhs) const {
     return Vec3(y * rhs.z - z * rhs.y, z * rhs.x - x * rhs.z,
                 x * rhs.y - y * rhs.x);
   }

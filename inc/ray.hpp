@@ -29,7 +29,7 @@ public:
     this->dir = dir;
   }
 
-  Vec3 point_at_parameter(const float t) {
+  Vec3 point_at_parameter(const float t) const {
     return this->origin + this->dir * t;
   }
 };

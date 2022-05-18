@@ -38,7 +38,7 @@ void Image::test() {
 /**
  * Write the image buffer to the provided file
  */
-void Image::write(const std::string path) {
+void Image::write(const std::string path) const {
   auto w = this->width;
   auto h = this->height;
 

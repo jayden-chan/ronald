@@ -19,7 +19,7 @@
 
 namespace po = boost::program_options;
 
-void Config::print() {
+void Config::print() const {
   std::cerr << "Using config: \n";
 
   std::cerr << "\twidth: " << width << "\n";
