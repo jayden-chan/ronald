@@ -16,16 +16,16 @@ struct Pixel {
 
 class Image {
   std::vector<Pixel> buffer;
-  unsigned int width, height;
+  int width, height;
 
 public:
-  Image(unsigned int width, unsigned int height) {
+  Image(const int width, const int height) {
     this->width = width;
     this->height = height;
   }
 
   void test();
-  void write(std::string path);
+  void write(const std::string path);
 };
 
 #endif // IMAGE_H

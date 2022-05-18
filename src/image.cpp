@@ -6,8 +6,8 @@
  */
 void Image::test() {
   buffer.reserve(width * height);
-  for (unsigned int i = 0; i < height; i++) {
-    for (unsigned int j = 0; j < width; j++) {
+  for (auto i = 0; i < height; i++) {
+    for (auto j = 0; j < width; j++) {
       float r = static_cast<float>(j) / static_cast<float>(width);
       float g = static_cast<float>(i) / static_cast<float>(height);
       float b = 0;
@@ -19,9 +19,12 @@ void Image::test() {
 /**
  * Write the image buffer to the provided file
  */
-void Image::write(std::string path) {
+void Image::write(const std::string path) {
   std::ofstream myfile;
   myfile.open(path);
+
+  // We will use the Binary Portable PixMap (P6) image format
+  // for simplicity.
   myfile << "P6\n";
   myfile << width << " " << height << "\n";
   myfile << "255\n";
