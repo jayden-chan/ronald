@@ -30,8 +30,8 @@ struct Hit {
 
 class Primitive {
 public:
-  virtual std::optional<Hit> hit(const Ray &r, float t_min,
-                                 float t_max) const = 0;
+  virtual std::optional<Hit> hit(const Ray &r, const float t_min,
+                                 const float t_max) const = 0;
 };
 
 class Sphere : public Primitive {
@@ -39,8 +39,10 @@ class Sphere : public Primitive {
   float radius;
 
 public:
-  virtual std::optional<Hit> hit(const Ray &r, float t_min,
-                                 float t_max) const override;
+  Sphere(const Vec3 &center, const float radius);
+
+  virtual std::optional<Hit> hit(const Ray &r, const float t_min,
+                                 const float t_max) const override;
 };
 
 class Triangle : public Primitive {
@@ -50,8 +52,10 @@ class Triangle : public Primitive {
   Vec3 edge2;
 
 public:
-  virtual std::optional<Hit> hit(const Ray &r, float t_min,
-                                 float t_max) const override;
+  Triangle(const Vec3 &v0, const Vec3 &v1, const Vec3 &v2, const Vec3 &normal);
+
+  virtual std::optional<Hit> hit(const Ray &r, const float t_min,
+                                 const float t_max) const override;
 };
 
 #endif // PRIMITIVE_H

@@ -21,6 +21,19 @@
 #include "ray.hpp"
 #include "vec3.hpp"
 
+Sphere::Sphere(const Vec3 &center, const float radius) {
+  this->center = center;
+  this->radius = radius;
+}
+
+Triangle::Triangle(const Vec3 &v0, const Vec3 &v1, const Vec3 &v2,
+                   const Vec3 &normal) {
+  this->v0 = v0;
+  this->normal = normal;
+  this->edge1 = v1 - v0;
+  this->edge2 = v2 - v0;
+}
+
 std::optional<Hit> Sphere::hit(const Ray &r, const float t_min,
                                const float t_max) const {
   Vec3 oc = r.origin() - center;
@@ -48,6 +61,7 @@ std::optional<Hit> Sphere::hit(const Ray &r, const float t_min,
 
 /**
  * Möller–Trumbore algorithm for triangle intersection
+ * https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm
  */
 std::optional<Hit> Triangle::hit(const Ray &r, const float t_min,
                                  const float t_max) const {
@@ -77,13 +91,14 @@ std::optional<Hit> Triangle::hit(const Ray &r, const float t_min,
 
   auto t = f * edge2.dot(q);
   auto point = r.origin() + r.direction() * t;
+
   if (t > EPSILON && t < 1.0 / EPSILON && t > t_min && t < t_max) {
     return std::optional<Hit>{{
         point,
         normal,
         t,
     }};
-  } else {
-    return std::nullopt;
   }
+
+  return std::nullopt;
 }
