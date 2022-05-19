@@ -41,7 +41,7 @@ public:
   }
 
   void test();
-  void write(const std::string path) const;
+  void write(const std::string &path) const;
 };
 
 #endif // IMAGE_H

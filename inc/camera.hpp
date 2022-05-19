@@ -67,9 +67,6 @@ public:
                this->vertical * param_v - this->origin - offset;
     return Ray(ori, dir);
   }
-
-protected:
-private:
 };
 
 #endif // CAMERA_H

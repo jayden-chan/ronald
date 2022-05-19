@@ -28,12 +28,20 @@ struct Hit {
   float t;
 };
 
+/**
+ * The primitive class represents any fundemental piece of geometry that a ray
+ * may intersect. The Primitive class specifies one required method, hit, which
+ * can test whether a given ray intersects with the geometry.
+ */
 class Primitive {
 public:
   virtual std::optional<Hit> hit(const Ray &r, const float t_min,
                                  const float t_max) const = 0;
 };
 
+/**
+ * Simple sphere primitive
+ */
 class Sphere : public Primitive {
   Vec3 center;
   float radius;
@@ -45,6 +53,9 @@ public:
                                  const float t_max) const override;
 };
 
+/**
+ * Simple triangle primitive
+ */
 class Triangle : public Primitive {
   Vec3 v0;
   Vec3 normal;

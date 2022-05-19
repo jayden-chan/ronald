@@ -1,6 +1,6 @@
 # path_tracer
 
-Path tracing rendering engine in C++20
+Path tracing rendering engine in very poorly written C++20
 
 Basic Feature Set
 * [x] CLI parsing

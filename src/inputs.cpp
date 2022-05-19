@@ -22,10 +22,10 @@ namespace po = boost::program_options;
 void Config::print() const {
   std::cerr << "Using config: \n";
 
-  std::cerr << "\twidth: " << width << "\n";
-  std::cerr << "\theight: " << height << "\n";
-  std::cerr << "\toutput: " << out << "\n";
-  std::cerr << "\tsamples: " << samples << "\n";
+  std::cerr << "\twidth: " << width << '\n';
+  std::cerr << "\theight: " << height << '\n';
+  std::cerr << "\toutput: " << out << '\n';
+  std::cerr << "\tsamples: " << samples << '\n';
   std::cerr << "\tthreads: " << threads << std::endl;
 }
 

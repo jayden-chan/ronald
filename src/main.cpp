@@ -51,11 +51,11 @@ int main(int argc, char **argv) {
     po::notify(vm);
   } catch (po::error &e) {
     if (vm.count("help")) {
-      std::cout << desc << "\n";
+      std::cout << desc << '\n';
       return 0;
     } else {
       std::cout << "Error ocurred while parsing command line arguments:\n";
-      std::cout << e.what() << "\n";
+      std::cout << e.what() << '\n';
       return 1;
     }
   }

@@ -38,7 +38,7 @@ void Image::test() {
 /**
  * Write the image buffer to the provided file
  */
-void Image::write(const std::string path) const {
+void Image::write(const std::string &path) const {
   auto w = this->width;
   auto h = this->height;
 
@@ -48,7 +48,7 @@ void Image::write(const std::string path) const {
   // We will use the Binary Portable PixMap (P6) image format
   // for simplicity.
   myfile << "P6\n";
-  myfile << w << " " << h << "\n";
+  myfile << w << " " << h << '\n';
   myfile << "255\n";
 
   for (const auto p : this->buffer) {

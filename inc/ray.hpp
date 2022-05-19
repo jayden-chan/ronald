@@ -19,6 +19,9 @@
 
 #include "vec3.hpp"
 
+/**
+ * The Ray class simply represents a 2D line in 3D space.
+ */
 class Ray {
   Vec3 _origin;
   Vec3 _dir;
