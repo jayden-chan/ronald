@@ -19,6 +19,8 @@
 
 #include "vec3.hpp"
 
+#define EPSILON 0.0000001
+
 /**
  * Produce a random 2D vector inside of a disk with
  * radius 1.

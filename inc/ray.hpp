@@ -20,18 +20,21 @@
 #include "vec3.hpp"
 
 class Ray {
-  Vec3 origin;
-  Vec3 dir;
+  Vec3 _origin;
+  Vec3 _dir;
 
 public:
   Ray(const Vec3 origin, const Vec3 dir) {
-    this->origin = origin;
-    this->dir = dir;
+    this->_origin = origin;
+    this->_dir = dir;
   }
 
   Vec3 point_at_parameter(const float t) const {
-    return this->origin + this->dir * t;
+    return this->_origin + this->_dir * t;
   }
+
+  inline Vec3 origin() const { return this->_origin; }
+  inline Vec3 direction() const { return this->_dir; }
 };
 
 #endif // RAY_H
