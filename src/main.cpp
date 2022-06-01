@@ -54,6 +54,7 @@ int main(int argc, char **argv) {
       std::cout << desc << '\n';
       return 0;
     } else {
+      std::cout << desc << '\n';
       std::cout << "Error ocurred while parsing command line arguments:\n";
       std::cout << e.what() << '\n';
       return 1;
