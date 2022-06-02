@@ -32,16 +32,11 @@ public:
   int samples;
   int threads;
 
-  Config() = default;
-  Config(const po::variables_map vm);
-  Config(const int width, const int height, const std::string out,
-         const int samples, const int threads) {
-    this->width = width;
-    this->height = height;
-    this->out = out;
-    this->samples = samples;
-    this->threads = threads;
-  }
+  Config(const po::variables_map &vm);
+  Config(const int width_a, const int height_a, const std::string &out_a,
+         const int samples_a, const int threads_a)
+      : width(width_a), height(height_a), out(out_a), samples(samples_a),
+        threads(threads_a) {}
 
   void print() const;
 };

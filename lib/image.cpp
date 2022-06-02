@@ -16,6 +16,8 @@
 
 #include "image.hpp"
 
+constexpr float EIGHT_BIT_MAX_F = 255.99F;
+
 /**
  * Test image which renders a red gradient along the X axis
  * and a green gradient along the Y axis.
@@ -52,9 +54,9 @@ void Image::write(const std::string &path) const {
   file << "255\n";
 
   for (const auto p : this->buffer) {
-    file << (unsigned char)(sqrt(p.r) * 255.99);
-    file << (unsigned char)(sqrt(p.g) * 255.99);
-    file << (unsigned char)(sqrt(p.b) * 255.99);
+    file << (unsigned char)(sqrt(p.r) * EIGHT_BIT_MAX_F);
+    file << (unsigned char)(sqrt(p.g) * EIGHT_BIT_MAX_F);
+    file << (unsigned char)(sqrt(p.b) * EIGHT_BIT_MAX_F);
   }
 
   file.close();

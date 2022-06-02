@@ -29,7 +29,7 @@ void Config::print() const {
   std::cerr << "\tthreads: " << threads << std::endl;
 }
 
-Config::Config(const po::variables_map vm) {
+Config::Config(const po::variables_map &vm) {
   auto vm_width = vm["width"].as<int>();
   auto vm_height = vm["height"].as<int>();
   auto vm_out = vm["out"].as<std::string>();
@@ -52,9 +52,9 @@ Config::Config(const po::variables_map vm) {
     throw "Currently only exactly one thread is supported";
   }
 
-  this->width = vm_width;
-  this->height = vm_height;
-  this->out = vm_out;
-  this->samples = vm_samples;
-  this->threads = vm_threads;
+  width = vm_width;
+  height = vm_height;
+  out = vm_out;
+  samples = vm_samples;
+  threads = vm_threads;
 }

@@ -41,7 +41,8 @@ class Camera {
   float lens_radius;
 
 public:
-  Camera(const CameraConstructor &cam) {
+  Camera(const CameraConstructor &cam)
+      : origin(cam.look_from), lens_radius(cam.aperture / 2) {
     auto theta = cam.vfov * (float)M_PI / 180;
     auto half_height = tan(theta / 2);
     auto half_width = cam.aspect_r * half_height;
@@ -49,13 +50,12 @@ public:
     w = (cam.look_from - cam.look_at).normalize();
     u = cam.vup.cross(w).normalize();
     v = w.cross(u);
+
     lower_left_corner = cam.look_from - half_width * cam.focus_dist * u -
                         half_height * cam.focus_dist * v - cam.focus_dist * w;
 
     horizontal = 2 * half_width * cam.focus_dist * u;
     vertical = 2 * half_height * cam.focus_dist * v;
-    origin = cam.look_from;
-    lens_radius = cam.aperture / 2;
   }
 
   Ray get_ray(const float param_u, const float param_v) const {

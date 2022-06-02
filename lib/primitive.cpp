@@ -21,18 +21,12 @@
 #include "ray.hpp"
 #include "vec3.hpp"
 
-Sphere::Sphere(const Vec3 &center, const float radius) {
-  this->center = center;
-  this->radius = radius;
-}
+Sphere::Sphere(const Vec3 &center_a, const float radius_a)
+    : center(center_a), radius(radius_a) {}
 
-Triangle::Triangle(const Vec3 &v0, const Vec3 &v1, const Vec3 &v2,
-                   const Vec3 &normal) {
-  this->v0 = v0;
-  this->normal = normal;
-  this->edge1 = v1 - v0;
-  this->edge2 = v2 - v0;
-}
+Triangle::Triangle(const Vec3 &v0_a, const Vec3 &v1_a, const Vec3 &v2_a,
+                   const Vec3 &normal_a)
+    : v0(v0_a), normal(normal_a), edge1(v1_a - v0_a), edge2(v2_a - v0_a) {}
 
 std::optional<Hit> Sphere::hit(const Ray &r, const float t_min,
                                const float t_max) const {
@@ -42,15 +36,19 @@ std::optional<Hit> Sphere::hit(const Ray &r, const float t_min,
   auto c = oc.length_squared() - radius * radius;
 
   auto discriminant = half_b * half_b - a * c;
-  if (discriminant < 0)
+  if (discriminant < 0) {
     return std::nullopt;
+  }
+
   auto sqrtd = sqrtf(discriminant);
 
   auto root = (-half_b - sqrtd) / a;
   if (root < t_min || t_max < root) {
     root = (-half_b + sqrtd) / a;
-    if (root < t_min || t_max < root)
+
+    if (root < t_min || t_max < root) {
       return std::nullopt;
+    }
   }
 
   auto t = root;

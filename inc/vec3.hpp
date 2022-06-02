@@ -36,7 +36,7 @@ constexpr float Q_rsqrt(const float number) noexcept {
 
   float const y = std::bit_cast<float>(
       0x5f3759df - (std::bit_cast<std::uint32_t>(number) >> 1));
-  return y * (1.5f - (number * 0.5f * y * y));
+  return y * (1.5F - (number * 0.5F * y * y));
 }
 
 class Vec3 {
@@ -44,21 +44,18 @@ public:
   float x, y, z;
 
   Vec3() = default;
-  Vec3(const float x, const float y, const float z) {
-    this->x = x;
-    this->y = y;
-    this->z = z;
-  }
+  Vec3(const float x_a, const float y_a, const float z_a)
+      : x(x_a), y(y_a), z(z_a) {}
 
   /**
    * Vector of just zeros
    */
-  static Vec3 zeros() { return Vec3(0.0, 0.0, 0.0); }
+  static Vec3 zeros() noexcept { return Vec3(0.0, 0.0, 0.0); }
 
   /**
    * Vector of just ones
    */
-  static Vec3 ones() { return Vec3(1.0, 1.0, 1.0); }
+  static Vec3 ones() noexcept { return Vec3(1.0, 1.0, 1.0); }
 
   /**
    * Vector of random values from 0 to 1
@@ -70,7 +67,7 @@ public:
   /**
    * Return a vector with the same direction but with length 1
    */
-  Vec3 normalize() const {
+  Vec3 normalize() const noexcept {
     auto mag_inv = Q_rsqrt((x * x) + (y * y) + (z * z));
     return Vec3(x * mag_inv, y * mag_inv, z * mag_inv);
   }
@@ -78,29 +75,31 @@ public:
   /**
    * 1 / sqrt(mag(vector))
    */
-  inline float inv_mag() const { return Q_rsqrt((x * x) + (y * y) + (z * z)); }
+  inline float inv_mag() const noexcept {
+    return Q_rsqrt((x * x) + (y * y) + (z * z));
+  }
 
   /**
    * Length of the vector
    */
-  inline float length() const { return sqrtf(this->length_squared()); }
+  inline float length() const noexcept { return sqrtf(this->length_squared()); }
 
   /**
    * Length squared (faster than length since it avoids the sqrt)
    */
-  inline float length_squared() const { return x * x + y * y + z * z; }
+  inline float length_squared() const noexcept { return x * x + y * y + z * z; }
 
   /**
    * dot product of two vectors
    */
-  inline float dot(const Vec3 &rhs) const {
+  inline float dot(const Vec3 &rhs) const noexcept {
     return x * rhs.x + y * rhs.y + z * rhs.z;
   }
 
   /**
    * cross product of two vectors
    */
-  inline Vec3 cross(const Vec3 &rhs) const {
+  inline Vec3 cross(const Vec3 &rhs) const noexcept {
     return Vec3(y * rhs.z - z * rhs.y, z * rhs.x - x * rhs.z,
                 x * rhs.y - y * rhs.x);
   }
@@ -108,7 +107,7 @@ public:
   /**
    * Add another vector to this vector
    */
-  Vec3 &operator+=(const Vec3 &v) {
+  Vec3 &operator+=(const Vec3 &v) noexcept {
     x += v.x;
     y += v.y;
     z += v.z;
@@ -118,7 +117,7 @@ public:
   /**
    * Multiply all vector elements by a constant
    */
-  Vec3 &operator*=(const float t) {
+  Vec3 &operator*=(const float t) noexcept {
     x *= t;
     y *= t;
     z *= t;
@@ -138,35 +137,35 @@ public:
 /**
  * Add two vectors together
  */
-inline Vec3 operator+(const Vec3 &u, const Vec3 &v) {
+inline Vec3 operator+(const Vec3 &u, const Vec3 &v) noexcept {
   return Vec3(u.x + v.x, u.y + v.y, u.z + v.z);
 }
 
 /**
  * Subtract one vector from another
  */
-inline Vec3 operator-(const Vec3 &u, const Vec3 &v) {
+inline Vec3 operator-(const Vec3 &u, const Vec3 &v) noexcept {
   return Vec3(u.x - v.x, u.y - v.y, u.z - v.z);
 }
 
 /**
  * Multiply two vectors element-wise
  */
-inline Vec3 operator*(const Vec3 &u, const Vec3 &v) {
+inline Vec3 operator*(const Vec3 &u, const Vec3 &v) noexcept {
   return Vec3(u.x * v.x, u.y * v.y, u.z * v.z);
 }
 
 /**
  * Multiply a vector by a constant element-wise
  */
-inline Vec3 operator*(const float t, const Vec3 &v) {
+inline Vec3 operator*(const float t, const Vec3 &v) noexcept {
   return Vec3(t * v.x, t * v.y, t * v.z);
 }
 
 /**
  * Multiply a vector by a constant element-wise
  */
-inline Vec3 operator*(const Vec3 &v, const float t) { return t * v; }
+inline Vec3 operator*(const Vec3 &v, const float t) noexcept { return t * v; }
 
 /**
  * Divide a vector by a constant

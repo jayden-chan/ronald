@@ -27,17 +27,14 @@ class Ray {
   Vec3 _dir;
 
 public:
-  Ray(const Vec3 origin, const Vec3 dir) {
-    this->_origin = origin;
-    this->_dir = dir;
-  }
+  Ray(const Vec3 origin, const Vec3 dir) : _origin(origin), _dir(dir) {}
 
-  Vec3 point_at_parameter(const float t) const {
+  Vec3 point_at_parameter(const float t) const noexcept {
     return this->_origin + this->_dir * t;
   }
 
-  inline Vec3 origin() const { return this->_origin; }
-  inline Vec3 direction() const { return this->_dir; }
+  inline Vec3 origin() const noexcept { return this->_origin; }
+  inline Vec3 direction() const noexcept { return this->_dir; }
 };
 
 #endif // RAY_H

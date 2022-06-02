@@ -35,10 +35,8 @@ class Image {
   int width, height;
 
 public:
-  Image(const int width, const int height) {
-    this->width = width;
-    this->height = height;
-  }
+  Image(const int width_a, const int height_a)
+      : width(width_a), height(height_a) {}
 
   void test();
   void write(const std::string &path) const;
