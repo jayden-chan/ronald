@@ -1,6 +1,19 @@
 # path_tracer
 
-Path tracing rendering engine in very poorly written C++20
+Path tracing rendering engine in very poorly written C++17
+
+## Building / Testing / Running
+```bash
+# Release build
+make release
+./build/path_tracer --help
+
+# Debug build
+make debug
+
+# Build and run unit tests
+make test
+```
 
 Basic Feature Set
 * [x] CLI parsing
