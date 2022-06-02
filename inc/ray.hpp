@@ -35,6 +35,15 @@ public:
 
   inline Vec3 origin() const noexcept { return this->_origin; }
   inline Vec3 direction() const noexcept { return this->_dir; }
+
+  /**
+   * Stream insertion operator
+   */
+  friend std::ostream &operator<<(std::ostream &output, const Ray &r) {
+    output << "{ origin: " << r.origin() << " direction: " << r.direction()
+           << " }";
+    return output;
+  }
 };
 
 #endif // RAY_H

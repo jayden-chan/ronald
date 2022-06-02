@@ -19,6 +19,7 @@
 
 #include <bit>
 #include <cstdint>
+#include <iostream>
 #include <limits>
 
 #include "rand.hpp"
@@ -128,6 +129,14 @@ public:
    * Divide all vector elements by a constant
    */
   Vec3 &operator/=(const float t) { return *this *= 1 / t; }
+
+  /**
+   * Stream insertion operator
+   */
+  friend std::ostream &operator<<(std::ostream &output, const Vec3 &V) {
+    output << "[ " << V.x << " " << V.y << " " << V.z << " ]";
+    return output;
+  }
 };
 
 /********************************************************/
