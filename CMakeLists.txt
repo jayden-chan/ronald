@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.13 FATAL_ERROR)
 
 project(path_tracer LANGUAGES CXX)
 # set(CMAKE_VERBOSE_MAKEFILE true)
@@ -25,14 +25,21 @@ set(CMAKE_CXX_LINK_OPTIONS_RELEASE "")
 set(CMAKE_CXX_STANDARD 20)
 
 set(Boost_USE_MULTITHREADED OFF)
+
+find_package(Catch2 2.13 REQUIRED)
 find_package(Boost COMPONENTS program_options REQUIRED)
+
 include_directories(inc ${Boost_INCLUDE_DIR})
 
-file(GLOB SOURCES "src/*.cpp")
+file(GLOB SOURCES "lib/*.cpp")
+file(GLOB PATH_TRACER_SOURCES "app/*.cpp")
+file(GLOB TEST_SOURCES "tests/*.cpp")
 
-add_executable(path_tracer ${SOURCES})
+add_executable(path_tracer ${SOURCES} ${PATH_TRACER_SOURCES})
+add_executable(tests ${SOURCES} ${TEST_SOURCES})
 
 target_link_libraries(path_tracer Boost::program_options)
+target_link_libraries(tests PRIVATE Catch2::Catch2 Boost::program_options)
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     add_definitions(-DDEBUG)

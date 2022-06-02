@@ -17,6 +17,10 @@
 #ifndef VEC3_H
 #define VEC3_H
 
+#include <bit>
+#include <cstdint>
+#include <limits>
+
 #include "rand.hpp"
 
 /**
@@ -26,24 +30,14 @@
  *
  * https://en.wikipedia.org/wiki/Fast_inverse_square_root
  */
-// clang-format off
-inline float Q_rsqrt( float number )
-{
-    long i;
-    float x2, y;
-    const float threehalfs = 1.5F;
+constexpr float Q_rsqrt(const float number) noexcept {
+  static_assert(
+      std::numeric_limits<float>::is_iec559); // (enable only on IEEE 754)
 
-    x2 = number * 0.5F;
-    y  = number;
-    i  = * ( long * ) &y;                       // evil floating point bit level hacking
-    i  = 0x5f3759df - ( i >> 1 );               // what the fuck?
-    y  = * ( float * ) &i;
-    y  = y * ( threehalfs - ( x2 * y * y ) );   // 1st iteration
-//  y  = y * ( threehalfs - ( x2 * y * y ) );   // 2nd iteration, this can be removed
-
-    return y;
+  float const y = std::bit_cast<float>(
+      0x5f3759df - (std::bit_cast<std::uint32_t>(number) >> 1));
+  return y * (1.5f - (number * 0.5f * y * y));
 }
-// clang-format on
 
 class Vec3 {
 public:
