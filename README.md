@@ -19,13 +19,13 @@ Basic Feature Set
 * [x] CLI parsing
 * [x] PPM image generation
 * [x] Vec3 class implementation
-* [ ] Ray/Sphere intersection calculation
+* [x] Ray/Sphere intersection calculation
 * [ ] Diffuse material scatter function
 * [ ] Light source material
 * [ ] Recursive tracing function
 * [ ] Single threaded render loop
 * [ ] Scene description parsing w/ Boost
-* [ ] Ray/Triangle intersection
+* [x] Ray/Triangle intersection
 * [ ] Dielectric material scatter function
 
 Extended Feature Set (Scope B only)
