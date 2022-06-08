@@ -32,14 +32,17 @@ struct Pixel {
 
 class Image {
   std::vector<Pixel> buffer;
-  int width, height;
+  size_t width, height;
 
 public:
-  Image(const int width_a, const int height_a)
-      : width(width_a), height(height_a) {}
+  Image(const size_t width_a, const size_t height_a)
+      : width(width_a), height(height_a) {
+    this->buffer.reserve(width_a * height_a);
+  }
 
   void test();
   void write(const std::string &path) const;
+  void set_pixel(size_t u, size_t v, Pixel pixel);
 };
 
 #endif // IMAGE_H

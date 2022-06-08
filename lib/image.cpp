@@ -25,10 +25,9 @@ constexpr float EIGHT_BIT_MAX_F = 255.99F;
 void Image::test() {
   auto w = this->width;
   auto h = this->height;
-  this->buffer.reserve((size_t)w * (size_t)h);
 
-  for (auto i = 0; i < height; i++) {
-    for (auto j = 0; j < width; j++) {
+  for (size_t i = 0; i < height; i++) {
+    for (size_t j = 0; j < width; j++) {
       float r = (float)(j) / (float)(w);
       float g = (float)(i) / (float)(h);
       float b = 0;
@@ -60,4 +59,12 @@ void Image::write(const std::string &path) const {
   }
 
   file.close();
+}
+
+/**
+ * Set the pixel at the screenspace coordinate (u, v) to `pixel`
+ */
+void Image::set_pixel(const std::size_t u, const std::size_t v,
+                      const Pixel pixel) {
+  this->buffer[u * this->width + v] = pixel;
 }

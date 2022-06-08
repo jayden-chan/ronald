@@ -26,15 +26,15 @@ namespace po = boost::program_options;
 
 class Config {
 public:
-  int width;
-  int height;
+  size_t width;
+  size_t height;
   std::string out;
   int samples;
   int threads;
 
   Config() = default;
   Config(const po::variables_map &vm);
-  Config(const int width_a, const int height_a, const std::string &out_a,
+  Config(const size_t width_a, const size_t height_a, const std::string &out_a,
          const int samples_a, const int threads_a)
       : width(width_a), height(height_a), out(out_a), samples(samples_a),
         threads(threads_a) {}

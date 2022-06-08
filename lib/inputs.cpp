@@ -30,8 +30,8 @@ void Config::print() const {
 }
 
 Config::Config(const po::variables_map &vm) {
-  auto vm_width = vm["width"].as<int>();
-  auto vm_height = vm["height"].as<int>();
+  auto vm_width = vm["width"].as<size_t>();
+  auto vm_height = vm["height"].as<size_t>();
   auto vm_out = vm["out"].as<std::string>();
   auto vm_samples = vm["samples"].as<int>();
   auto vm_threads = vm["threads"].as<int>();

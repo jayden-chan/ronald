@@ -31,8 +31,8 @@ int main(int argc, char **argv) {
   /* clang-format off */
   desc.add_options()
     ("help", "produce help message")
-    ("width", po::value<int>()->required(), "width of the output image in pixels")
-    ("height", po::value<int>()->required(), "height of the output image in pixels")
+    ("width", po::value<size_t>()->required(), "width of the output image in pixels")
+    ("height", po::value<size_t>()->required(), "height of the output image in pixels")
     (
       "out",
       po::value<std::string>()->default_value(std::string("./image.ppm")),
