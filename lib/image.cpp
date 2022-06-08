@@ -29,8 +29,8 @@ void Image::test() {
 
   for (auto i = 0; i < height; i++) {
     for (auto j = 0; j < width; j++) {
-      float r = static_cast<float>(j) / static_cast<float>(w);
-      float g = static_cast<float>(i) / static_cast<float>(h);
+      float r = (float)(j) / (float)(w);
+      float g = (float)(i) / (float)(h);
       float b = 0;
       this->buffer.push_back({r, g, b});
     }

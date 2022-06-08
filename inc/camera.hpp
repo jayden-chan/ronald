@@ -41,6 +41,9 @@ class Camera {
   float lens_radius;
 
 public:
+  /**
+   * Construct a new camera with the given input parameters
+   */
   Camera(const CameraConstructor &cam)
       : origin(cam.look_from), lens_radius(cam.aperture / 2) {
     auto theta = cam.vfov * (float)M_PI / 180;
@@ -58,6 +61,10 @@ public:
     vertical = 2 * half_height * cam.focus_dist * v;
   }
 
+  /**
+   * Return a ray which travels from the camera origin through the
+   * screenspace coordinate given by `param_u` and `param_v`
+   */
   Ray get_ray(const float param_u, const float param_v) const {
     auto rd = this->lens_radius * random_in_unit_disk();
     auto offset = this->u * rd.x + this->v * rd.y;
