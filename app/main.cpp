@@ -27,6 +27,7 @@ namespace po = boost::program_options;
 int main(int argc, char **argv) {
   po::options_description desc("Allowed options");
 
+  constexpr auto desc_written = "Usage: path_tracer [options] <scene.json>";
   /* clang-format off */
   desc.add_options()
     ("help", "produce help message")
@@ -51,9 +52,11 @@ int main(int argc, char **argv) {
     po::notify(vm);
   } catch (po::error &e) {
     if (vm.count("help")) {
+      std::cout << desc_written << "\n\n";
       std::cout << desc << '\n';
       return 0;
     } else {
+      std::cout << desc_written << "\n\n";
       std::cout << desc << '\n';
       std::cout << "Error ocurred while parsing command line arguments:\n";
       std::cout << e.what() << '\n';
