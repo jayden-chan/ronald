@@ -20,7 +20,7 @@ Basic Feature Set
 * [x] PPM image generation
 * [x] Vec3 class implementation
 * [x] Ray/Sphere intersection calculation
-* [ ] Diffuse material scatter function
+* [x] Diffuse material scatter function
 * [ ] Light source material
 * [ ] Recursive tracing function
 * [ ] Single threaded render loop
