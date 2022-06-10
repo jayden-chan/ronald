@@ -26,3 +26,20 @@ std::optional<Scatter> Lambertian::scatter(__attribute__((unused)) Ray const &r,
   const Ray specular(h.point, scattered - h.point);
   return std::optional<Scatter>{{specular, albedo}};
 }
+
+/**
+ * The light material doesn't scatter light
+ */
+std::optional<Scatter> Light::scatter(__attribute__((unused)) Ray const &r,
+                                      __attribute__((unused))
+                                      Hit const &h) const {
+  return std::nullopt;
+}
+
+Vec3 Light::emitted(Ray const &r, Hit const &h) const {
+  if (h.normal.dot(r.direction()) < 0.0) {
+    return this->emittance;
+  } else {
+    return Vec3::zeros();
+  }
+}

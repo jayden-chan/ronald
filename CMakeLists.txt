@@ -16,6 +16,8 @@ set(CMAKE_OBJDUMP      "/usr/bin/llvm-objdump")
 set(CMAKE_RANLIB       "/usr/bin/llvm-ranlib")
 
 set(CMAKE_CXX_FLAGS         "-Wall -Wextra -Wpedantic -Wshadow -Wconversion")
+# we will use the -O3 flag in debug since the performance will make testing
+# mostly unusable without optimization
 set(CMAKE_CXX_FLAGS_DEBUG   "-O3 -g -fsanitize=address -fsanitize=undefined")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3 -flto=thin -DNDEBUG")
 
