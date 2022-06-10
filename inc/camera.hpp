@@ -21,6 +21,7 @@
 #include "ray.hpp"
 #include "vec3.hpp"
 #include <math.h>
+#include <stdexcept>
 
 struct CameraConstructor {
   Vec3 look_from;
@@ -49,6 +50,11 @@ public:
    */
   Camera(const CameraConstructor &cam)
       : origin(cam.look_from), lens_radius(cam.aperture / 2) {
+
+    if (abs(cam.focus_dist) < EPSILON) {
+      throw std::runtime_error("Focal distance cannot be zero!");
+    }
+
     auto theta = cam.vfov * (float)M_PI / 180;
     auto half_height = tan(theta / 2);
     auto half_width = cam.aspect_r * half_height;
