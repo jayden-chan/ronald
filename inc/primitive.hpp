@@ -37,6 +37,8 @@ class Primitive {
 public:
   virtual std::optional<Hit> hit(const Ray &r, float t_min,
                                  float t_max) const = 0;
+
+  virtual ~Primitive() = default;
 };
 
 /**
