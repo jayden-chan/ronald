@@ -21,7 +21,7 @@ Basic Feature Set
 * [x] Vec3 class implementation
 * [x] Ray/Sphere intersection calculation
 * [x] Diffuse material scatter function
-* [ ] Light source material
+* [x] Light source material
 * [ ] Recursive tracing function
 * [ ] Single threaded render loop
 * [ ] Scene description parsing w/ Boost
