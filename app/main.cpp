@@ -27,24 +27,19 @@ namespace po = boost::program_options;
 int main(int argc, char **argv) {
   po::options_description desc("Allowed options");
 
-  constexpr auto desc_written = "Usage: path_tracer [options] <scene.json>";
   /* clang-format off */
   desc.add_options()
     ("help", "produce help message")
     ("width", po::value<size_t>()->required(), "width of the output image in pixels")
     ("height", po::value<size_t>()->required(), "height of the output image in pixels")
-    (
-      "out",
-      po::value<std::string>()->default_value(std::string("./image.ppm")),
-      "path to the output file"
-    )
+    ("out", po::value<std::string>()->default_value(std::string("./image.ppm")),
+      "path to the output file")
     ("samples", po::value<size_t>()->required(), "number of samples per pixel")
-    (
-      "threads", po::value<size_t>()->default_value(1),
-      "number of threads to spawn when running in multithreaded mode"
-    );
+    ("threads", po::value<size_t>()->default_value(1),
+      "number of threads to spawn when running in multithreaded mode");
   /* clang-format on */
 
+  constexpr auto desc_written = "Usage: path_tracer [options] <scene.json>";
   po::variables_map vm;
 
   try {

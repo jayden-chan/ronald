@@ -28,18 +28,15 @@ namespace po = boost::program_options;
 
 class Config {
 public:
-  size_t width;
-  size_t height;
+  size_t width = 0;
+  size_t height = 0;
   std::string out;
-  size_t samples;
-  size_t threads;
+  size_t samples = 0;
+  size_t threads = 0;
   Scene scene;
 
+  Config() = default;
   Config(const po::variables_map &vm);
-  Config(const size_t width_a, const size_t height_a, const std::string &out_a,
-         const size_t samples_a, const size_t threads_a, const Scene scene_a)
-      : width(width_a), height(height_a), out(out_a), samples(samples_a),
-        threads(threads_a), scene(scene_a) {}
 
   void print() const;
 };

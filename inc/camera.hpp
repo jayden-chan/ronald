@@ -33,7 +33,9 @@ struct CameraConstructor {
 };
 
 class Camera {
-  Vec3 u, v, w = Vec3::zeros();
+  Vec3 u = Vec3::zeros();
+  Vec3 v = Vec3::zeros();
+  Vec3 w = Vec3::zeros();
   Vec3 lower_left_corner = Vec3::zeros();
   Vec3 horizontal = Vec3::zeros();
   Vec3 vertical = Vec3::zeros();

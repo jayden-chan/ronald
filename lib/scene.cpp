@@ -19,7 +19,7 @@
 #include "vec3.hpp"
 
 // 15 bounces should be MORE than enough for most scenes
-#define MAX_RECURSIVE_DEPTH 15
+constexpr size_t MAX_RECURSIVE_DEPTH = 15;
 
 // TODO: Change this to `Hit` and change `Hit` to `Intersection`
 struct HitRecord {
@@ -55,23 +55,23 @@ Vec3 Scene::trace(const size_t u, const size_t v) {
   auto curr_att = Vec3::ones();
   auto total_emitted = Vec3::zeros();
 
-  for (int i = 0; i < MAX_RECURSIVE_DEPTH; ++i) {
+  for (size_t i = 0; i < MAX_RECURSIVE_DEPTH; ++i) {
     const auto hit_result = hit_objects(this->objects, curr_ray);
 
     // Ray did not hit anything -- return zero
     if (!hit_result.has_value()) {
       return Vec3::zeros();
-    } else {
-      if (!hit_result->scatter.has_value()) {
-        // Ray hit something but didn't scatter another ray -- path stops here
-        return curr_att * (total_emitted + hit_result->emitted);
-      } else {
-        // Ray hit something and scattered, continue tracing
-        curr_ray = hit_result->scatter->specular;
-        curr_att *= hit_result->scatter->attenuation;
-        total_emitted += hit_result->emitted;
-      }
     }
+
+    // Ray hit something but didn't scatter another ray -- path stops here
+    if (!hit_result->scatter.has_value()) {
+      return curr_att * (total_emitted + hit_result->emitted);
+    }
+
+    // Ray hit something and scattered, continue tracing
+    curr_ray = hit_result->scatter->specular;
+    curr_att *= hit_result->scatter->attenuation;
+    total_emitted += hit_result->emitted;
   }
 
   // Max recursion depth reached -- return zero

@@ -39,7 +39,7 @@ std::optional<Scatter> Light::scatter(__attribute__((unused)) Ray const &r,
 Vec3 Light::emitted(Ray const &r, Hit const &h) const {
   if (h.normal.dot(r.direction()) < 0.0) {
     return this->emittance;
-  } else {
-    return Vec3::zeros();
   }
+
+  return Vec3::zeros();
 }

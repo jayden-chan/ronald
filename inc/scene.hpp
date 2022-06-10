@@ -42,6 +42,7 @@ private:
   Camera camera;
 
 public:
+  Scene() = default;
   Vec3 trace(size_t u, size_t v);
 };
 
