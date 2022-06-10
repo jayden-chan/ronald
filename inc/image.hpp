@@ -38,6 +38,7 @@ public:
   Image(const size_t width_a, const size_t height_a)
       : width(width_a), height(height_a) {
     this->buffer.reserve(width_a * height_a);
+    this->buffer.resize(width_a * height_a);
   }
 
   void test();
