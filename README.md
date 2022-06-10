@@ -22,7 +22,7 @@ Basic Feature Set
 * [x] Ray/Sphere intersection calculation
 * [x] Diffuse material scatter function
 * [x] Light source material
-* [ ] Recursive tracing function
+* [x] Recursive tracing function
 * [ ] Single threaded render loop
 * [ ] Scene description parsing w/ Boost
 * [x] Ray/Triangle intersection
