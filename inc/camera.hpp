@@ -33,14 +33,15 @@ struct CameraConstructor {
 };
 
 class Camera {
-  Vec3 u, v, w;
-  Vec3 lower_left_corner;
-  Vec3 horizontal;
-  Vec3 vertical;
-  Vec3 origin;
-  float lens_radius;
+  Vec3 u, v, w = Vec3::zeros();
+  Vec3 lower_left_corner = Vec3::zeros();
+  Vec3 horizontal = Vec3::zeros();
+  Vec3 vertical = Vec3::zeros();
+  Vec3 origin = Vec3::zeros();
+  float lens_radius = 0.0;
 
 public:
+  Camera() = default;
   /**
    * Construct a new camera with the given input parameters
    */
