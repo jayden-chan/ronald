@@ -22,6 +22,8 @@
 #include <boost/program_options/variables_map.hpp>
 #include <iostream>
 
+#include "scene.hpp"
+
 namespace po = boost::program_options;
 
 class Config {

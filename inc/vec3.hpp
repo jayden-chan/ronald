@@ -126,6 +126,16 @@ public:
   }
 
   /**
+   * Multiply-assign vector element-wise between this vector and rhs
+   */
+  Vec3 &operator*=(const Vec3 v) noexcept {
+    x *= v.x;
+    y *= v.y;
+    z *= v.z;
+    return *this;
+  }
+
+  /**
    * Divide all vector elements by a constant
    */
   Vec3 &operator/=(const float t) { return *this *= 1 / t; }
