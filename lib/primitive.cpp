@@ -30,7 +30,7 @@ Triangle::Triangle(const Vec3 &v0_a, const Vec3 &v1_a, const Vec3 &v2_a,
 
 std::optional<Hit> Sphere::hit(const Ray &r, const float t_min,
                                const float t_max) const {
-  Vec3 oc = r.origin() - center;
+  Vec3 oc = r.origin() - this->center;
   auto a = r.direction().length_squared();
   auto half_b = oc.dot(r.direction());
   auto c = oc.length_squared() - radius * radius;
@@ -43,10 +43,10 @@ std::optional<Hit> Sphere::hit(const Ray &r, const float t_min,
   auto sqrtd = sqrtf(discriminant);
 
   auto root = (-half_b - sqrtd) / a;
-  if (root < t_min || t_max < root) {
+  if (root < t_min || root > t_max) {
     root = (-half_b + sqrtd) / a;
 
-    if (root < t_min || t_max < root) {
+    if (root < t_min || root > t_max) {
       return std::nullopt;
     }
   }

@@ -55,6 +55,8 @@ public:
                        __attribute__((unused)) Hit const &h) const {
     return Vec3::zeros();
   };
+
+  virtual ~Material() = default;
 };
 
 /**

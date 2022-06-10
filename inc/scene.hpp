@@ -18,6 +18,8 @@
 #define SCENE_H
 
 #include "camera.hpp"
+#include "image.hpp"
+#include "inputs.hpp"
 #include "material.hpp"
 #include "primitive.hpp"
 #include "vec3.hpp"
@@ -28,8 +30,8 @@
  * An object is a primitive with an associated material
  */
 struct Object {
-  Primitive *primitive;
-  Material *material;
+  const Primitive *const primitive;
+  const Material *const material;
 };
 
 /**
@@ -41,9 +43,21 @@ private:
   std::vector<Object> objects;
   Camera camera;
 
+  /**
+   * Sends a ray through the scene geometry based on the given
+   * screenspace coordinate (u, v) and returns the pixel's luminance
+   */
+  Vec3 trace(float u, float v) const;
+
 public:
-  Scene() = default;
-  Vec3 trace(size_t u, size_t v);
+  Scene(std::vector<Object> &objects_a, Camera &camera_a)
+      : objects(objects_a), camera(camera_a){};
+
+  /**
+   * Calls `trace` for each pixel in the scene for as many samples
+   * as specified in the config
+   */
+  Image render(const Config &config) const;
 };
 
 #endif // SCENE_H

@@ -36,10 +36,11 @@ std::optional<HitRecord> hit_objects(const std::vector<Object> &objs,
   for (const auto o : objs) {
     const auto this_hit = o.primitive->hit(ray, 0.000005F, min_so_far);
     if (this_hit.has_value()) {
+      /* std::cerr << "hit something" << '\n'; */
       hit = {
-          *this_hit,
-          o.material->scatter(ray, *this_hit),
-          o.material->emitted(ray, *this_hit),
+          .hit = *this_hit,
+          .scatter = o.material->scatter(ray, *this_hit),
+          .emitted = o.material->emitted(ray, *this_hit),
       };
       min_so_far = this_hit->t;
     }
@@ -48,10 +49,9 @@ std::optional<HitRecord> hit_objects(const std::vector<Object> &objs,
   return hit;
 }
 
-Vec3 Scene::trace(const size_t u, const size_t v) {
+Vec3 Scene::trace(const float u, const float v) const {
   // TODO: Russian Roulette loop termination
-  const auto ray = this->camera.get_ray(u, v);
-  auto curr_ray = ray;
+  auto curr_ray = this->camera.get_ray(u, v);
   auto curr_att = Vec3::ones();
   auto total_emitted = Vec3::zeros();
 
@@ -76,4 +76,27 @@ Vec3 Scene::trace(const size_t u, const size_t v) {
 
   // Max recursion depth reached -- return zero
   return Vec3::zeros();
+}
+
+Image Scene::render(const Config &config) const {
+  const auto width = config.width;
+  const auto height = config.height;
+  auto img = Image(width, height);
+
+  for (size_t y = 0; y < height; ++y) {
+    for (size_t x = 0; x < width; ++x) {
+      auto curr_pixel = Vec3::zeros();
+      for (size_t i = 0; i < config.samples; i++) {
+        const auto u = ((float)x + random_float()) / (float)width;
+        const auto v = ((float)y + random_float()) / (float)height;
+        curr_pixel += this->trace(u, v);
+      }
+
+      curr_pixel /= (float)config.samples;
+      const auto pixel = curr_pixel.to_pixel();
+      img.set_pixel(x, y, pixel);
+    }
+  }
+
+  return img;
 }

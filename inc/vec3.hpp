@@ -22,6 +22,7 @@
 #include <iostream>
 #include <limits>
 
+#include "image.hpp"
 #include "rand.hpp"
 
 /**
@@ -146,6 +147,17 @@ public:
   friend std::ostream &operator<<(std::ostream &output, const Vec3 &V) {
     output << "[ " << V.x << " " << V.y << " " << V.z << " ]";
     return output;
+  }
+
+  /**
+   * Convert the vector to a pixel
+   */
+  Pixel to_pixel() {
+    return {
+        .r = this->x,
+        .g = this->y,
+        .b = this->z,
+    };
   }
 };
 

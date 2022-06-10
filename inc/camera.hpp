@@ -65,16 +65,17 @@ public:
   }
 
   /**
+   * TODO: Fix this for the real u and v semantics
    * Return a ray which travels from the camera origin through the
    * screenspace coordinate given by `param_u` and `param_v`
    */
-  Ray get_ray(const size_t param_u, const size_t param_v) const {
+  Ray get_ray(const float param_u, const float param_v) const {
     auto rd = this->lens_radius * random_in_unit_disk();
     auto offset = this->u * rd.x + this->v * rd.y;
 
     auto ori = this->origin + offset;
-    auto dir = this->lower_left_corner + this->horizontal * (float)param_u +
-               this->vertical * (float)param_v - this->origin - offset;
+    auto dir = this->lower_left_corner + this->horizontal * param_u +
+               this->vertical * param_v - this->origin - offset;
     return Ray(ori, dir);
   }
 };

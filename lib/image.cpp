@@ -53,9 +53,10 @@ void Image::write(const std::string &path) const {
   file << "255\n";
 
   for (const auto p : this->buffer) {
-    file << (unsigned char)(sqrt(p.r) * EIGHT_BIT_MAX_F);
-    file << (unsigned char)(sqrt(p.g) * EIGHT_BIT_MAX_F);
-    file << (unsigned char)(sqrt(p.b) * EIGHT_BIT_MAX_F);
+    const auto r = (unsigned char)(sqrt(p.r) * EIGHT_BIT_MAX_F);
+    const auto g = (unsigned char)(sqrt(p.g) * EIGHT_BIT_MAX_F);
+    const auto b = (unsigned char)(sqrt(p.b) * EIGHT_BIT_MAX_F);
+    file << r << g << b;
   }
 
   file.close();

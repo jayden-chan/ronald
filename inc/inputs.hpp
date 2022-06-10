@@ -22,8 +22,6 @@
 #include <boost/program_options/variables_map.hpp>
 #include <iostream>
 
-#include "scene.hpp"
-
 namespace po = boost::program_options;
 
 class Config {
@@ -33,7 +31,6 @@ public:
   std::string out;
   size_t samples = 0;
   size_t threads = 0;
-  Scene scene;
 
   Config() = default;
   Config(const po::variables_map &vm);
