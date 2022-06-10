@@ -38,9 +38,9 @@ int main(int argc, char **argv) {
       po::value<std::string>()->default_value(std::string("./image.ppm")),
       "path to the output file"
     )
-    ("samples", po::value<int>()->required(), "number of samples per pixel")
+    ("samples", po::value<size_t>()->required(), "number of samples per pixel")
     (
-      "threads", po::value<int>()->default_value(1),
+      "threads", po::value<size_t>()->default_value(1),
       "number of threads to spawn when running in multithreaded mode"
     );
   /* clang-format on */

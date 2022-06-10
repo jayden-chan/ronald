@@ -33,8 +33,8 @@ Config::Config(const po::variables_map &vm) {
   auto vm_width = vm["width"].as<size_t>();
   auto vm_height = vm["height"].as<size_t>();
   auto vm_out = vm["out"].as<std::string>();
-  auto vm_samples = vm["samples"].as<int>();
-  auto vm_threads = vm["threads"].as<int>();
+  auto vm_samples = vm["samples"].as<size_t>();
+  auto vm_threads = vm["threads"].as<size_t>();
 
   if (vm_width <= 0) {
     throw "Width must be greater than zero";

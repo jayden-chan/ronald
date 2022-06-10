@@ -29,15 +29,15 @@ public:
   size_t width;
   size_t height;
   std::string out;
-  int samples;
-  int threads;
+  size_t samples;
+  size_t threads;
+  Scene scene;
 
-  Config() = default;
   Config(const po::variables_map &vm);
   Config(const size_t width_a, const size_t height_a, const std::string &out_a,
-         const int samples_a, const int threads_a)
+         const size_t samples_a, const size_t threads_a, const Scene scene_a)
       : width(width_a), height(height_a), out(out_a), samples(samples_a),
-        threads(threads_a) {}
+        threads(threads_a), scene(scene_a) {}
 
   void print() const;
 };
