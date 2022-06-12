@@ -22,7 +22,7 @@
 #include "ray.hpp"
 #include "vec3.hpp"
 
-struct Hit {
+struct Intersection {
   Vec3 point;
   Vec3 normal;
   float t;
@@ -35,8 +35,8 @@ struct Hit {
  */
 class Primitive {
 public:
-  virtual std::optional<Hit> hit(const Ray &r, float t_min,
-                                 float t_max) const = 0;
+  virtual std::optional<Intersection> hit(const Ray &r, float t_min,
+                                          float t_max) const = 0;
 
   virtual ~Primitive() = default;
 };
@@ -51,7 +51,8 @@ class Sphere : public Primitive {
 
 public:
   Sphere(const Vec3 &center, float radius);
-  std::optional<Hit> hit(const Ray &r, float t_min, float t_max) const override;
+  std::optional<Intersection> hit(const Ray &r, float t_min,
+                                  float t_max) const override;
 };
 
 /**
@@ -67,7 +68,8 @@ class Triangle : public Primitive {
 
 public:
   Triangle(const Vec3 &v0, const Vec3 &v1, const Vec3 &v2, const Vec3 &normal);
-  std::optional<Hit> hit(const Ray &r, float t_min, float t_max) const override;
+  std::optional<Intersection> hit(const Ray &r, float t_min,
+                                  float t_max) const override;
 };
 
 #endif // PRIMITIVE_H

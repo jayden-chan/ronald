@@ -42,17 +42,17 @@ public:
    * (for example the vector [0.9, 0.9, 0.9] would represent a 10% loss of
    * energy on each of the R, G, B channels)
    */
-  virtual std::optional<Scatter> scatter(Ray const &r, Hit const &h) const = 0;
+  virtual std::optional<Scatter> scatter(Ray const &r,
+                                         Intersection const &h) const = 0;
 
   /**
    * The emitted function returns the amount of light emitted by the material
    * when the ray intersects it. It is used for light source materials.
    * Non-emitting materials will simply use the default implementation of [0, 0,
-   * 0] for "no light emitted". In this case all input parameters are unused,
-   * hence the __attribute__((unused)) annotation.
+   * 0] for "no light emitted". In this case all input parameters are unused.
    */
   virtual Vec3 emitted(__attribute__((unused)) Ray const &r,
-                       __attribute__((unused)) Hit const &h) const {
+                       __attribute__((unused)) Intersection const &h) const {
     return Vec3::zeros();
   };
 
@@ -71,7 +71,8 @@ private:
 
 public:
   Lambertian(Vec3 _albedo) : albedo(_albedo){};
-  std::optional<Scatter> scatter(Ray const &r, Hit const &h) const override;
+  std::optional<Scatter> scatter(Ray const &r,
+                                 Intersection const &h) const override;
 };
 
 /**
@@ -84,8 +85,9 @@ private:
 
 public:
   Light(Vec3 _emittance) : emittance(_emittance){};
-  std::optional<Scatter> scatter(Ray const &r, Hit const &h) const override;
-  Vec3 emitted(Ray const &r, Hit const &h) const override;
+  std::optional<Scatter> scatter(Ray const &r,
+                                 Intersection const &h) const override;
+  Vec3 emitted(Ray const &r, Intersection const &h) const override;
 };
 
 #endif // MATERIAL_H

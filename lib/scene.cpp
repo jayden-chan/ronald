@@ -22,21 +22,20 @@
 constexpr size_t MAX_RECURSIVE_DEPTH = 15;
 
 // TODO: Change this to `Hit` and change `Hit` to `Intersection`
-struct HitRecord {
-  Hit hit;
+struct Hit {
+  Intersection hit;
   std::optional<Scatter> scatter;
   Vec3 emitted;
 };
 
-std::optional<HitRecord> hit_objects(const std::vector<Object> &objs,
-                                     const Ray &ray) {
+std::optional<Hit> hit_objects(const std::vector<Object> &objs,
+                               const Ray &ray) {
   auto min_so_far = std::numeric_limits<float>::max();
-  std::optional<HitRecord> hit = std::nullopt;
+  std::optional<Hit> hit = std::nullopt;
 
   for (const auto o : objs) {
     const auto this_hit = o.primitive->hit(ray, 0.000005F, min_so_far);
     if (this_hit.has_value()) {
-      /* std::cerr << "hit something" << '\n'; */
       hit = {
           .hit = *this_hit,
           .scatter = o.material->scatter(ray, *this_hit),

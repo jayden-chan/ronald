@@ -28,8 +28,8 @@ Triangle::Triangle(const Vec3 &v0_a, const Vec3 &v1_a, const Vec3 &v2_a,
                    const Vec3 &normal_a)
     : v0(v0_a), normal(normal_a), edge1(v1_a - v0_a), edge2(v2_a - v0_a) {}
 
-std::optional<Hit> Sphere::hit(const Ray &r, const float t_min,
-                               const float t_max) const {
+std::optional<Intersection> Sphere::hit(const Ray &r, const float t_min,
+                                        const float t_max) const {
   Vec3 oc = r.origin() - this->center;
   auto a = r.direction().length_squared();
   auto half_b = oc.dot(r.direction());
@@ -54,15 +54,15 @@ std::optional<Hit> Sphere::hit(const Ray &r, const float t_min,
   auto t = root;
   auto point = r.point_at_parameter(t);
   auto normal = (point - center) / radius;
-  return std::optional<Hit>{{point, normal, t}};
+  return std::optional<Intersection>{{point, normal, t}};
 }
 
 /**
  * Möller–Trumbore algorithm for triangle intersection
  * https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm
  */
-std::optional<Hit> Triangle::hit(const Ray &r, const float t_min,
-                                 const float t_max) const {
+std::optional<Intersection> Triangle::hit(const Ray &r, const float t_min,
+                                          const float t_max) const {
   auto h = r.direction().cross(edge2);
   auto a = edge1.dot(h);
 
@@ -91,7 +91,7 @@ std::optional<Hit> Triangle::hit(const Ray &r, const float t_min,
   auto point = r.origin() + r.direction() * t;
 
   if (t > EPSILON && t < 1.0 / EPSILON && t > t_min && t < t_max) {
-    return std::optional<Hit>{{
+    return std::optional<Intersection>{{
         point,
         normal,
         t,
