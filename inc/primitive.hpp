@@ -22,6 +22,9 @@
 #include "ray.hpp"
 #include "vec3.hpp"
 
+#include <boost/json.hpp>
+using namespace boost::json;
+
 namespace path_tracer {
 
 struct Intersection {
@@ -37,10 +40,23 @@ struct Intersection {
  */
 class Primitive {
 public:
+  virtual ~Primitive() = default;
+
+  /**
+   * Check whether the given ray intersects with the primitive at some
+   * point along the ray between `t_min` and `t_max`. If the ray and primitive
+   * do not intersect, std::nullopt is returned.
+   */
   virtual std::optional<Intersection> hit(const Ray &r, float t_min,
                                           float t_max) const = 0;
 
-  virtual ~Primitive() = default;
+  /**
+   * Construct a boxed Primitive from the given JSON value.
+   *
+   * TODO: are boxed primitives what we want? Shouldn't this be
+   * a unique_ptr?
+   */
+  static const Primitive *from_json(const object &obj);
 };
 
 /**
@@ -52,7 +68,17 @@ class Sphere : public Primitive {
   float radius;
 
 public:
+  /**
+   * Construct a sphere from a given center point and radius
+   */
   Sphere(const Vec3 &center, float radius);
+
+  /**
+   * Construct a sphere from a JSON object containing
+   * the `center` and `radius` fields
+   */
+  Sphere(const object &obj);
+
   std::optional<Intersection> hit(const Ray &r, float t_min,
                                   float t_max) const override;
 };
@@ -69,7 +95,18 @@ class Triangle : public Primitive {
   Vec3 edge2;
 
 public:
+  /**
+   * Construct a triangle given by three points in space and a normal. The
+   * normal vector should be of length 1.
+   */
   Triangle(const Vec3 &v0, const Vec3 &v1, const Vec3 &v2, const Vec3 &normal);
+
+  /**
+   * Construct a triangle from a JSON object containing the `vertices`, and
+   * `normal` fields
+   */
+  Triangle(const object &obj);
+
   std::optional<Intersection> hit(const Ray &r, float t_min,
                                   float t_max) const override;
 };

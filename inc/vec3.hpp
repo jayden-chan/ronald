@@ -18,6 +18,7 @@
 #define VEC3_H
 
 #include <bit>
+#include <cassert>
 #include <cstdint>
 #include <iostream>
 #include <limits>
@@ -45,11 +46,27 @@ constexpr float Q_rsqrt(const float number) noexcept {
 
 class Vec3 {
 public:
-  float x, y, z;
+  float x = 0;
+  float y = 0;
+  float z = 0;
 
   Vec3() = default;
+  /**
+   * Construct a Vec3 from x, y, and z values
+   */
   Vec3(const float x_a, const float y_a, const float z_a)
       : x(x_a), y(y_a), z(z_a) {}
+
+  /**
+   * Construct a Vec3 from a std::vector containing exactly
+   * three floats (x, y, z in that order)
+   */
+  Vec3(const std::vector<float> vals) {
+    assert(vals.size() == 3);
+    x = vals[0];
+    y = vals[1];
+    z = vals[2];
+  }
 
   /**
    * Vector of just zeros

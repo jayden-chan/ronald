@@ -21,14 +21,49 @@
 #include "ray.hpp"
 #include "vec3.hpp"
 
+#include <boost/json.hpp>
+using namespace boost::json;
+
 namespace path_tracer {
+
+const Primitive *Primitive::from_json(const object &obj) {
+  const auto type = value_to<std::string>(obj.at("type"));
+
+  if (type == "triangle") {
+    return new Triangle(obj);
+  }
+  if (type == "sphere") {
+    return new Sphere(obj);
+  }
+
+  throw std::runtime_error("Primitive must be either `triangle` or `sphere`");
+}
 
 Sphere::Sphere(const Vec3 &center_a, const float radius_a)
     : center(center_a), radius(radius_a) {}
 
+Sphere::Sphere(const object &obj) {
+  const auto rad = value_to<float>(obj.at("radius"));
+  const auto center_vec = value_to<std::vector<float>>(obj.at("origin"));
+  Sphere(Vec3(center_vec), rad);
+}
+
 Triangle::Triangle(const Vec3 &v0_a, const Vec3 &v1_a, const Vec3 &v2_a,
                    const Vec3 &normal_a)
     : v0(v0_a), normal(normal_a), edge1(v1_a - v0_a), edge2(v2_a - v0_a) {}
+
+Triangle::Triangle(const object &obj) {
+  const auto norm = value_to<std::vector<float>>(obj.at("normal"));
+  // normal = edge1.cross(edge2).normalize() * norm;
+  const auto vertices =
+      value_to<std::vector<std::vector<float>>>(obj.at("vertices"));
+
+  assert(vertices.size() == 3);
+  const auto v0_ = Vec3(vertices[0]);
+  const auto v1_ = Vec3(vertices[1]);
+  const auto v2_ = Vec3(vertices[2]);
+  Triangle(v0_, v1_, v2_, norm);
+}
 
 std::optional<Intersection> Sphere::hit(const Ray &r, const float t_min,
                                         const float t_max) const {

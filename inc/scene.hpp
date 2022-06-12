@@ -26,6 +26,9 @@
 
 #include <stdlib.h>
 
+#include <boost/json.hpp>
+using namespace boost::json;
+
 namespace path_tracer {
 
 /**
@@ -35,6 +38,8 @@ struct Object {
   const Primitive *const primitive;
   const Material *const material;
 };
+
+const Object object_from_json(const value &jv);
 
 /**
  * The scene is composed of the objects and the camera

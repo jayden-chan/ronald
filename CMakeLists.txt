@@ -29,7 +29,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(Boost_USE_MULTITHREADED OFF)
 
 find_package(Catch2 2.13 REQUIRED)
-find_package(Boost COMPONENTS program_options REQUIRED)
+find_package(Boost COMPONENTS program_options json REQUIRED)
 
 include_directories(inc ${Boost_INCLUDE_DIR})
 
@@ -40,8 +40,8 @@ file(GLOB TEST_SOURCES "tests/*.cpp")
 add_executable(path_tracer ${SOURCES} ${PATH_TRACER_SOURCES})
 add_executable(tests ${SOURCES} ${TEST_SOURCES})
 
-target_link_libraries(path_tracer Boost::program_options)
-target_link_libraries(tests PRIVATE Catch2::Catch2 Boost::program_options)
+target_link_libraries(path_tracer Boost::program_options Boost::json)
+target_link_libraries(tests PRIVATE Catch2::Catch2 Boost::program_options Boost::json)
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     add_definitions(-DDEBUG)
