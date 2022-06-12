@@ -67,5 +67,5 @@ void Image::write(const std::string &path) const {
  */
 void Image::set_pixel(const std::size_t u, const std::size_t v,
                       const Pixel pixel) {
-  this->buffer[u * this->width + v] = pixel;
+  this->buffer[v * this->width + u] = pixel;
 }

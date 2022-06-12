@@ -87,7 +87,8 @@ Image Scene::render(const Config &config) const {
       auto curr_pixel = Vec3::zeros();
       for (size_t i = 0; i < config.samples; i++) {
         const auto u = ((float)x + random_float()) / (float)width;
-        const auto v = ((float)y + random_float()) / (float)height;
+        const auto v =
+            ((float)(height - 1 - y) + random_float()) / (float)height;
         curr_pixel += this->trace(u, v);
       }
 
