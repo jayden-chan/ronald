@@ -19,6 +19,8 @@
 
 #include "vec3.hpp"
 
+namespace path_tracer {
+
 constexpr float EPSILON = 0.0000001F;
 
 /**
@@ -38,5 +40,7 @@ Vec3 random_in_unit_sphere();
  * of a sphere with radius 1
  */
 Vec3 random_on_unit_sphere();
+
+} // namespace path_tracer
 
 #endif // MATH_H

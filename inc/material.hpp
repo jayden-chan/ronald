@@ -21,6 +21,8 @@
 #include "ray.hpp"
 #include "vec3.hpp"
 
+namespace path_tracer {
+
 struct Scatter {
   Ray specular;
   Vec3 attenuation;
@@ -89,5 +91,7 @@ public:
                                  Intersection const &h) const override;
   Vec3 emitted(Ray const &r, Intersection const &h) const override;
 };
+
+} // namespace path_tracer
 
 #endif // MATERIAL_H

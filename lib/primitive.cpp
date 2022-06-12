@@ -21,6 +21,8 @@
 #include "ray.hpp"
 #include "vec3.hpp"
 
+namespace path_tracer {
+
 Sphere::Sphere(const Vec3 &center_a, const float radius_a)
     : center(center_a), radius(radius_a) {}
 
@@ -100,3 +102,5 @@ std::optional<Intersection> Triangle::hit(const Ray &r, const float t_min,
 
   return std::nullopt;
 }
+
+} // namespace path_tracer

@@ -17,6 +17,8 @@
 #include "inputs.hpp"
 #include <iostream>
 
+namespace path_tracer {
+
 namespace po = boost::program_options;
 
 void Config::print() const {
@@ -58,3 +60,5 @@ Config::Config(const po::variables_map &vm) {
   samples = vm_samples;
   threads = vm_threads;
 }
+
+} // namespace path_tracer

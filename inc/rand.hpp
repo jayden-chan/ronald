@@ -19,9 +19,13 @@
 
 #include <random>
 
+namespace path_tracer {
+
 /**
  * Generate a random float.
  */
 float random_float();
+
+} // namespace path_tracer
 
 #endif // RAND_H

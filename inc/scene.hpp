@@ -26,6 +26,8 @@
 
 #include <stdlib.h>
 
+namespace path_tracer {
+
 /**
  * An object is a primitive with an associated material
  */
@@ -59,5 +61,7 @@ public:
    */
   Image render(const Config &config) const;
 };
+
+} // namespace path_tracer
 
 #endif // SCENE_H

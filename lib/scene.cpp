@@ -18,6 +18,8 @@
 #include "material.hpp"
 #include "vec3.hpp"
 
+namespace path_tracer {
+
 // 15 bounces should be MORE than enough for most scenes
 constexpr size_t MAX_RECURSIVE_DEPTH = 15;
 
@@ -100,3 +102,5 @@ Image Scene::render(const Config &config) const {
 
   return img;
 }
+
+} // namespace path_tracer

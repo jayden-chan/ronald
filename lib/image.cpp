@@ -16,6 +16,8 @@
 
 #include "image.hpp"
 
+namespace path_tracer {
+
 constexpr float EIGHT_BIT_MAX_F = 255.99F;
 
 /**
@@ -69,3 +71,5 @@ void Image::set_pixel(const std::size_t u, const std::size_t v,
                       const Pixel pixel) {
   this->buffer[v * this->width + u] = pixel;
 }
+
+} // namespace path_tracer

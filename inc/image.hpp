@@ -24,6 +24,8 @@
 #include <string>
 #include <vector>
 
+namespace path_tracer {
+
 struct Pixel {
   float r;
   float g;
@@ -45,5 +47,7 @@ public:
   void write(const std::string &path) const;
   void set_pixel(size_t u, size_t v, Pixel pixel);
 };
+
+} // namespace path_tracer
 
 #endif // IMAGE_H

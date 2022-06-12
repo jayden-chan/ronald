@@ -16,6 +16,8 @@
 
 #include "math.hpp"
 
+namespace path_tracer {
+
 Vec3 random_in_unit_disk() {
   Vec3 v1, v2, p;
 
@@ -39,3 +41,5 @@ Vec3 random_in_unit_sphere() {
 }
 
 Vec3 random_on_unit_sphere() { return random_in_unit_sphere().normalize(); }
+
+} // namespace path_tracer

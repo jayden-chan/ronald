@@ -23,6 +23,8 @@
 #include <math.h>
 #include <stdexcept>
 
+namespace path_tracer {
+
 struct CameraConstructor {
   Vec3 look_from;
   Vec3 look_at;
@@ -85,5 +87,7 @@ public:
     return Ray(ori, dir);
   }
 };
+
+} // namespace path_tracer
 
 #endif // CAMERA_H

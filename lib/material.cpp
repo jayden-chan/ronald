@@ -20,6 +20,8 @@
 #include "ray.hpp"
 #include "vec3.hpp"
 
+namespace path_tracer {
+
 std::optional<Scatter> Lambertian::scatter(__attribute__((unused)) Ray const &r,
                                            Intersection const &h) const {
   const auto scattered = h.point + h.normal + random_on_unit_sphere();
@@ -43,3 +45,5 @@ Vec3 Light::emitted(Ray const &r, Intersection const &h) const {
 
   return Vec3::zeros();
 }
+
+} // namespace path_tracer

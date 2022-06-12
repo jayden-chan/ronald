@@ -22,6 +22,8 @@
 #include "ray.hpp"
 #include "vec3.hpp"
 
+namespace path_tracer {
+
 struct Intersection {
   Vec3 point;
   Vec3 normal;
@@ -71,5 +73,7 @@ public:
   std::optional<Intersection> hit(const Ray &r, float t_min,
                                   float t_max) const override;
 };
+
+} // namespace path_tracer
 
 #endif // PRIMITIVE_H

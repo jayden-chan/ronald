@@ -19,6 +19,8 @@
 
 #include "vec3.hpp"
 
+namespace path_tracer {
+
 /**
  * The Ray class simply represents a 2D line in 3D space.
  */
@@ -49,5 +51,7 @@ public:
     return output;
   }
 };
+
+} // namespace path_tracer
 
 #endif // RAY_H

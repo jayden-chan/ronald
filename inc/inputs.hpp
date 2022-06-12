@@ -22,6 +22,8 @@
 #include <boost/program_options/variables_map.hpp>
 #include <iostream>
 
+namespace path_tracer {
+
 namespace po = boost::program_options;
 
 class Config {
@@ -37,5 +39,7 @@ public:
 
   void print() const;
 };
+
+} // namespace path_tracer
 
 #endif // INPUTS_H

@@ -24,6 +24,7 @@
 #include <iostream>
 
 namespace po = boost::program_options;
+namespace pt = path_tracer;
 
 int main(int argc, char **argv) {
   po::options_description desc("Allowed options");
@@ -60,9 +61,9 @@ int main(int argc, char **argv) {
     }
   }
 
-  Config config;
+  pt::Config config;
   try {
-    config = Config(vm);
+    config = pt::Config(vm);
   } catch (const char *err) {
     std::cerr << "Input validation error: " << err << '\n';
     return 1;
@@ -70,11 +71,11 @@ int main(int argc, char **argv) {
 
   config.print();
 
-  std::vector<Object> objs;
-  Camera camera({
-      .look_from = Vec3(0, 0, -30),
-      .look_at = Vec3(0, 0, 0),
-      .vup = Vec3(0, 1, 0),
+  std::vector<pt::Object> objs;
+  pt::Camera camera({
+      .look_from = pt::Vec3(0, 0, -30),
+      .look_at = pt::Vec3(0, 0, 0),
+      .vup = pt::Vec3(0, 1, 0),
       .vfov = 90,
       .aspect_r = (float)config.width / (float)config.height,
       .aperture = 0.0,
@@ -82,25 +83,28 @@ int main(int argc, char **argv) {
   });
 
   // TODO: uh oh, manual memory management... fix this later
-  const Material *white_light = new Light(Vec3(1, 1, 1));
-  /* const auto v0 = Vec3(0, 5, 0); */
-  /* const auto v1 = Vec3(-5, -5, 0); */
-  /* const auto v2 = Vec3(5, -5, 0); */
-  /* const Primitive *triangle = new Triangle(v0, v1, v2, Vec3(0, 0, 1)); */
+  const pt::Material *white_light = new pt::Light(pt::Vec3(1, 1, 1));
 
-  const auto center = Vec3(0, 0, 0);
+  const auto v0 = pt::Vec3(0, 10, 0);
+  const auto v1 = pt::Vec3(-5, 0, 0);
+  const auto v2 = pt::Vec3(5, 0, 0);
+  const pt::Primitive *triangle =
+      new pt::Triangle(v0, v1, v2, pt::Vec3(0, 0, -1));
+
+  const auto center = pt::Vec3(0, 0, 0);
   const auto radius = 5.0F;
-  const Primitive *sphere = new Sphere(center, radius);
+  const pt::Primitive *sphere = new pt::Sphere(center, radius);
 
-  const Object white_triangle_light = {.primitive = sphere,
-                                       .material = white_light};
+  const pt::Object white_triangle_light = {.primitive = triangle,
+                                           .material = white_light};
 
   objs.push_back(white_triangle_light);
-  Scene scene(objs, camera);
+  pt::Scene scene(objs, camera);
 
-  Image im = scene.render(config);
+  pt::Image im = scene.render(config);
   im.write(config.out);
 
   delete white_light;
   delete sphere;
+  delete triangle;
 }

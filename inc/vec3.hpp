@@ -25,6 +25,8 @@
 #include "image.hpp"
 #include "rand.hpp"
 
+namespace path_tracer {
+
 /**
  * Couldn't resist the opportunity to use this historic piece of code
  *
@@ -202,5 +204,7 @@ inline Vec3 operator*(const Vec3 &v, const float t) noexcept { return t * v; }
  * Divide a vector by a constant
  */
 inline Vec3 operator/(const Vec3 v, const float t) { return (1 / t) * v; }
+
+} // namespace path_tracer
 
 #endif // VEC3_H
