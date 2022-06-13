@@ -31,16 +31,13 @@ int main(int argc, char **argv) {
 
   /* clang-format off */
   desc.add_options()
-    ("help", "produce help message")
-    ("width", po::value<size_t>()->required(), "width of the output image in pixels")
-    ("height", po::value<size_t>()->required(), "height of the output image in pixels")
-    ("out", po::value<std::string>()->default_value(std::string("./image.ppm")),
-      "path to the output file")
-    ("input-file", po::value<std::string>()->required(),
-      "path to the input scene description JSON file")
-    ("samples", po::value<size_t>()->required(), "number of samples per pixel")
-    ("threads", po::value<size_t>()->default_value(1),
-      "number of threads to spawn when running in multithreaded mode");
+    ("help",                                                               "produce help message")
+    ("width",      po::value<size_t>()     ->required(),                   "width of the output image in pixels")
+    ("height",     po::value<size_t>()     ->required(),                   "height of the output image in pixels")
+    ("out",        po::value<std::string>()->default_value("./image.ppm"), "path to the output file")
+    ("input-file", po::value<std::string>()->required(),                   "path to the input scene description JSON file")
+    ("samples",    po::value<size_t>()     ->required(),                   "number of samples per pixel")
+    ("threads",    po::value<size_t>()     ->default_value(1),             "number of threads to spawn when running in multithreaded mode");
   /* clang-format on */
 
   po::positional_options_description p;
@@ -87,7 +84,16 @@ int main(int argc, char **argv) {
   while (input >> sstr.rdbuf())
     ;
 
-  value jv = parse(sstr.str());
+  // The input files will use the "jsonc" extension of JSON
+  // which supports comments with "//" and trailing commas.
+  // This is a superset of regular JSON so regular JSON can
+  // be used as well
+  parse_options opt;
+  opt.allow_comments = true;
+  opt.allow_trailing_commas = true;
+
+  monotonic_resource mr;
+  const value jv = parse(sstr.str(), &mr, opt);
 
   pt::Scene scene(jv.as_object());
 
