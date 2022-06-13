@@ -8,12 +8,27 @@
     "aperture": 0,
     "focus_dist": 1
   },
+  "materials": {
+    "light": {
+      "type": "light",
+      "emittance": [6, 6, 6]
+    },
+    "white": {
+      "type": "lambertian",
+      "albedo": [1, 1, 1]
+    },
+    "green": {
+      "type": "lambertian",
+      "albedo": [0, 1, 0]
+    },
+    "red": {
+      "type": "lambertian",
+      "albedo": [1, 0, 0]
+    },
+  },
   "objects": [
     {
-      "material": {
-        "type": "light",
-        "emittance": [6, 6, 6]
-      },
+      "material": "light",
       "primitive": {
         "type": "triangle",
         "vertices": [
@@ -25,10 +40,7 @@
       }
     },
     {
-      "material": {
-        "type": "light",
-        "emittance": [6, 6, 6]
-      },
+      "material": "light",
       "primitive": {
         "type": "triangle",
         "vertices": [
@@ -40,10 +52,7 @@
       }
     },
     {
-      "material": {
-        "type": "lambertian",
-        "albedo": [1, 1, 1]
-      },
+      "material": "white",
       "primitive": {
         "type": "triangle",
         "vertices": [
@@ -55,10 +64,7 @@
       }
     },
     {
-      "material": {
-        "type": "lambertian",
-        "albedo": [1, 1, 1]
-      },
+      "material": "white",
       "primitive": {
         "type": "triangle",
         "vertices": [
@@ -70,10 +76,7 @@
       }
     },
     {
-      "material": {
-        "type": "lambertian",
-        "albedo": [1, 1, 1]
-      },
+      "material": "white",
       "primitive": {
         "type": "triangle",
         "vertices": [
@@ -85,10 +88,7 @@
       }
     },
     {
-      "material": {
-        "type": "lambertian",
-        "albedo": [1, 1, 1]
-      },
+      "material": "white",
       "primitive": {
         "type": "triangle",
         "vertices": [
@@ -100,10 +100,7 @@
       }
     },
     {
-      "material": {
-        "type": "lambertian",
-        "albedo": [0, 1, 0]
-      },
+      "material": "green",
       "primitive": {
         "type": "triangle",
         "vertices": [
@@ -115,10 +112,7 @@
       }
     },
     {
-      "material": {
-        "type": "lambertian",
-        "albedo": [0, 1, 0]
-      },
+      "material": "green",
       "primitive": {
         "type": "triangle",
         "vertices": [
@@ -130,10 +124,7 @@
       }
     },
     {
-      "material": {
-        "type": "lambertian",
-        "albedo": [1, 0, 0]
-      },
+      "material": "red",
       "primitive": {
         "type": "triangle",
         "vertices": [
@@ -145,10 +136,7 @@
       }
     },
     {
-      "material": {
-        "type": "lambertian",
-        "albedo": [1, 0, 0]
-      },
+      "material": "red",
       "primitive": {
         "type": "triangle",
         "vertices": [
@@ -160,10 +148,7 @@
       }
     },
     {
-      "material": {
-        "type": "lambertian",
-        "albedo": [1, 1, 1]
-      },
+      "material": "white",
       "primitive": {
         "type": "triangle",
         "vertices": [
@@ -175,10 +160,7 @@
       }
     },
     {
-      "material": {
-        "type": "lambertian",
-        "albedo": [1, 1, 1]
-      },
+      "material": "white",
       "primitive": {
         "type": "triangle",
         "vertices": [

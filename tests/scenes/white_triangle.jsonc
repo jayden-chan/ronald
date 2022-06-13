@@ -8,12 +8,15 @@
     "aperture": 0,
     "focus_dist": 1
   },
+  "materials": {
+    "light": {
+      "type": "light",
+      "emittance": [1, 1, 1]
+    }
+  }
   "objects": [
     {
-      "material": {
-        "type": "light",
-        "emittance": [1, 1, 1]
-      },
+      "material": "light",
       "primitive": {
         "type": "triangle",
         "vertices": [

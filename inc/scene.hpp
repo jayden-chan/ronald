@@ -27,9 +27,12 @@
 #include <stdlib.h>
 
 #include <boost/json.hpp>
+#include <unordered_map>
 using namespace boost::json;
 
 namespace path_tracer {
+
+using material_map = std::unordered_map<std::string, const Material *>;
 
 /**
  * An object is a primitive with an associated material
@@ -48,27 +51,35 @@ struct Hit {
   Vec3 emitted;
 };
 
-/*
- * {
- *  "material": {
- *    "type": "light",
- *    "emittance": [0, 0, 0],
- *  },
- *  "primitive": {
- *    "type": "triangle",
- *    "vertices": ...
- *  }
- * }
+/**
+ * Create an object from a JSON file containing the "material"
+ * and "primitive" fields
  */
-const Object object_from_json(const object &obj);
+const Object object_from_json(const object &obj, const material_map &materials);
+
+/**
+ * Create a list of materials from a JSON array containing material objects
+ */
+material_map materials_from_json(const object &obj);
 
 /**
  * The scene is composed of the objects and the camera
  */
 class Scene {
 private:
+  // A list of the materials available in the scene. This is stored
+  // here so that materials can be "declared" in the JSON scene description
+  // and re-used between primitives. For example you could declare a "white
+  // light" material and have several different shapes of lights that all re-use
+  // the "white light" material
+  material_map materials;
+
+  // A list of objects in the scene. Each object is a primitive
+  // and an associated material from the materials vector
   // TODO: BVH
   std::vector<Object> objects;
+
+  // Info about the camera
   Camera camera;
 
   /**
@@ -82,19 +93,22 @@ public:
    * Construct a scene object from the given objects and camera
    * position
    */
-  Scene(std::vector<Object> &objects_a, Camera &camera_a)
-      : objects(objects_a), camera(camera_a){};
+  Scene(std::vector<Object> &objects_a, material_map &materials_a,
+        Camera &camera_a)
+      : materials(materials_a), objects(objects_a), camera(camera_a){};
 
   /**
    * Construct a scene object from a JSON object containing the `objects` and
    * `camera` fields
    */
   Scene(const object &obj) {
-    const auto json_objs = obj.at("objects").as_array();
+    const auto material_obj = obj.at("materials").as_object();
+    materials = materials_from_json(material_obj);
 
+    const auto json_objs = obj.at("objects").as_array();
     objects.reserve(json_objs.size());
     for (const auto &o : json_objs) {
-      objects.push_back(object_from_json(o.as_object()));
+      objects.push_back(object_from_json(o.as_object(), materials));
     }
 
     camera = Camera(obj.at("camera").as_object());

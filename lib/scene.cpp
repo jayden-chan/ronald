@@ -20,14 +20,31 @@
 
 namespace path_tracer {
 
-// 15 bounces should be MORE than enough for most scenes
+// 15 bounces should be more than enough for most scenes
 constexpr size_t MAX_RECURSIVE_DEPTH = 15;
 
-const Object object_from_json(const object &obj) {
+const Object object_from_json(const object &obj,
+                              const material_map &materials) {
+
+  const auto material_key = value_to<std::string>(obj.at("material"));
+  const auto material = materials.at(material_key);
+
   return {
       .primitive = Primitive::from_json(obj.at("primitive").as_object()),
-      .material = Material::from_json(obj.at("material").as_object()),
+      .material = material,
   };
+}
+
+material_map materials_from_json(const object &obj) {
+  material_map ret;
+  ret.reserve(obj.size());
+
+  for (const auto &jv : obj) {
+    const std::string key = jv.key().to_string();
+    ret.insert({key, Material::from_json(jv.value().as_object())});
+  }
+
+  return ret;
 }
 
 std::optional<Hit> hit_objects(const std::vector<Object> &objs,
