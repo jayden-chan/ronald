@@ -20,8 +20,12 @@
 #include "math.hpp"
 #include "ray.hpp"
 #include "vec3.hpp"
+
 #include <math.h>
 #include <stdexcept>
+
+#include <boost/json.hpp>
+using namespace boost::json;
 
 namespace path_tracer {
 
@@ -45,14 +49,7 @@ class Camera {
   Vec3 origin = Vec3::zeros();
   float lens_radius = 0.0;
 
-public:
-  Camera() = default;
-  /**
-   * Construct a new camera with the given input parameters
-   */
-  Camera(const CameraConstructor &cam)
-      : origin(cam.look_from), lens_radius(cam.aperture / 2) {
-
+  void init(const CameraConstructor &cam) {
     if (abs(cam.focus_dist) < EPSILON) {
       throw std::runtime_error("Focal distance cannot be zero!");
     }
@@ -61,6 +58,8 @@ public:
     auto half_height = tan(theta / 2);
     auto half_width = cam.aspect_r * half_height;
 
+    origin = cam.look_from;
+    lens_radius = cam.aperture / 2;
     w = (cam.look_from - cam.look_at).normalize();
     u = cam.vup.cross(w).normalize();
     v = w.cross(u);
@@ -70,6 +69,38 @@ public:
 
     horizontal = 2 * half_width * cam.focus_dist * u;
     vertical = 2 * half_height * cam.focus_dist * v;
+  }
+
+public:
+  Camera() = default;
+  /**
+   * Construct a new camera with the given input parameters
+   */
+  Camera(const CameraConstructor &cam) { init(cam); }
+
+  /**
+   * Construct a camera from a JSON object containing the relevant fields for
+   * camera initialization
+   */
+  Camera(const object &obj) {
+    const auto look_from_vec =
+        value_to<std::vector<float>>(obj.at("look_from"));
+    const auto look_at_vec = value_to<std::vector<float>>(obj.at("look_at"));
+    const auto vup_vec = value_to<std::vector<float>>(obj.at("vup"));
+    const auto vfov_f = value_to<float>(obj.at("vfov"));
+    const auto aspect_r_f = value_to<float>(obj.at("aspect_r"));
+    const auto aperture_f = value_to<float>(obj.at("aperture"));
+    const auto focus_dist_f = value_to<float>(obj.at("focus_dist"));
+
+    const CameraConstructor cam_constructor = {.look_from = Vec3(look_from_vec),
+                                               .look_at = Vec3(look_at_vec),
+                                               .vup = Vec3(vup_vec),
+                                               .vfov = vfov_f,
+                                               .aspect_r = aspect_r_f,
+                                               .aperture = aperture_f,
+                                               .focus_dist = focus_dist_f};
+
+    init(cam_constructor);
   }
 
   /**
