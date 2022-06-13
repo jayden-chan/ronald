@@ -31,6 +31,7 @@ public:
   size_t width = 0;
   size_t height = 0;
   std::string out;
+  std::string in;
   size_t samples = 0;
   size_t threads = 0;
 

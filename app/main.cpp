@@ -36,16 +36,23 @@ int main(int argc, char **argv) {
     ("height", po::value<size_t>()->required(), "height of the output image in pixels")
     ("out", po::value<std::string>()->default_value(std::string("./image.ppm")),
       "path to the output file")
+    ("input-file", po::value<std::string>()->required(),
+      "path to the input scene description JSON file")
     ("samples", po::value<size_t>()->required(), "number of samples per pixel")
     ("threads", po::value<size_t>()->default_value(1),
       "number of threads to spawn when running in multithreaded mode");
   /* clang-format on */
 
+  po::positional_options_description p;
+  p.add("input-file", -1);
+
   constexpr auto desc_written = "Usage: path_tracer [options] <scene.json>";
   po::variables_map vm;
 
   try {
-    po::store(po::parse_command_line(argc, argv, desc), vm);
+    po::store(
+        po::command_line_parser(argc, argv).options(desc).positional(p).run(),
+        vm);
     po::notify(vm);
   } catch (po::error &e) {
     if (vm.count("help")) {
@@ -71,39 +78,21 @@ int main(int argc, char **argv) {
 
   config.print();
 
-  std::vector<pt::Object> objs;
-  pt::Camera camera({
-      .look_from = pt::Vec3(0, 0, -30),
-      .look_at = pt::Vec3(0, 0, 0),
-      .vup = pt::Vec3(0, 1, 0),
-      .vfov = 90,
-      .aspect_r = (float)config.width / (float)config.height,
-      .aperture = 0.0,
-      .focus_dist = 1.0,
-  });
+  // TODO: handle all the error cases here
+  // * file doesn't exist
+  // * file isn't valid json
+  // * anything else?
+  std::ifstream input(config.in);
+  std::stringstream sstr;
+  while (input >> sstr.rdbuf())
+    ;
 
-  // TODO: uh oh, manual memory management... fix this later
-  const pt::Material *white_light = new pt::Light(pt::Vec3(1, 1, 1));
+  value jv = parse(sstr.str());
 
-  const auto v0 = pt::Vec3(0, 10, 0);
-  const auto v1 = pt::Vec3(-5, 0, 0);
-  const auto v2 = pt::Vec3(5, 0, 0);
-  const pt::Primitive *triangle = new pt::Triangle(v0, v1, v2, -1);
-
-  const auto center = pt::Vec3(0, 0, 0);
-  const auto radius = 5.0F;
-  const pt::Primitive *sphere = new pt::Sphere(center, radius);
-
-  const pt::Object white_triangle_light = {.primitive = triangle,
-                                           .material = white_light};
-
-  objs.push_back(white_triangle_light);
-  pt::Scene scene(objs, camera);
+  pt::Scene scene(jv.as_object());
 
   pt::Image im = scene.render(config);
   im.write(config.out);
 
-  delete white_light;
-  delete sphere;
-  delete triangle;
+  // TODO: allocated primitives and materials are still being leaked here
 }

@@ -78,8 +78,27 @@ private:
   Vec3 trace(float u, float v) const;
 
 public:
+  /**
+   * Construct a scene object from the given objects and camera
+   * position
+   */
   Scene(std::vector<Object> &objects_a, Camera &camera_a)
       : objects(objects_a), camera(camera_a){};
+
+  /**
+   * Construct a scene object from a JSON object containing the `objects` and
+   * `camera` fields
+   */
+  Scene(const object &obj) {
+    const auto json_objs = obj.at("objects").as_array();
+
+    objects.reserve(json_objs.size());
+    for (const auto &o : json_objs) {
+      objects.push_back(object_from_json(o.as_object()));
+    }
+
+    camera = Camera(obj.at("camera").as_object());
+  }
 
   /**
    * Calls `trace` for each pixel in the scene for as many samples

@@ -27,6 +27,7 @@ void Config::print() const {
   std::cerr << "\twidth: " << width << '\n';
   std::cerr << "\theight: " << height << '\n';
   std::cerr << "\toutput: " << out << '\n';
+  std::cerr << "\tinput: " << in << '\n';
   std::cerr << "\tsamples: " << samples << '\n';
   std::cerr << "\tthreads: " << threads << std::endl;
 }
@@ -35,6 +36,7 @@ Config::Config(const po::variables_map &vm) {
   auto vm_width = vm["width"].as<size_t>();
   auto vm_height = vm["height"].as<size_t>();
   auto vm_out = vm["out"].as<std::string>();
+  auto vm_in = vm["input-file"].as<std::string>();
   auto vm_samples = vm["samples"].as<size_t>();
   auto vm_threads = vm["threads"].as<size_t>();
 
@@ -57,6 +59,7 @@ Config::Config(const po::variables_map &vm) {
   width = vm_width;
   height = vm_height;
   out = vm_out;
+  in = vm_in;
   samples = vm_samples;
   threads = vm_threads;
 }
