@@ -99,7 +99,7 @@ Vec3 Scene::trace(const float u, const float v) const {
 Image Scene::render(const Config &config) const {
   const auto width = config.width;
   const auto height = config.height;
-  auto img = Image(width, height, Clamp);
+  auto img = Image(width, height, ReinhardJodie);
 
   for (size_t y = 0; y < height; ++y) {
     for (size_t x = 0; x < width; ++x) {
