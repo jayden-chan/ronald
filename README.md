@@ -23,8 +23,8 @@ Basic Feature Set
 * [x] Diffuse material scatter function
 * [x] Light source material
 * [x] Recursive tracing function
-* [ ] Single threaded render loop
-* [ ] Scene description parsing w/ Boost
+* [x] Single threaded render loop
+* [x] Scene description parsing w/ Boost
 * [x] Ray/Triangle intersection
 * [ ] Dielectric material scatter function
 
