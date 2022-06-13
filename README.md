@@ -31,5 +31,21 @@ Basic Feature Set
 Extended Feature Set (Scope B only)
 * [ ] Bounding Volume Hierarchy
 * [ ] Multithreaded render loop
-* [ ] Reinhard-Jodie Tone Mapping
+* [x] Reinhard-Jodie Tone Mapping
 * [ ] Reflective/semi-reflective material
+
+## Progress Updates
+
+### 2022-06-12
+Successfully rendered the Cornell Box exterior
+
+| Config      | Value          |
+| ---         | ---            |
+| Resolution  | 512x512        |
+| Samples     | 7000           |
+| Threads     | 1              |
+| TMO         | Reinhard Jodie |
+| Render Time | 5h6m57s        |
+| Commit      | b6bbaab5       |
+
+![Cornell Box](./img/cornell_no_boxes.png "Cornell Box")
