@@ -21,6 +21,9 @@
 #include "ray.hpp"
 #include "vec3.hpp"
 
+#include <boost/json.hpp>
+using namespace boost::json;
+
 namespace path_tracer {
 
 struct Scatter {
@@ -35,6 +38,8 @@ struct Scatter {
  */
 class Material {
 public:
+  virtual ~Material() = default;
+
   /**
    * Returns the "scatter" result of a ray `r` intersecting with the geometry
    * (`h`). The scatter result is optional in case the material does not scatter
@@ -58,7 +63,13 @@ public:
     return Vec3::zeros();
   };
 
-  virtual ~Material() = default;
+  /**
+   * Construct a boxed Material from the given JSON value.
+   *
+   * TODO: are boxed materials what we want? Shouldn't this be
+   * a unique_ptr?
+   */
+  static const Material *from_json(const object &obj);
 };
 
 /**
@@ -72,7 +83,16 @@ private:
   Vec3 albedo;
 
 public:
-  Lambertian(Vec3 _albedo) : albedo(_albedo){};
+  /**
+   * Construct a Lambertian material from the given albedo vector
+   */
+  Lambertian(Vec3 _albedo);
+
+  /**
+   * Construct a Lambertian material from the given JSON object containing
+   * the `albedo` key.
+   */
+  Lambertian(const object &obj);
   std::optional<Scatter> scatter(Ray const &r,
                                  Intersection const &h) const override;
 };
@@ -86,7 +106,16 @@ private:
   Vec3 emittance;
 
 public:
-  Light(Vec3 _emittance) : emittance(_emittance){};
+  /**
+   * Construct a Light material from the given albedo vector
+   */
+  Light(Vec3 _emittance);
+
+  /**
+   * Construct a Light material from the given JSON object containing
+   * the `emittance` key.
+   */
+  Light(const object &obj);
   std::optional<Scatter> scatter(Ray const &r,
                                  Intersection const &h) const override;
   Vec3 emitted(Ray const &r, Intersection const &h) const override;

@@ -71,7 +71,7 @@ public:
   /**
    * Construct a sphere from a given center point and radius
    */
-  Sphere(const Vec3 &center, float radius);
+  Sphere(const Vec3 &center_a, const float radius_a);
 
   /**
    * Construct a sphere from a JSON object containing
@@ -99,7 +99,8 @@ public:
    * Construct a triangle given by three points in space and a normal. The
    * normal vector should be of length 1.
    */
-  Triangle(const Vec3 &v0, const Vec3 &v1, const Vec3 &v2, const Vec3 &normal);
+  Triangle(const Vec3 &v0_a, const Vec3 &v1_a, const Vec3 &v2_a,
+           float normal_a);
 
   /**
    * Construct a triangle from a JSON object containing the `vertices`, and

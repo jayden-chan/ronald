@@ -88,8 +88,7 @@ int main(int argc, char **argv) {
   const auto v0 = pt::Vec3(0, 10, 0);
   const auto v1 = pt::Vec3(-5, 0, 0);
   const auto v2 = pt::Vec3(5, 0, 0);
-  const pt::Primitive *triangle =
-      new pt::Triangle(v0, v1, v2, pt::Vec3(0, 0, -1));
+  const pt::Primitive *triangle = new pt::Triangle(v0, v1, v2, -1);
 
   const auto center = pt::Vec3(0, 0, 0);
   const auto radius = 5.0F;

@@ -39,7 +39,28 @@ struct Object {
   const Material *const material;
 };
 
-const Object object_from_json(const value &jv);
+/**
+ * Represents an occurrence of a light ray hitting a primitive geometric object
+ */
+struct Hit {
+  Intersection hit;
+  std::optional<Scatter> scatter;
+  Vec3 emitted;
+};
+
+/*
+ * {
+ *  "material": {
+ *    "type": "light",
+ *    "emittance": [0, 0, 0],
+ *  },
+ *  "primitive": {
+ *    "type": "triangle",
+ *    "vertices": ...
+ *  }
+ * }
+ */
+const Object object_from_json(const object &obj);
 
 /**
  * The scene is composed of the objects and the camera

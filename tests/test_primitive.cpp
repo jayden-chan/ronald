@@ -82,8 +82,7 @@ TEST_CASE("path_tracer::Ray/Triangle intersection",
   auto const v0 = path_tracer::Vec3(0, 5, 0);
   auto const v1 = path_tracer::Vec3(-5, -5, 0);
   auto const v2 = path_tracer::Vec3(5, -5, 0);
-  auto const triangle =
-      path_tracer::Triangle(v0, v1, v2, path_tracer::Vec3(0, 0, -1));
+  auto const triangle = path_tracer::Triangle(v0, v1, v2, -1);
 
   auto const t_min = 0;
   auto const t_max = 10000000000;

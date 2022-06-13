@@ -23,12 +23,12 @@ namespace path_tracer {
 // 15 bounces should be MORE than enough for most scenes
 constexpr size_t MAX_RECURSIVE_DEPTH = 15;
 
-// TODO: Change this to `Hit` and change `Hit` to `Intersection`
-struct Hit {
-  Intersection hit;
-  std::optional<Scatter> scatter;
-  Vec3 emitted;
-};
+const Object object_from_json(const object &obj) {
+  return {
+      .primitive = Primitive::from_json(obj.at("primitive").as_object()),
+      .material = Material::from_json(obj.at("material").as_object()),
+  };
+}
 
 std::optional<Hit> hit_objects(const std::vector<Object> &objs,
                                const Ray &ray) {
