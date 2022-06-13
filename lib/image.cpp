@@ -15,15 +15,12 @@
  */
 
 #include "image.hpp"
+#include "tone.hpp"
 
 namespace path_tracer {
 
 constexpr float EIGHT_BIT_MAX_F = 255.99F;
 
-/**
- * Test image which renders a red gradient along the X axis
- * and a green gradient along the Y axis.
- */
 void Image::test() {
   auto w = this->width;
   auto h = this->height;
@@ -38,9 +35,6 @@ void Image::test() {
   }
 }
 
-/**
- * Write the image buffer to the provided file
- */
 void Image::write(const std::string &path) const {
   auto w = this->width;
   auto h = this->height;
@@ -55,21 +49,32 @@ void Image::write(const std::string &path) const {
   file << "255\n";
 
   for (const auto p : this->buffer) {
-    const auto r = (unsigned char)(sqrt(p.r) * EIGHT_BIT_MAX_F);
-    const auto g = (unsigned char)(sqrt(p.g) * EIGHT_BIT_MAX_F);
-    const auto b = (unsigned char)(sqrt(p.b) * EIGHT_BIT_MAX_F);
+    const auto r = (unsigned char)(sqrt(p.x) * EIGHT_BIT_MAX_F);
+    const auto g = (unsigned char)(sqrt(p.y) * EIGHT_BIT_MAX_F);
+    const auto b = (unsigned char)(sqrt(p.z) * EIGHT_BIT_MAX_F);
     file << r << g << b;
   }
 
   file.close();
 }
 
-/**
- * Set the pixel at the screenspace coordinate (u, v) to `pixel`
- */
 void Image::set_pixel(const std::size_t u, const std::size_t v,
                       const Pixel pixel) {
   this->buffer[v * this->width + u] = pixel;
+}
+
+void Image::apply_tmo() {
+  switch (this->tmo) {
+  case Clamp:
+    for (auto &pixel : this->buffer) {
+      tmo_clamp(pixel);
+    }
+  case ReinhardJodie:
+    for (auto &pixel : this->buffer) {
+      tmo_reinhard_jodie(pixel);
+    }
+    break;
+  };
 }
 
 } // namespace path_tracer

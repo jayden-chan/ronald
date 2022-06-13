@@ -23,7 +23,6 @@
 #include <iostream>
 #include <limits>
 
-#include "image.hpp"
 #include "rand.hpp"
 
 namespace path_tracer {
@@ -50,18 +49,18 @@ public:
   float y = 0;
   float z = 0;
 
-  Vec3() = default;
+  constexpr Vec3() = default;
   /**
    * Construct a Vec3 from x, y, and z values
    */
-  Vec3(const float x_a, const float y_a, const float z_a)
+  constexpr Vec3(const float x_a, const float y_a, const float z_a)
       : x(x_a), y(y_a), z(z_a) {}
 
   /**
    * Construct a Vec3 from a std::vector containing exactly
    * three floats (x, y, z in that order)
    */
-  Vec3(const std::vector<float> vals) {
+  constexpr Vec3(const std::vector<float> vals) {
     assert(vals.size() == 3);
     x = vals[0];
     y = vals[1];
@@ -71,12 +70,12 @@ public:
   /**
    * Vector of just zeros
    */
-  static Vec3 zeros() noexcept { return Vec3(0.0, 0.0, 0.0); }
+  static constexpr Vec3 zeros() noexcept { return Vec3(0.0, 0.0, 0.0); }
 
   /**
    * Vector of just ones
    */
-  static Vec3 ones() noexcept { return Vec3(1.0, 1.0, 1.0); }
+  static constexpr Vec3 ones() noexcept { return Vec3(1.0, 1.0, 1.0); }
 
   /**
    * Vector of random values from 0 to 1
@@ -167,17 +166,6 @@ public:
     output << "[ " << V.x << " " << V.y << " " << V.z << " ]";
     return output;
   }
-
-  /**
-   * Convert the vector to a pixel
-   */
-  Pixel to_pixel() {
-    return {
-        .r = this->x,
-        .g = this->y,
-        .b = this->z,
-    };
-  }
 };
 
 /********************************************************/
@@ -189,6 +177,13 @@ public:
  */
 inline Vec3 operator+(const Vec3 &u, const Vec3 &v) noexcept {
   return Vec3(u.x + v.x, u.y + v.y, u.z + v.z);
+}
+
+/**
+ * Add a constant to all elements of a vector
+ */
+inline Vec3 operator+(const Vec3 &u, const float &rhs) noexcept {
+  return Vec3(u.x + rhs, u.y + rhs, u.z + rhs);
 }
 
 /**
@@ -220,7 +215,14 @@ inline Vec3 operator*(const Vec3 &v, const float t) noexcept { return t * v; }
 /**
  * Divide a vector by a constant
  */
-inline Vec3 operator/(const Vec3 v, const float t) { return (1 / t) * v; }
+inline Vec3 operator/(const Vec3 &v, const float t) { return (1 / t) * v; }
+
+/**
+ * Divide two vectors element-wise
+ */
+inline Vec3 operator/(const Vec3 &lhs, const Vec3 &rhs) {
+  return Vec3(lhs.x / rhs.x, lhs.y / rhs.y, lhs.z / rhs.z);
+}
 
 } // namespace path_tracer
 

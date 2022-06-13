@@ -82,7 +82,7 @@ Vec3 Scene::trace(const float u, const float v) const {
 Image Scene::render(const Config &config) const {
   const auto width = config.width;
   const auto height = config.height;
-  auto img = Image(width, height);
+  auto img = Image(width, height, Clamp);
 
   for (size_t y = 0; y < height; ++y) {
     for (size_t x = 0; x < width; ++x) {
@@ -95,8 +95,7 @@ Image Scene::render(const Config &config) const {
       }
 
       curr_pixel /= (float)config.samples;
-      const auto pixel = curr_pixel.to_pixel();
-      img.set_pixel(x, y, pixel);
+      img.set_pixel(x, y, curr_pixel);
     }
   }
 

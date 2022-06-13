@@ -98,6 +98,7 @@ int main(int argc, char **argv) {
   pt::Scene scene(jv.as_object());
 
   pt::Image im = scene.render(config);
+  im.apply_tmo();
   im.write(config.out);
 
   // TODO: allocated primitives and materials are still being leaked here
