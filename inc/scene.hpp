@@ -131,7 +131,17 @@ public:
    * Calls `trace` for each pixel in the scene for as many samples
    * as specified in the config
    */
-  Image render(const Config &config) const;
+  Image render_single_threaded(const Config &config) const;
+
+  /**
+   * A multithreaded implementation of the main rendering loop. The
+   * implementation uses one row of the image as a unit of work. The units are
+   * distributed to the threads via a lockfree queue from Boost. Each thread
+   * will pull a row number from the queue, render it, then check if there are
+   * more rows in the queue. Once the queue is exhausted the thread will
+   * terminate. Rendering is complete once all threads have terminated
+   */
+  Image render_multi_threaded(const Config &config) const;
 };
 
 } // namespace path_tracer

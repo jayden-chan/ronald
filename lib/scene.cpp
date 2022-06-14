@@ -18,6 +18,9 @@
 #include "material.hpp"
 #include "vec3.hpp"
 
+#include <boost/lockfree/queue.hpp>
+#include <thread>
+
 namespace path_tracer {
 
 // 15 bounces should be more than enough for most scenes
@@ -52,7 +55,7 @@ std::optional<Hit> hit_objects(const std::vector<Object> &objs,
   auto min_so_far = std::numeric_limits<float>::max();
   std::optional<Hit> hit = std::nullopt;
 
-  for (const auto o : objs) {
+  for (const auto &o : objs) {
     const auto this_hit = o.primitive->hit(ray, 0.000005F, min_so_far);
     if (this_hit.has_value()) {
       hit = {
@@ -96,7 +99,7 @@ Vec3 Scene::trace(const float u, const float v) const {
   return Vec3::zeros();
 }
 
-Image Scene::render(const Config &config) const {
+Image Scene::render_single_threaded(const Config &config) const {
   const auto width = config.width;
   const auto height = config.height;
   auto img = Image(width, height, ReinhardJodie);
@@ -104,7 +107,7 @@ Image Scene::render(const Config &config) const {
   for (size_t y = 0; y < height; ++y) {
     for (size_t x = 0; x < width; ++x) {
       auto curr_pixel = Vec3::zeros();
-      for (size_t i = 0; i < config.samples; i++) {
+      for (size_t i = 0; i < config.samples; ++i) {
         const auto u = ((float)x + random_float()) / (float)width;
         const auto v =
             ((float)(height - 1 - y) + random_float()) / (float)height;
@@ -114,6 +117,70 @@ Image Scene::render(const Config &config) const {
       curr_pixel /= (float)config.samples;
       img.set_pixel(x, y, curr_pixel);
     }
+  }
+
+  return img;
+}
+
+Image Scene::render_multi_threaded(const Config &config) const {
+  const auto width = config.width;
+  const auto height = config.height;
+  const auto samples = config.samples;
+  const auto num_threads = config.threads;
+
+  auto img = Image(width, height, ReinhardJodie);
+
+  boost::lockfree::queue<size_t> rows(num_threads);
+  rows.reserve(height);
+  for (size_t i = 0; i < height; ++i) {
+    rows.push(i);
+  }
+
+  std::vector<std::thread> threads;
+  threads.reserve(num_threads);
+
+  const auto f = [&rows, width, samples, height, this, &img]() {
+    size_t row_to_render = 0;
+    for (;;) {
+      const auto did_pop = rows.pop(row_to_render);
+
+      // No more rows to render -- terminate the thread
+      if (!did_pop) {
+        break;
+      }
+
+      const auto y = row_to_render;
+
+      // We did get a row to render -- go ahead and render it
+      // THREAD SAFETY: geometry and material info from `this` is being
+      // concurrently read by all threads. This is fine since it's all readonly
+      //
+      // `img` from the function scope is being concurrently written to by all
+      // threads. This is also fine since the write portions of the array will
+      // be non-overlapping
+      for (size_t x = 0; x < width; ++x) {
+        auto curr_pixel = Vec3::zeros();
+        for (size_t i = 0; i < samples; ++i) {
+          const auto u = ((float)x + random_float()) / (float)width;
+          const auto v =
+              ((float)(height - 1 - y) + random_float()) / (float)height;
+          curr_pixel += trace(u, v);
+        }
+
+        curr_pixel /= (float)samples;
+        img.set_pixel(x, y, curr_pixel);
+      }
+    }
+  };
+
+  // start up our threads
+  for (size_t i = 0; i < num_threads; ++i) {
+    threads.emplace_back(std::thread(f));
+  }
+
+  // wait for completion
+  for (auto &thread : threads) {
+    thread.join();
   }
 
   return img;

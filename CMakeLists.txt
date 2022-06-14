@@ -17,8 +17,8 @@ set(CMAKE_RANLIB       "llvm-ranlib")
 
 set(CMAKE_CXX_FLAGS         "-Wall -Wextra -Wpedantic -Wshadow -Wconversion")
 # we will use -O2 in debug since the performance will make testing
-# mostly unusable without optimization
-set(CMAKE_CXX_FLAGS_DEBUG   "-O2 -g -fsanitize=address -fsanitize=undefined")
+# mostly unusable without optimization, especially with the sanitizers
+set(CMAKE_CXX_FLAGS_DEBUG   "-O2 -g -fsanitize=undefined -fsanitize=thread")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
 
 # LTO doesn't work on the lab machines so just use it locally
@@ -26,7 +26,7 @@ if (DEFINED ENV{PT_THINLTO_YES})
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -flto=thin")
 endif()
 
-set(CMAKE_CXX_LINK_OPTIONS_DEBUG "-fsanitize=address -fsanitize=undefined -rdynamic")
+set(CMAKE_CXX_LINK_OPTIONS_DEBUG "-fsanitize=undefined -fsanitize=thread -rdynamic")
 set(CMAKE_CXX_LINK_OPTIONS_RELEASE "")
 
 set(CMAKE_CXX_STANDARD 20)
