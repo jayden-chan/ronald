@@ -21,7 +21,7 @@
 
 namespace path_tracer {
 
-constexpr float EPSILON = 0.0000001F;
+constexpr float EPSILON = 0.00000001F;
 
 /**
  * Produce a random 2D vector inside of a disk with

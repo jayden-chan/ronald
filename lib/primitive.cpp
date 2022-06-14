@@ -75,31 +75,32 @@ Triangle::Triangle(const object &obj) {
 
 std::optional<Intersection> Sphere::hit(const Ray &r, const float t_min,
                                         const float t_max) const {
-  Vec3 oc = r.origin() - this->center;
-  auto a = r.direction().length_squared();
-  auto half_b = oc.dot(r.direction());
-  auto c = oc.length_squared() - radius * radius;
+  const auto oc = r.origin() - this->center;
 
-  auto discriminant = half_b * half_b - a * c;
-  if (discriminant < 0) {
-    return std::nullopt;
-  }
+  const auto a = r.direction().dot(r.direction());
+  const auto b = oc.dot(r.direction());
+  const auto c = oc.dot(oc) - this->radius * this->radius;
+  const auto discriminant = b * b - a * c;
 
-  auto sqrtd = sqrtf(discriminant);
+  if (discriminant > 0.0) {
+    auto q_eq = (-b - sqrtf(discriminant)) / a;
 
-  auto root = (-half_b - sqrtd) / a;
-  if (root < t_min || root > t_max) {
-    root = (-half_b + sqrtd) / a;
+    // If the minus variant is out of range try the plus one
+    if (q_eq >= t_max || q_eq <= t_min) {
+      q_eq = (-b + sqrtf(discriminant)) / a;
+    }
 
-    if (root < t_min || root > t_max) {
-      return std::nullopt;
+    if (q_eq < t_max && q_eq > t_min) {
+      const auto point_at_parameter = r.point_at_parameter(q_eq);
+      return {{
+          point_at_parameter,
+          (point_at_parameter - this->center) / this->radius,
+          q_eq,
+      }};
     }
   }
 
-  auto t = root;
-  auto point = r.point_at_parameter(t);
-  auto normal = (point - center) / radius;
-  return std::optional<Intersection>{{point, normal, t}};
+  return std::nullopt;
 }
 
 /**
@@ -108,35 +109,35 @@ std::optional<Intersection> Sphere::hit(const Ray &r, const float t_min,
  */
 std::optional<Intersection> Triangle::hit(const Ray &r, const float t_min,
                                           const float t_max) const {
-  auto h = r.direction().cross(edge2);
-  auto a = edge1.dot(h);
+  const auto h = r.direction().cross(edge2);
+  const auto a = edge1.dot(h);
 
   if (a > -EPSILON && a < EPSILON) {
     return std::nullopt;
   }
 
-  auto f = 1 / a;
-  auto s = r.origin() - v0;
-  auto u = f * s.dot(h);
+  const auto f = 1 / a;
+  const auto s = r.origin() - v0;
+  const auto u = f * s.dot(h);
 
   // this branch might be unpredictable, should check this
   if (u < 0.0 || u > 1.0) {
     return std::nullopt;
   }
 
-  auto q = s.cross(edge1);
-  auto v = f * r.direction().dot(q);
+  const auto q = s.cross(edge1);
+  const auto v = f * r.direction().dot(q);
 
   // this might also be unpredictable, check it
   if (v < 0.0 || u + v > 1.0) {
     return std::nullopt;
   }
 
-  auto t = f * edge2.dot(q);
-  auto point = r.origin() + r.direction() * t;
+  const auto t = f * edge2.dot(q);
+  const auto point = r.origin() + r.direction() * t;
 
   if (t > EPSILON && t < 1.0 / EPSILON && t > t_min && t < t_max) {
-    return std::optional<Intersection>{{
+    return {{
         point,
         normal,
         t,

@@ -39,7 +39,7 @@
       "material": "glass",
       "primitive": {
         "type": "sphere",
-        "origin": [185.5, 245, 169],
+        "origin": [185.5, 245, 130],
         "radius": 80.0
       }
     },
