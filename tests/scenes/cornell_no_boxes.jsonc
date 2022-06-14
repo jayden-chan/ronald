@@ -11,19 +11,19 @@
   "materials": {
     "light": {
       "type": "light",
-      "emittance": [6, 6, 6]
+      "emittance": [25.2, 18.7, 6.0]
     },
     "white": {
       "type": "lambertian",
-      "albedo": [1, 1, 1]
+      "albedo": [0.73, 0.73, 0.73]
     },
     "green": {
       "type": "lambertian",
-      "albedo": [0, 1, 0]
+      "albedo": [0.12, 0.45, 0.15]
     },
     "red": {
       "type": "lambertian",
-      "albedo": [1, 0, 0]
+      "albedo": [0.65, 0.05, 0.05]
     },
   },
   "objects": [
