@@ -115,6 +115,19 @@ public:
   }
 
   /**
+   * Cleanup!
+   */
+  ~Scene() {
+    for (const auto &[k, v] : materials) {
+      delete v;
+    }
+
+    for (const auto o : objects) {
+      delete o.primitive;
+    }
+  }
+
+  /**
    * Calls `trace` for each pixel in the scene for as many samples
    * as specified in the config
    */
