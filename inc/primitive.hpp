@@ -17,8 +17,6 @@
 #ifndef PRIMITIVE_H
 #define PRIMITIVE_H
 
-#include <optional>
-
 #include "ray.hpp"
 #include "vec3.hpp"
 

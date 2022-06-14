@@ -26,8 +26,10 @@
       "albedo": [0.69, 0.05, 0.05]
     },
     "blue": {
-      "type": "lambertian",
-      "albedo": [0.05, 0.35, 0.65]
+      "type": "dielectric",
+      // "albedo": [0.05, 0.35, 0.65]
+      // "attenuation": [1, 1, 1]
+      "refractive_index": 1.52
     },
   },
   "objects": [
@@ -35,7 +37,7 @@
       "material": "blue",
       "primitive": {
         "type": "sphere",
-        "origin": [275, 275, 275],
+        "origin": [300, 300, 300],
         "radius": 100.0
       }
     },

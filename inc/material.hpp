@@ -121,6 +121,44 @@ public:
   Vec3 emitted(Ray const &r, Intersection const &h) const override;
 };
 
+class Reflector : public Material {
+private:
+  Vec3 attenuation;
+
+public:
+  /**
+   * Construct a Reflector material from the given attenuation vector
+   */
+  Reflector(Vec3 _attenuation);
+
+  /**
+   * Construct a Reflector material from the given JSON object containing
+   * the `attenuation` key.
+   */
+  Reflector(const object &obj);
+  std::optional<Scatter> scatter(Ray const &r,
+                                 Intersection const &h) const override;
+};
+
+class Dielectric : public Material {
+private:
+  float refractive_index;
+
+public:
+  /**
+   * Construct a Dielectric material from the given refractive index
+   */
+  Dielectric(float _ref_idx);
+
+  /**
+   * Construct a Dielectric material from the given JSON object containing
+   * the `refractive_index` key.
+   */
+  Dielectric(const object &obj);
+  std::optional<Scatter> scatter(Ray const &r,
+                                 Intersection const &h) const override;
+};
+
 } // namespace path_tracer
 
 #endif // MATERIAL_H

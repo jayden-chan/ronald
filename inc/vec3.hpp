@@ -22,6 +22,7 @@
 #include <cstdint>
 #include <iostream>
 #include <limits>
+#include <optional>
 
 #include "rand.hpp"
 
@@ -87,8 +88,8 @@ public:
   /**
    * Return a vector with the same direction but with length 1
    */
-  Vec3 normalize() const noexcept {
-    auto mag_inv = Q_rsqrt((x * x) + (y * y) + (z * z));
+  inline Vec3 normalize() const noexcept {
+    auto mag_inv = this->inv_mag();
     return Vec3(x * mag_inv, y * mag_inv, z * mag_inv);
   }
 
@@ -160,6 +161,11 @@ public:
   Vec3 &operator/=(const float t) { return *this *= 1 / t; }
 
   /**
+   * Negate all elements of the vector
+   */
+  Vec3 operator-() const { return Vec3(-this->x, -this->y, -this->z); }
+
+  /**
    * Stream insertion operator
    */
   friend std::ostream &operator<<(std::ostream &output, const Vec3 &V) {
@@ -222,6 +228,23 @@ inline Vec3 operator/(const Vec3 &v, const float t) { return (1 / t) * v; }
  */
 inline Vec3 operator/(const Vec3 &lhs, const Vec3 &rhs) {
   return Vec3(lhs.x / rhs.x, lhs.y / rhs.y, lhs.z / rhs.z);
+}
+
+inline Vec3 vector_reflect(const Vec3 &v, const Vec3 &n) {
+  return v - 2.0f * v.dot(n) * n;
+}
+
+inline std::optional<Vec3> vector_refract(const Vec3 &v, const Vec3 &n,
+                                          const float ni_over_nt) {
+  const auto v1 = v.normalize();
+  const auto dt = v1.dot(n);
+  const auto discriminant = 1.0f - ni_over_nt * ni_over_nt * (1.0f - dt * dt);
+
+  if (discriminant > 0.0) {
+    return ni_over_nt * (v1 - n * dt) - n * sqrtf(discriminant);
+  } else {
+    return std::nullopt;
+  }
 }
 
 } // namespace path_tracer

@@ -36,7 +36,16 @@ const Material *Material::from_json(const object &obj) {
     return new Lambertian(obj);
   }
 
-  throw std::runtime_error("Material must be either `light` or `lambertian`");
+  if (type == "reflector") {
+    return new Reflector(obj);
+  }
+
+  if (type == "dielectric") {
+    return new Dielectric(obj);
+  }
+
+  throw std::runtime_error("Material must be one of: [`light`, `lambertian`, "
+                           "`reflector`, `dielectric`]");
 }
 
 Lambertian::Lambertian(Vec3 _albedo) : albedo(_albedo){};
@@ -73,6 +82,75 @@ Vec3 Light::emitted(Ray const &r, Intersection const &h) const {
   }
 
   return Vec3::zeros();
+}
+
+Reflector::Reflector(Vec3 _attenuation) : attenuation(_attenuation){};
+Reflector::Reflector(const object &obj) {
+  const auto atten = value_to<std::vector<float>>(obj.at("attenuation"));
+  attenuation = Vec3(atten);
+}
+
+/**
+ * The Reflector material reflects rays according to the law of reflection
+ */
+std::optional<Scatter> Reflector::scatter(Ray const &r,
+                                          Intersection const &h) const {
+  const auto reflected = vector_reflect(r.direction().normalize(), h.normal);
+  const auto specular = Ray(h.point, reflected);
+
+  if (specular.direction().dot(h.normal) > 0.0) {
+    return std::optional<Scatter>{{specular, attenuation}};
+  } else {
+    return std::nullopt;
+  }
+}
+
+Dielectric::Dielectric(const float _ref_idx) : refractive_index(_ref_idx){};
+Dielectric::Dielectric(const object &obj) {
+  refractive_index = value_to<float>(obj.at("refractive_index"));
+}
+
+float schlick(const float cosine, const float ref_idx) {
+  auto r0 = (1.0f - ref_idx) / (1.0f + ref_idx);
+  r0 = r0 * r0;
+
+  return r0 + (1.0f - r0) * powf(1.0f - cosine, 5.0);
+}
+
+/**
+ * The Reflector material reflects rays according to the law of reflection
+ */
+std::optional<Scatter> Dielectric::scatter(Ray const &r,
+                                           Intersection const &i) const {
+  Vec3 outward_normal;
+  float ni_over_nt;
+  float cosine;
+
+  if (r.direction().dot(i.normal) > 0.0) {
+    outward_normal = -i.normal;
+    ni_over_nt = this->refractive_index;
+    cosine = this->refractive_index * r.direction().dot(i.normal) *
+             r.direction().inv_mag();
+  } else {
+    outward_normal = i.normal;
+    ni_over_nt = 1.0f / this->refractive_index;
+    cosine = -r.direction().dot(i.normal) * r.direction().inv_mag();
+  };
+
+  const auto reflected = vector_reflect(r.direction(), i.normal);
+  const auto refracted =
+      vector_refract(r.direction(), outward_normal, ni_over_nt);
+
+  const auto reflect_probability =
+      refracted.has_value() ? schlick(cosine, this->refractive_index) : 1.0;
+
+  const auto dir =
+      random_float() < reflect_probability ? reflected : *refracted;
+
+  return std::optional<Scatter>({
+      Ray(i.point, dir),
+      Vec3::ones(),
+  });
 }
 
 } // namespace path_tracer
