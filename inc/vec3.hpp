@@ -60,7 +60,7 @@ public:
    * Construct a Vec3 from a std::vector containing exactly
    * three floats (x, y, z in that order)
    */
-  constexpr Vec3(const std::vector<float> vals) {
+  Vec3(const std::vector<float> vals) {
     assert(vals.size() == 3);
     x = vals[0];
     y = vals[1];

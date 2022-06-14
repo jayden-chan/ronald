@@ -8,18 +8,23 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
 endif()
 
-set(CMAKE_CXX_COMPILER "/usr/bin/clang++")
-set(CMAKE_AR           "/usr/bin/llvm-ar")
-set(CMAKE_LINKER       "/usr/bin/lld")
-set(CMAKE_NM           "/usr/bin/llvm-nm")
-set(CMAKE_OBJDUMP      "/usr/bin/llvm-objdump")
-set(CMAKE_RANLIB       "/usr/bin/llvm-ranlib")
+set(CMAKE_CXX_COMPILER "clang++")
+set(CMAKE_AR           "llvm-ar")
+set(CMAKE_LINKER       "lld")
+set(CMAKE_NM           "llvm-nm")
+set(CMAKE_OBJDUMP      "llvm-objdump")
+set(CMAKE_RANLIB       "llvm-ranlib")
 
 set(CMAKE_CXX_FLAGS         "-Wall -Wextra -Wpedantic -Wshadow -Wconversion")
-# we will use the -O3 flag in debug since the performance will make testing
+# we will use -O2 in debug since the performance will make testing
 # mostly unusable without optimization
-set(CMAKE_CXX_FLAGS_DEBUG   "-O1 -g -fsanitize=address -fsanitize=undefined")
-set(CMAKE_CXX_FLAGS_RELEASE "-O3 -flto=thin -DNDEBUG")
+set(CMAKE_CXX_FLAGS_DEBUG   "-O2 -g -fsanitize=address -fsanitize=undefined")
+set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
+
+# LTO doesn't work on the lab machines so just use it locally
+if (DEFINED ENV{PT_THINLTO_YES})
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -flto=thin")
+endif()
 
 set(CMAKE_CXX_LINK_OPTIONS_DEBUG "-fsanitize=address -fsanitize=undefined -rdynamic")
 set(CMAKE_CXX_LINK_OPTIONS_RELEASE "")
