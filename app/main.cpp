@@ -95,7 +95,7 @@ int main(int argc, char **argv) {
   monotonic_resource mr;
   const value jv = parse(sstr.str(), &mr, opt);
 
-  pt::Scene scene(jv.as_object());
+  const auto scene = pt::Scene::from_json(jv.as_object());
 
   pt::Image im;
   // Technically calling render_multi_threaded with one thread is fine, but the

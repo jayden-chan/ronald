@@ -22,8 +22,8 @@ namespace path_tracer {
 constexpr float EIGHT_BIT_MAX_F = 255.99F;
 
 void Image::test() {
-  auto w = this->width;
-  auto h = this->height;
+  const auto w = this->width;
+  const auto h = this->height;
 
   for (size_t i = 0; i < height; i++) {
     for (size_t j = 0; j < width; j++) {
@@ -36,8 +36,8 @@ void Image::test() {
 }
 
 void Image::write(const std::string &path) const {
-  auto w = this->width;
-  auto h = this->height;
+  const auto w = this->width;
+  const auto h = this->height;
 
   std::ofstream file;
   file.open(path);
@@ -49,17 +49,20 @@ void Image::write(const std::string &path) const {
   file << "255\n";
 
   for (const auto p : this->buffer) {
-    const auto r = (unsigned char)(sqrt(p.x) * EIGHT_BIT_MAX_F);
-    const auto g = (unsigned char)(sqrt(p.y) * EIGHT_BIT_MAX_F);
-    const auto b = (unsigned char)(sqrt(p.z) * EIGHT_BIT_MAX_F);
-    file << r << g << b;
+    const auto r = (sqrt(p.x) * EIGHT_BIT_MAX_F);
+    const auto g = (sqrt(p.y) * EIGHT_BIT_MAX_F);
+    const auto b = (sqrt(p.z) * EIGHT_BIT_MAX_F);
+    assert(r >= 0 && r <= EIGHT_BIT_MAX_F);
+    assert(g >= 0 && g <= EIGHT_BIT_MAX_F);
+    assert(b >= 0 && b <= EIGHT_BIT_MAX_F);
+    file << (unsigned char)r << (unsigned char)g << (unsigned char)b;
   }
 
   file.close();
 }
 
 void Image::set_pixel(const std::size_t u, const std::size_t v,
-                      const Pixel pixel) {
+                      const Pixel &pixel) {
   this->buffer[v * this->width + u] = pixel;
 }
 
@@ -69,6 +72,7 @@ void Image::apply_tmo() {
     for (auto &pixel : this->buffer) {
       tmo_clamp(pixel);
     }
+    break;
   case ReinhardJodie:
     for (auto &pixel : this->buffer) {
       tmo_reinhard_jodie(pixel);

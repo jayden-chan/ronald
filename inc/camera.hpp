@@ -54,9 +54,9 @@ class Camera {
       throw std::runtime_error("Focal distance cannot be zero!");
     }
 
-    auto theta = cam.vfov * (float)M_PI / 180;
-    auto half_height = tan(theta / 2);
-    auto half_width = cam.aspect_r * half_height;
+    const auto theta = cam.vfov * (float)M_PI / 180;
+    const auto half_height = tan(theta / 2);
+    const auto half_width = cam.aspect_r * half_height;
 
     origin = cam.look_from;
     lens_radius = cam.aperture / 2;

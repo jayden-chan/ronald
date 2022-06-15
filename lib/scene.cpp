@@ -52,22 +52,38 @@ material_map materials_from_json(const object &obj) {
 
 std::optional<Hit> hit_objects(const std::vector<Object> &objs,
                                const Ray &ray) {
-  auto min_so_far = std::numeric_limits<float>::max();
-  std::optional<Hit> hit = std::nullopt;
+  const auto f32_max = std::numeric_limits<float>::max();
+  auto min_so_far = f32_max;
+  std::optional<Hit> hit = {{
+      .hit = {Vec3::zeros(), Vec3::zeros(), 0.0},
+      .scatter = std::nullopt,
+      .emitted = Vec3::zeros(),
+  }};
 
   for (const auto &o : objs) {
     const auto this_hit = o.primitive->hit(ray, 0.000005F, min_so_far);
     if (this_hit.has_value()) {
-      hit = {
-          .hit = *this_hit,
-          .scatter = o.material->scatter(ray, *this_hit),
-          .emitted = o.material->emitted(ray, *this_hit),
-      };
+      hit->hit = *this_hit;
+      hit->scatter = o.material->scatter(ray, *this_hit);
+      hit->emitted = o.material->emitted(ray, *this_hit);
+      // const Hit new_hit = {
+      //     .hit = *this_hit,
+      //     .scatter = o.material->scatter(ray, *this_hit),
+      //     .emitted = o.material->emitted(ray, *this_hit),
+      // };
+      //
+      // *hit = new_hit;
+
+      assert(this_hit->t < min_so_far);
       min_so_far = this_hit->t;
     }
   }
 
-  return hit;
+  if (min_so_far < f32_max) {
+    return hit;
+  }
+
+  return std::nullopt;
 }
 
 Vec3 Scene::trace(const float u, const float v) const {
@@ -127,6 +143,9 @@ Image Scene::render_multi_threaded(const Config &config) const {
   const auto height = config.height;
   const auto samples = config.samples;
   const auto num_threads = config.threads;
+  const auto widthf = (float)config.width;
+  const auto heightf = (float)config.height;
+  const auto samplesf = (float)config.samples;
 
   auto img = Image(width, height, ReinhardJodie);
 
@@ -139,7 +158,7 @@ Image Scene::render_multi_threaded(const Config &config) const {
   std::vector<std::thread> threads;
   threads.reserve(num_threads);
 
-  const auto f = [&rows, width, samples, height, this, &img]() {
+  const auto f = [&]() {
     size_t row_to_render = 0;
     for (;;) {
       const auto did_pop = rows.pop(row_to_render);
@@ -161,13 +180,12 @@ Image Scene::render_multi_threaded(const Config &config) const {
       for (size_t x = 0; x < width; ++x) {
         auto curr_pixel = Vec3::zeros();
         for (size_t i = 0; i < samples; ++i) {
-          const auto u = ((float)x + random_float()) / (float)width;
-          const auto v =
-              ((float)(height - 1 - y) + random_float()) / (float)height;
+          const auto u = ((float)x + random_float()) / widthf;
+          const auto v = ((float)(height - 1 - y) + random_float()) / heightf;
           curr_pixel += trace(u, v);
         }
 
-        curr_pixel /= (float)samples;
+        curr_pixel /= samplesf;
         img.set_pixel(x, y, curr_pixel);
       }
     }

@@ -99,7 +99,7 @@ std::optional<Scatter> Reflector::scatter(Ray const &r,
   const auto specular = Ray(h.point, reflected);
 
   if (specular.direction().dot(h.normal) > 0.0) {
-    return std::optional<Scatter>{{specular, attenuation}};
+    return {{specular, attenuation}};
   } else {
     return std::nullopt;
   }

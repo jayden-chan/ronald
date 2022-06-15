@@ -21,7 +21,7 @@
 #include <stdexcept>
 namespace path_tracer {
 
-constexpr float clamp_max = 255.99f;
+constexpr float clamp_max = 1.0f;
 
 inline void tmo_clamp(Vec3 &pixel) {
   if (pixel.x > clamp_max) {

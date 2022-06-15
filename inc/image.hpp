@@ -63,7 +63,7 @@ public:
   /**
    * Set the pixel at the screenspace coordinate (u, v) to `pixel`
    */
-  void set_pixel(size_t u, size_t v, Pixel pixel);
+  void set_pixel(size_t u, size_t v, const Pixel &pixel);
 
   /**
    * Apply the given tone mapping operator to the image

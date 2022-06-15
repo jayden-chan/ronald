@@ -72,15 +72,15 @@ private:
   // and re-used between primitives. For example you could declare a "white
   // light" material and have several different shapes of lights that all re-use
   // the "white light" material
-  material_map materials;
+  const material_map materials;
 
   // A list of objects in the scene. Each object is a primitive
   // and an associated material from the materials vector
   // TODO: BVH
-  std::vector<Object> objects;
+  const std::vector<Object> objects;
 
   // Info about the camera
-  Camera camera;
+  const Camera camera;
 
   /**
    * Sends a ray through the scene geometry based on the given
@@ -93,25 +93,27 @@ public:
    * Construct a scene object from the given objects and camera
    * position
    */
-  Scene(std::vector<Object> &objects_a, material_map &materials_a,
-        Camera &camera_a)
+  Scene(const std::vector<Object> &objects_a, const material_map &materials_a,
+        const Camera &camera_a)
       : materials(materials_a), objects(objects_a), camera(camera_a){};
 
   /**
    * Construct a scene object from a JSON object containing the `objects` and
    * `camera` fields
    */
-  Scene(const object &obj) {
+  static Scene from_json(const object &obj) {
     const auto material_obj = obj.at("materials").as_object();
-    materials = materials_from_json(material_obj);
+    const auto mats = materials_from_json(material_obj);
 
     const auto json_objs = obj.at("objects").as_array();
-    objects.reserve(json_objs.size());
+    std::vector<Object> objs;
+    objs.reserve(json_objs.size());
     for (const auto &o : json_objs) {
-      objects.push_back(object_from_json(o.as_object(), materials));
+      objs.push_back(object_from_json(o.as_object(), mats));
     }
 
-    camera = Camera(obj.at("camera").as_object());
+    const auto cam = Camera(obj.at("camera").as_object());
+    return Scene(objs, mats, cam);
   }
 
   /**
