@@ -11,7 +11,7 @@
   "materials": {
     "light": {
       "type": "light",
-      "emittance": [37.80, 28.05, 9.00]
+      "emittance": [23.8635, 17.708, 5.6817]
     },
     "white": {
       "type": "lambertian",
@@ -35,22 +35,22 @@
     },
   },
   "objects": [
-    {
-      "material": "glass",
-      "primitive": {
-        "type": "sphere",
-        "origin": [185.5, 245, 130],
-        "radius": 80.0
-      }
-    },
+    // {
+    //   "material": "glass",
+    //   "primitive": {
+    //     "type": "sphere",
+    //     "origin": [185.5, 245, 130],
+    //     "radius": 80.0
+    //   }
+    // },
     {
       "material": "light",
       "primitive": {
         "type": "triangle",
         "vertices": [
-          [343.0, 549.999999, 227.0],
-          [343.0, 549.999999, 332.0],
-          [213.0, 549.999999, 332.0]
+          [344.25, 549.99, 206.25],
+          [344.25, 549.99, 344.25],
+          [206.25, 549.99, 344.25]
         ],
         "normal": 1
       }
@@ -60,9 +60,9 @@
       "primitive": {
         "type": "triangle",
         "vertices": [
-          [343.0, 548.799999, 227.0],
-          [213.0, 548.799999, 332.0],
-          [213.0, 548.799999, 227.0]
+          [344.25, 549.99, 206.25],
+          [206.25, 549.99, 344.25],
+          [206.25, 549.99, 206.25]
         ],
         "normal": 1
       }
@@ -411,7 +411,7 @@
       }
     },
     {
-      "material": "mirror",
+      "material": "white",
       "primitive": {
         "type": "triangle",
         "normal": 1,
@@ -423,7 +423,7 @@
       }
     },
     {
-      "material": "mirror",
+      "material": "white",
       "primitive": {
         "type": "triangle",
         "normal": 1,
