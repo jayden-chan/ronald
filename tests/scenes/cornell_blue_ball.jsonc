@@ -9,7 +9,7 @@
   "materials": {
     "light": {
       "type": "light",
-      "emittance": [63.00, 46.75, 15.00]
+      "emittance": [23.8635, 17.708, 5.6817]
     },
     "white": {
       "type": "lambertian",
