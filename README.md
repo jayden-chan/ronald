@@ -36,6 +36,23 @@ Extended Feature Set (Scope B only)
 
 ## Progress Updates
 
+### 2022-06-15 -- Resolved vertical line artifacts
+
+A longer description of the fix is included in the commit message. This commit marks the
+completion of the "MVP" portion of the project. I think at this point the project is
+probably in a "submittable" state and would receive a good grade.
+
+| Config      | Value          |
+| ---         | ---            |
+| Resolution  | 512x512        |
+| Samples     | 10000          |
+| Threads     | 10             |
+| TMO         | Reinhard Jodie |
+| Render Time | 33m40s         |
+| Commit      | 5c31f121       |
+
+![Cornell Box](./img/cornell_2.png "Cornell Box")
+
 ### 2022-06-14 -- Added full Cornell Box Scene
 
 Added the full Cornell Box scene geometry based on the specification from their website.
