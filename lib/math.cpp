@@ -19,23 +19,22 @@
 namespace path_tracer {
 
 Vec3 random_in_unit_disk() {
-  Vec3 v1, v2, p;
+  auto p =
+      2.0 * Vec3(random_float(), random_float(), 0.0) - Vec3(1.0, 1.0, 0.0);
 
-  do {
-    v1 = Vec3(random_float(), random_float(), 0);
-    v2 = Vec3(1, 1, 0);
-    p = 2 * v1 - v2;
-  } while (p.dot(p) >= 1);
+  while (p.dot(p) >= 1.0) {
+    p = 2.0 * Vec3(random_float(), random_float(), 0.0) - Vec3(1.0, 1.0, 0.0);
+  }
 
   return p;
 }
 
 Vec3 random_in_unit_sphere() {
-  Vec3 p;
+  auto p = 2.0 * Vec3::rand() - Vec3::ones();
 
-  do {
-    p = 2 * Vec3::rand() - Vec3::ones();
-  } while (p.dot(p) >= 1);
+  while (p.dot(p) >= 1.0) {
+    p = 2.0 * Vec3::rand() - Vec3::ones();
+  }
 
   return p;
 }

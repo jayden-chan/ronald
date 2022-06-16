@@ -43,7 +43,7 @@ material_map materials_from_json(const object &obj) {
   ret.reserve(obj.size());
 
   for (const auto &jv : obj) {
-    const std::string key = jv.key().to_string();
+    const std::string key = jv.key();
     ret.insert({key, Material::from_json(jv.value().as_object())});
   }
 
@@ -118,19 +118,23 @@ Vec3 Scene::trace(const float u, const float v) const {
 Image Scene::render_single_threaded(const Config &config) const {
   const auto width = config.width;
   const auto height = config.height;
+  const auto widthf = static_cast<float>(config.width - 1);
+  const auto heightf = static_cast<float>(config.height - 1);
+  const auto samplesf = static_cast<float>(config.samples);
   auto img = Image(width, height, ReinhardJodie);
 
   for (size_t y = 0; y < height; ++y) {
     for (size_t x = 0; x < width; ++x) {
       auto curr_pixel = Vec3::zeros();
       for (size_t i = 0; i < config.samples; ++i) {
-        const auto u = ((float)x + random_float()) / (float)width;
-        const auto v =
-            ((float)(height - 1 - y) + random_float()) / (float)height;
-        curr_pixel += this->trace(u, v);
+        const auto xf = static_cast<float>(x);
+        const auto yf = static_cast<float>(height - 1 - y);
+        const auto u = (xf + random_float()) / widthf;
+        const auto v = (yf + random_float()) / heightf;
+        curr_pixel += trace(u, v);
       }
 
-      curr_pixel /= (float)config.samples;
+      curr_pixel /= samplesf;
       img.set_pixel(x, y, curr_pixel);
     }
   }
@@ -143,9 +147,9 @@ Image Scene::render_multi_threaded(const Config &config) const {
   const auto height = config.height;
   const auto samples = config.samples;
   const auto num_threads = config.threads;
-  const auto widthf = (float)config.width;
-  const auto heightf = (float)config.height;
-  const auto samplesf = (float)config.samples;
+  const auto widthf = static_cast<float>(config.width - 1);
+  const auto heightf = static_cast<float>(config.height - 1);
+  const auto samplesf = static_cast<float>(config.samples);
 
   auto img = Image(width, height, ReinhardJodie);
 
@@ -155,10 +159,8 @@ Image Scene::render_multi_threaded(const Config &config) const {
     rows.push(i);
   }
 
-  std::vector<std::thread> threads;
-  threads.reserve(num_threads);
-
-  const auto f = [&]() {
+  // the code our threads will execute
+  const auto thread_func = [&]() {
     size_t row_to_render = 0;
     for (;;) {
       const auto did_pop = rows.pop(row_to_render);
@@ -180,8 +182,10 @@ Image Scene::render_multi_threaded(const Config &config) const {
       for (size_t x = 0; x < width; ++x) {
         auto curr_pixel = Vec3::zeros();
         for (size_t i = 0; i < samples; ++i) {
-          const auto u = ((float)x + random_float()) / widthf;
-          const auto v = ((float)(height - 1 - y) + random_float()) / heightf;
+          const auto xf = static_cast<float>(x);
+          const auto yf = static_cast<float>(height - 1 - y);
+          const auto u = (xf + random_float()) / widthf;
+          const auto v = (yf + random_float()) / heightf;
           curr_pixel += trace(u, v);
         }
 
@@ -192,8 +196,10 @@ Image Scene::render_multi_threaded(const Config &config) const {
   };
 
   // start up our threads
+  std::vector<std::thread> threads;
+  threads.reserve(num_threads);
   for (size_t i = 0; i < num_threads; ++i) {
-    threads.emplace_back(std::thread(f));
+    threads.emplace_back(std::thread(thread_func));
   }
 
   // wait for completion

@@ -19,8 +19,9 @@
 namespace path_tracer {
 
 float random_float() {
+  static thread_local std::uniform_real_distribution<float> distribution(0.0,
+                                                                         1.0);
   static thread_local std::mt19937 generator;
-  std::uniform_real_distribution<float> distribution(0.0, 1.0);
   return distribution(generator);
 }
 

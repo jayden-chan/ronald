@@ -36,7 +36,6 @@ struct CameraConstructor {
   float vfov;
   float aspect_r;
   float aperture;
-  float focus_dist;
 };
 
 class Camera {
@@ -50,25 +49,25 @@ class Camera {
   float lens_radius = 0.0;
 
   void init(const CameraConstructor &cam) {
-    if (abs(cam.focus_dist) < EPSILON) {
-      throw std::runtime_error("Focal distance cannot be zero!");
-    }
-
     const auto theta = cam.vfov * (float)M_PI / 180;
-    const auto half_height = tan(theta / 2);
-    const auto half_width = cam.aspect_r * half_height;
+    const auto h = tan(theta / 2);
+    const auto viewport_h = h * 2;
+    const auto viewport_w = cam.aspect_r * viewport_h;
+    const auto focus_dist = (cam.look_from - cam.look_at).length();
+
+    // TODO: this is a bit of a hack, should really diagnose the underlying
+    // issue
+    const auto aperture = cam.aperture < 0.005 ? 0.005f : cam.aperture;
 
     origin = cam.look_from;
-    lens_radius = cam.aperture / 2;
+    lens_radius = aperture / 2;
     w = (cam.look_from - cam.look_at).normalize();
     u = cam.vup.cross(w).normalize();
     v = w.cross(u);
 
-    lower_left_corner = cam.look_from - half_width * cam.focus_dist * u -
-                        half_height * cam.focus_dist * v - cam.focus_dist * w;
-
-    horizontal = 2 * half_width * cam.focus_dist * u;
-    vertical = 2 * half_height * cam.focus_dist * v;
+    horizontal = viewport_w * focus_dist * u;
+    vertical = viewport_h * focus_dist * v;
+    lower_left_corner = origin - horizontal / 2 - vertical / 2 - focus_dist * w;
   }
 
 public:
@@ -82,23 +81,20 @@ public:
    * Construct a camera from a JSON object containing the relevant fields for
    * camera initialization
    */
-  Camera(const object &obj) {
+  Camera(const object &obj, const float aspect_r) {
     const auto look_from_vec =
         value_to<std::vector<float>>(obj.at("look_from"));
     const auto look_at_vec = value_to<std::vector<float>>(obj.at("look_at"));
     const auto vup_vec = value_to<std::vector<float>>(obj.at("vup"));
     const auto vfov_f = value_to<float>(obj.at("vfov"));
-    const auto aspect_r_f = value_to<float>(obj.at("aspect_r"));
     const auto aperture_f = value_to<float>(obj.at("aperture"));
-    const auto focus_dist_f = value_to<float>(obj.at("focus_dist"));
 
     const CameraConstructor cam_constructor = {.look_from = Vec3(look_from_vec),
                                                .look_at = Vec3(look_at_vec),
                                                .vup = Vec3(vup_vec),
                                                .vfov = vfov_f,
-                                               .aspect_r = aspect_r_f,
-                                               .aperture = aperture_f,
-                                               .focus_dist = focus_dist_f};
+                                               .aspect_r = aspect_r,
+                                               .aperture = aperture_f};
 
     init(cam_constructor);
   }
@@ -108,13 +104,14 @@ public:
    * Return a ray which travels from the camera origin through the
    * screenspace coordinate given by `param_u` and `param_v`
    */
-  Ray get_ray(const float param_u, const float param_v) const {
-    auto rd = this->lens_radius * random_in_unit_disk();
-    auto offset = this->u * rd.x + this->v * rd.y;
+  Ray get_ray(const float s, const float t) const {
+    const auto rd = lens_radius * random_in_unit_disk();
+    const auto offset = u * rd.x + v * rd.y;
 
-    auto ori = this->origin + offset;
-    auto dir = this->lower_left_corner + this->horizontal * param_u +
-               this->vertical * param_v - this->origin - offset;
+    const auto ori = origin + offset;
+    const auto dir =
+        lower_left_corner + horizontal * s + vertical * t - origin - offset;
+
     return Ray(ori, dir);
   }
 };

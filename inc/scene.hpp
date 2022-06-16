@@ -101,7 +101,7 @@ public:
    * Construct a scene object from a JSON object containing the `objects` and
    * `camera` fields
    */
-  static Scene from_json(const object &obj) {
+  static Scene from_json(const object &obj, const float aspect_r) {
     const auto material_obj = obj.at("materials").as_object();
     const auto mats = materials_from_json(material_obj);
 
@@ -112,7 +112,7 @@ public:
       objs.push_back(object_from_json(o.as_object(), mats));
     }
 
-    const auto cam = Camera(obj.at("camera").as_object());
+    const auto cam = Camera(obj.at("camera").as_object(), aspect_r);
     return Scene(objs, mats, cam);
   }
 

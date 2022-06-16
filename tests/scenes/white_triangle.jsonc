@@ -4,9 +4,7 @@
     "look_at": [0, 0, 0],
     "vup": [0, 1, 0],
     "vfov": 90,
-    "aspect_r": 1,
-    "aperture": 0,
-    "focus_dist": 1
+    "aperture": 0
   },
   "materials": {
     "light": {
