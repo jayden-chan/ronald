@@ -40,8 +40,6 @@ using material_map = std::unordered_map<std::string, std::shared_ptr<Material>>;
 struct Object {
   const std::shared_ptr<Primitive> primitive;
   const std::shared_ptr<Material> material;
-  // const Primitive *const primitive;
-  // const Material *const material;
 };
 
 /**

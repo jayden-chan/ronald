@@ -66,13 +66,6 @@ std::optional<Hit> hit_objects(const std::vector<Object> &objs,
       hit->hit = *this_hit;
       hit->scatter = o.material->scatter(ray, *this_hit);
       hit->emitted = o.material->emitted(ray, *this_hit);
-      // const Hit new_hit = {
-      //     .hit = *this_hit,
-      //     .scatter = o.material->scatter(ray, *this_hit),
-      //     .emitted = o.material->emitted(ray, *this_hit),
-      // };
-      //
-      // *hit = new_hit;
 
       assert(this_hit->t < min_so_far);
       min_so_far = this_hit->t;

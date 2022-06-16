@@ -52,6 +52,10 @@ Config::Config(const po::variables_map &vm) {
     throw "Number of samples must be greater than zero";
   }
 
+  if (vm_threads <= 0) {
+    throw "Number of samples must be greater than zero";
+  }
+
   width = vm_width;
   height = vm_height;
   out = vm_out;
