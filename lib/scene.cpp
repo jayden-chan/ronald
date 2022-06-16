@@ -87,9 +87,8 @@ std::optional<Hit> hit_objects(const std::vector<Object> &objs,
 }
 
 Vec3 Scene::trace(const float u, const float v) const {
-  // TODO: Russian Roulette loop termination
   auto curr_ray = this->camera.get_ray(u, v);
-  auto curr_att = Vec3::ones();
+  auto total_attenuation = Vec3::ones();
   auto total_emitted = Vec3::zeros();
 
   for (size_t i = 0; i < MAX_RECURSIVE_DEPTH; ++i) {
@@ -100,15 +99,30 @@ Vec3 Scene::trace(const float u, const float v) const {
       return Vec3::zeros();
     }
 
+    total_emitted += hit_result->emitted;
+
     // Ray hit something but didn't scatter another ray -- path stops here
     if (!hit_result->scatter.has_value()) {
-      return curr_att * (total_emitted + hit_result->emitted);
+      return total_attenuation * total_emitted;
     }
 
     // Ray hit something and scattered, continue tracing
+    total_attenuation *= hit_result->scatter->attenuation;
     curr_ray = hit_result->scatter->specular;
-    curr_att *= hit_result->scatter->attenuation;
-    total_emitted += hit_result->emitted;
+
+    // Terminate the path with a probability inversely proportional to the
+    // current attenuation. Paths with lower contribution to the scene are more
+    // likely to be terminated. This is known as "Russian Roulette" termination.
+    const auto p = std::max(total_attenuation.x,
+                            std::max(total_attenuation.y, total_attenuation.z));
+    if (random_float() > p) {
+      return total_attenuation * total_emitted;
+    }
+
+    // We didn't get terminated by Russian Roulette -- add back the energy
+    // lost through random terminations. This step ensures that the renderer
+    // remains unbiased despite terminating some paths early
+    total_attenuation *= 1.0f / p;
   }
 
   // Max recursion depth reached -- return zero
