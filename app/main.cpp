@@ -109,6 +109,4 @@ int main(int argc, char **argv) {
 
   im.apply_tmo();
   im.write(config.out);
-
-  // TODO: allocated primitives and materials are still being leaked here
 }

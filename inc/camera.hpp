@@ -100,9 +100,11 @@ public:
   }
 
   /**
-   * TODO: Fix this for the real u and v semantics
    * Return a ray which travels from the camera origin through the
-   * screenspace coordinate given by `param_u` and `param_v`
+   * "screenspace coordinate" given by `s` and `t`. `s` and `t` represent the
+   * percent of width and height that the ray should pass through. So values of
+   * 0.5 and 0.5 would mean the ray passes through the direct center of the
+   * camera view port
    */
   Ray get_ray(const float s, const float t) const {
     const auto rd = lens_radius * random_in_unit_disk();
