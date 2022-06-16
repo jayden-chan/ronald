@@ -32,14 +32,16 @@ using namespace boost::json;
 
 namespace path_tracer {
 
-using material_map = std::unordered_map<std::string, const Material *>;
+using material_map = std::unordered_map<std::string, std::shared_ptr<Material>>;
 
 /**
  * An object is a primitive with an associated material
  */
 struct Object {
-  const Primitive *const primitive;
-  const Material *const material;
+  const std::shared_ptr<Primitive> primitive;
+  const std::shared_ptr<Material> material;
+  // const Primitive *const primitive;
+  // const Material *const material;
 };
 
 /**
@@ -114,19 +116,6 @@ public:
 
     const auto cam = Camera(obj.at("camera").as_object(), aspect_r);
     return Scene(objs, mats, cam);
-  }
-
-  /**
-   * Cleanup!
-   */
-  ~Scene() {
-    for (const auto &[k, v] : materials) {
-      delete v;
-    }
-
-    for (const auto o : objects) {
-      delete o.primitive;
-    }
   }
 
   /**

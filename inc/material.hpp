@@ -65,11 +65,8 @@ public:
 
   /**
    * Construct a boxed Material from the given JSON value.
-   *
-   * TODO: are boxed materials what we want? Shouldn't this be
-   * a unique_ptr?
    */
-  static const Material *from_json(const object &obj);
+  static const std::shared_ptr<Material> from_json(const object &obj);
 };
 
 /**

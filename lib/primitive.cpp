@@ -26,15 +26,15 @@ using namespace boost::json;
 
 namespace path_tracer {
 
-const Primitive *Primitive::from_json(const object &obj) {
+const std::shared_ptr<Primitive> Primitive::from_json(const object &obj) {
   const auto type = value_to<std::string>(obj.at("type"));
 
   if (type == "triangle") {
-    return new Triangle(obj);
+    return std::make_shared<Triangle>(obj);
   }
 
   if (type == "sphere") {
-    return new Sphere(obj);
+    return std::make_shared<Sphere>(obj);
   }
 
   throw std::runtime_error("Primitive must be either `triangle` or `sphere`");

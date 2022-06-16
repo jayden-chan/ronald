@@ -25,23 +25,23 @@ using namespace boost::json;
 
 namespace path_tracer {
 
-const Material *Material::from_json(const object &obj) {
+const std::shared_ptr<Material> Material::from_json(const object &obj) {
   const auto type = value_to<std::string>(obj.at("type"));
 
   if (type == "light") {
-    return new Light(obj);
+    return std::make_shared<Light>(obj);
   }
 
   if (type == "lambertian") {
-    return new Lambertian(obj);
+    return std::make_shared<Lambertian>(obj);
   }
 
   if (type == "reflector") {
-    return new Reflector(obj);
+    return std::make_shared<Reflector>(obj);
   }
 
   if (type == "dielectric") {
-    return new Dielectric(obj);
+    return std::make_shared<Dielectric>(obj);
   }
 
   throw std::runtime_error("Material must be one of: [`light`, `lambertian`, "

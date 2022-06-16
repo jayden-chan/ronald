@@ -50,11 +50,8 @@ public:
 
   /**
    * Construct a boxed Primitive from the given JSON value.
-   *
-   * TODO: are boxed primitives what we want? Shouldn't this be
-   * a unique_ptr?
    */
-  static const Primitive *from_json(const object &obj);
+  static const std::shared_ptr<Primitive> from_json(const object &obj);
 };
 
 /**
