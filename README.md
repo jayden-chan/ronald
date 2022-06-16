@@ -32,9 +32,28 @@ Extended Feature Set (Scope B only)
 * [ ] Bounding Volume Hierarchy
 * [x] Multithreaded render loop
 * [x] Reinhard-Jodie Tone Mapping
-* [ ] Reflective/semi-reflective material
+* [x] Reflective/semi-reflective material
+* [x] Russian Roulette path termination
 
 ## Progress Updates
+
+### 2022-06-15 -- Implemented Russian Roulette Path Termination
+
+A description of Russian Roulette termination can be found in the `/resources` folder.
+I've also included comments in the relevant portion of code. The final image looks
+identical, but notice that the render time has gone down from 33 minutes to just 20
+minutes. This is a huge savings for just a few extra lines of code.
+
+| Config      | Value          |
+| ---         | ---            |
+| Resolution  | 512x512        |
+| Samples     | 10000          |
+| Threads     | 10             |
+| TMO         | Reinhard Jodie |
+| Render Time | 20m07s         |
+| Commit      | 153672b8       |
+
+![Cornell Box](./img/cornell_3.png "Cornell Box")
 
 ### 2022-06-15 -- Resolved vertical line artifacts
 
