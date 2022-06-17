@@ -17,6 +17,7 @@
 #ifndef VEC3_H
 #define VEC3_H
 
+#include <array>
 #include <bit>
 #include <cassert>
 #include <cstdint>
@@ -58,14 +59,13 @@ public:
       : x(x_a), y(y_a), z(z_a) {}
 
   /**
-   * Construct a Vec3 from a std::vector containing exactly
+   * Construct a Vec3 from a std::array containing exactly
    * three floats (x, y, z in that order)
    */
-  Vec3(const std::vector<float> vals) {
-    assert(vals.size() == 3);
-    x = vals[0];
-    y = vals[1];
-    z = vals[2];
+  Vec3(const std::array<float, 3> vals) {
+    x = vals.at(0);
+    y = vals.at(1);
+    z = vals.at(2);
   }
 
   /**

@@ -19,13 +19,11 @@
 
 #include "math.hpp"
 #include "ray.hpp"
+#include "util.hpp"
 #include "vec3.hpp"
 
 #include <math.h>
 #include <stdexcept>
-
-#include <boost/json.hpp>
-using namespace boost::json;
 
 namespace path_tracer {
 
@@ -83,11 +81,12 @@ public:
    */
   Camera(const object &obj, const float aspect_r) {
     const auto look_from_vec =
-        value_to<std::vector<float>>(obj.at("look_from"));
-    const auto look_at_vec = value_to<std::vector<float>>(obj.at("look_at"));
-    const auto vup_vec = value_to<std::vector<float>>(obj.at("vup"));
-    const auto vfov_f = value_to<float>(obj.at("vfov"));
-    const auto aperture_f = value_to<float>(obj.at("aperture"));
+        get<std::array<float, 3>>(obj, "look_from", "camera");
+    const auto look_at_vec =
+        get<std::array<float, 3>>(obj, "look_at", "camera");
+    const auto vup_vec = get<std::array<float, 3>>(obj, "vup", "camera");
+    const auto vfov_f = get<float>(obj, "vfov", "camera");
+    const auto aperture_f = get<float>(obj, "aperture", "camera");
 
     const CameraConstructor cam_constructor = {.look_from = Vec3(look_from_vec),
                                                .look_at = Vec3(look_at_vec),

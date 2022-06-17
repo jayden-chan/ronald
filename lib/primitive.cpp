@@ -19,15 +19,13 @@
 #include "math.hpp"
 #include "primitive.hpp"
 #include "ray.hpp"
+#include "util.hpp"
 #include "vec3.hpp"
-
-#include <boost/json.hpp>
-using namespace boost::json;
 
 namespace path_tracer {
 
 const std::shared_ptr<Primitive> Primitive::from_json(const object &obj) {
-  const auto type = value_to<std::string>(obj.at("type"));
+  const auto type = get<std::string>(obj, "type", "primitive");
 
   if (type == "triangle") {
     return std::make_shared<Triangle>(obj);
@@ -44,8 +42,8 @@ Sphere::Sphere(const Vec3 &center_a, const float radius_a)
     : center(center_a), radius(radius_a) {}
 
 Sphere::Sphere(const object &obj) {
-  const auto rad = value_to<float>(obj.at("radius"));
-  const auto center_vec = value_to<std::vector<float>>(obj.at("origin"));
+  const auto rad = get<float>(obj, "radius", "primitive");
+  const auto center_vec = get<std::array<float, 3>>(obj, "origin", "primitive");
   center = Vec3(center_vec);
   radius = rad;
 }
@@ -59,11 +57,10 @@ Triangle::Triangle(const Vec3 &v0_a, const Vec3 &v1_a, const Vec3 &v2_a,
 }
 
 Triangle::Triangle(const object &obj) {
-  const auto norm = value_to<float>(obj.at("normal"));
+  const auto norm = get<float>(obj, "normal", "primitive");
   const auto vertices =
-      value_to<std::vector<std::vector<float>>>(obj.at("vertices"));
+      get<std::array<std::array<float, 3>, 3>>(obj, "vertices", "primitive");
 
-  assert(vertices.size() == 3);
   const auto v1 = vertices[1];
   const auto v2 = vertices[2];
 

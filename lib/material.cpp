@@ -18,15 +18,13 @@
 #include "math.hpp"
 #include "primitive.hpp"
 #include "ray.hpp"
+#include "util.hpp"
 #include "vec3.hpp"
-
-#include <boost/json.hpp>
-using namespace boost::json;
 
 namespace path_tracer {
 
 const std::shared_ptr<Material> Material::from_json(const object &obj) {
-  const auto type = value_to<std::string>(obj.at("type"));
+  const auto type = get<std::string>(obj, "type", "material");
 
   if (type == "light") {
     return std::make_shared<Light>(obj);
@@ -50,7 +48,7 @@ const std::shared_ptr<Material> Material::from_json(const object &obj) {
 
 Lambertian::Lambertian(Vec3 _albedo) : albedo(_albedo){};
 Lambertian::Lambertian(const object &obj) {
-  const auto alb = value_to<std::vector<float>>(obj.at("albedo"));
+  const auto alb = get<std::array<float, 3>>(obj, "albedo", "primitive");
   albedo = Vec3(alb);
 }
 
@@ -63,7 +61,7 @@ std::optional<Scatter> Lambertian::scatter(__attribute__((unused)) Ray const &r,
 
 Light::Light(Vec3 _emittance) : emittance(_emittance){};
 Light::Light(const object &obj) {
-  const auto emit = value_to<std::vector<float>>(obj.at("emittance"));
+  const auto emit = get<std::array<float, 3>>(obj, "emittance", "primitive");
   emittance = Vec3(emit);
 }
 
@@ -86,7 +84,7 @@ Vec3 Light::emitted(Ray const &r, Intersection const &h) const {
 
 Reflector::Reflector(Vec3 _attenuation) : attenuation(_attenuation){};
 Reflector::Reflector(const object &obj) {
-  const auto atten = value_to<std::vector<float>>(obj.at("attenuation"));
+  const auto atten = get<std::array<float, 3>>(obj, "attenuation", "primitive");
   attenuation = Vec3(atten);
 }
 
@@ -107,7 +105,7 @@ std::optional<Scatter> Reflector::scatter(Ray const &r,
 
 Dielectric::Dielectric(const float _ref_idx) : refractive_index(_ref_idx){};
 Dielectric::Dielectric(const object &obj) {
-  refractive_index = value_to<float>(obj.at("refractive_index"));
+  refractive_index = get<float>(obj, "refractive_index", "primitive");
 }
 
 float schlick(const float cosine, const float ref_idx) {

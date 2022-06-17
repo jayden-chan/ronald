@@ -16,6 +16,7 @@
 
 #include "scene.hpp"
 #include "material.hpp"
+#include "util.hpp"
 #include "vec3.hpp"
 
 #include <boost/lockfree/queue.hpp>
@@ -29,11 +30,17 @@ constexpr size_t MAX_RECURSIVE_DEPTH = 15;
 const Object object_from_json(const object &obj,
                               const material_map &materials) {
 
-  const auto material_key = value_to<std::string>(obj.at("material"));
+  const auto material_key = get<std::string>(obj, "material", "objects");
+  if (!materials.contains(material_key)) {
+    throw std::runtime_error("Undefined reference to material \"" +
+                             material_key + "\"");
+  }
+
   const auto material = materials.at(material_key);
 
   return {
-      .primitive = Primitive::from_json(obj.at("primitive").as_object()),
+      .primitive =
+          Primitive::from_json(at(obj, "primitive", "objects").as_object()),
       .material = material,
   };
 }
@@ -120,6 +127,26 @@ Vec3 Scene::trace(const float u, const float v) const {
 
   // Max recursion depth reached -- return zero
   return Vec3::zeros();
+}
+
+std::optional<Scene> Scene::from_json(const object &obj, const float aspect_r) {
+  try {
+    const auto material_obj = at(obj, "materials").as_object();
+    const auto mats = materials_from_json(material_obj);
+
+    const auto json_objs = at(obj, "objects").as_array();
+    std::vector<Object> objs;
+    objs.reserve(json_objs.size());
+    for (const auto &o : json_objs) {
+      objs.push_back(object_from_json(o.as_object(), mats));
+    }
+
+    const auto cam = Camera(at(obj, "camera").as_object(), aspect_r);
+    return Scene(objs, mats, cam);
+  } catch (std::exception &e) {
+    std::cout << "ERROR: Failed to parse scene from JSON: " << e.what() << '\n';
+    return std::nullopt;
+  }
 }
 
 Image Scene::render_single_threaded(const Config &config) const {
