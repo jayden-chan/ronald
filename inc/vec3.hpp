@@ -62,7 +62,7 @@ public:
    * Construct a Vec3 from a std::array containing exactly
    * three floats (x, y, z in that order)
    */
-  Vec3(const std::array<float, 3> vals) {
+  explicit Vec3(const std::array<float, 3> vals) {
     x = vals.at(0);
     y = vals.at(1);
     z = vals.at(2);

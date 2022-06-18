@@ -72,7 +72,7 @@ public:
    * Construct a sphere from a JSON object containing
    * the `center` and `radius` fields
    */
-  Sphere(const object &obj);
+  explicit Sphere(const object &obj);
 
   std::optional<Intersection> hit(const Ray &r, float t_min,
                                   float t_max) const override;
@@ -101,7 +101,7 @@ public:
    * Construct a triangle from a JSON object containing the `vertices`, and
    * `normal` fields
    */
-  Triangle(const object &obj);
+  explicit Triangle(const object &obj);
 
   std::optional<Intersection> hit(const Ray &r, float t_min,
                                   float t_max) const override;

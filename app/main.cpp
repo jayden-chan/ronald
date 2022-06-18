@@ -43,7 +43,6 @@ int main(int argc, char **argv) {
   po::positional_options_description p;
   p.add("input-file", -1);
 
-  constexpr auto desc_written = "Usage: path_tracer [options] <scene.json>";
   po::variables_map vm;
 
   try {
@@ -52,6 +51,7 @@ int main(int argc, char **argv) {
         vm);
     po::notify(vm);
   } catch (po::error &e) {
+    constexpr auto desc_written = "Usage: path_tracer [options] <scene.json>";
     if (vm.count("help")) {
       std::cout << desc_written << "\n\n";
       std::cout << desc << '\n';

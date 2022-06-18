@@ -73,7 +73,7 @@ public:
   /**
    * Construct a new camera with the given input parameters
    */
-  Camera(const CameraConstructor &cam) { init(cam); }
+  explicit Camera(const CameraConstructor &cam) { init(cam); }
 
   /**
    * Construct a camera from a JSON object containing the relevant fields for

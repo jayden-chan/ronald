@@ -83,13 +83,13 @@ public:
   /**
    * Construct a Lambertian material from the given albedo vector
    */
-  Lambertian(Vec3 _albedo);
+  explicit Lambertian(Vec3 _albedo);
 
   /**
    * Construct a Lambertian material from the given JSON object containing
    * the `albedo` key.
    */
-  Lambertian(const object &obj);
+  explicit Lambertian(const object &obj);
   std::optional<Scatter> scatter(Ray const &r,
                                  Intersection const &h) const override;
 };
@@ -106,13 +106,13 @@ public:
   /**
    * Construct a Light material from the given albedo vector
    */
-  Light(Vec3 _emittance);
+  explicit Light(Vec3 _emittance);
 
   /**
    * Construct a Light material from the given JSON object containing
    * the `emittance` key.
    */
-  Light(const object &obj);
+  explicit Light(const object &obj);
   std::optional<Scatter> scatter(Ray const &r,
                                  Intersection const &h) const override;
   Vec3 emitted(Ray const &r, Intersection const &h) const override;
@@ -126,13 +126,13 @@ public:
   /**
    * Construct a Reflector material from the given attenuation vector
    */
-  Reflector(Vec3 _attenuation);
+  explicit Reflector(Vec3 _attenuation);
 
   /**
    * Construct a Reflector material from the given JSON object containing
    * the `attenuation` key.
    */
-  Reflector(const object &obj);
+  explicit Reflector(const object &obj);
   std::optional<Scatter> scatter(Ray const &r,
                                  Intersection const &h) const override;
 };
@@ -145,13 +145,13 @@ public:
   /**
    * Construct a Dielectric material from the given refractive index
    */
-  Dielectric(float _ref_idx);
+  explicit Dielectric(float _ref_idx);
 
   /**
    * Construct a Dielectric material from the given JSON object containing
    * the `refractive_index` key.
    */
-  Dielectric(const object &obj);
+  explicit Dielectric(const object &obj);
   std::optional<Scatter> scatter(Ray const &r,
                                  Intersection const &h) const override;
 };

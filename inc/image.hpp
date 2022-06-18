@@ -36,8 +36,9 @@ enum ToneMappingOperator {
 
 class Image {
   std::vector<Pixel> buffer;
-  size_t width, height;
-  ToneMappingOperator tmo;
+  size_t width = 0;
+  size_t height = 0;
+  ToneMappingOperator tmo = ReinhardJodie;
 
 public:
   Image() = default;

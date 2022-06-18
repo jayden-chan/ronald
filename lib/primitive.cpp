@@ -61,10 +61,10 @@ Triangle::Triangle(const object &obj) {
   const auto vertices =
       get<std::array<std::array<float, 3>, 3>>(obj, "vertices", "primitive");
 
-  const auto v1 = vertices[1];
-  const auto v2 = vertices[2];
+  const auto v1 = Vec3(vertices[1]);
+  const auto v2 = Vec3(vertices[2]);
 
-  v0 = vertices[0];
+  v0 = Vec3(vertices[0]);
   edge1 = v1 - v0;
   edge2 = v2 - v0;
   normal = edge1.cross(edge2).normalize() * norm;
