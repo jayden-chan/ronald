@@ -15,7 +15,7 @@ set(CMAKE_NM           "llvm-nm")
 set(CMAKE_OBJDUMP      "llvm-objdump")
 set(CMAKE_RANLIB       "llvm-ranlib")
 
-set(CMAKE_CXX_FLAGS         "-Wall -Wextra -Wpedantic -Wshadow -Wconversion -march=native -mavx -mavx2")
+set(CMAKE_CXX_FLAGS         "-Wall -Wextra -Wpedantic -Wshadow -Wconversion -pthread -march=native -mavx -mavx2")
 # we will use -O2 in debug since the performance will make testing
 # mostly unusable without optimization, especially with the sanitizers
 set(CMAKE_CXX_FLAGS_DEBUG   "-O2 -g -fsanitize=undefined -fsanitize=address")
@@ -26,6 +26,7 @@ if (DEFINED ENV{PT_THINLTO_YES})
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -flto=thin")
 endif()
 
+set(CMAKE_CXX_LINK_OPTIONS "-pthread")
 set(CMAKE_CXX_LINK_OPTIONS_DEBUG "-fsanitize=undefined -fsanitize=address -rdynamic")
 set(CMAKE_CXX_LINK_OPTIONS_RELEASE "")
 
