@@ -24,6 +24,8 @@
 #include <iostream>
 #include <limits>
 #include <optional>
+#include <stdexcept>
+#include <utility>
 
 #include "rand.hpp"
 
@@ -164,6 +166,29 @@ public:
    * Negate all elements of the vector
    */
   Vec3 operator-() const { return Vec3(-this->x, -this->y, -this->z); }
+
+  /**
+   * Access the elements of the vector by numeric index. 0=x, 1=y, 2=z
+   */
+  float operator[](const size_t idx) const {
+    assert(idx < 3);
+
+    switch (idx) {
+    case 0:
+      return x;
+    case 1:
+      return y;
+    case 2:
+      return z;
+    }
+
+    // I wanted to use std::unreachable() but that's C++23. This function should
+    // be undefined behavior when the index is out of range but I couldn't
+    // figure out a good way of making that happen without the compiler and
+    // linter complaining about the code paths that don't have a return
+    // statement. So I just put this here
+    abort();
+  }
 
   /**
    * Stream insertion operator
