@@ -72,12 +72,16 @@ std::optional<Hit> hit_objects(const std::vector<Object> &objs,
       .emitted = Vec3::zeros(),
   }};
 
-  for (const auto &o : objs) {
+  std::optional<Intersection> last_hit = std::nullopt;
+  size_t last_obj_hit = 0;
+
+  for (size_t i = 0; i < objs.size(); ++i) {
+    const auto &o = objs[i];
     const auto this_hit = o.primitive->hit(ray, T_MIN, min_so_far);
     if (this_hit.has_value()) {
       hit->hit = *this_hit;
-      hit->scatter = o.material->scatter(ray, *this_hit);
-      hit->emitted = o.material->emitted(ray, *this_hit);
+      last_hit = this_hit;
+      last_obj_hit = i;
 
       assert(this_hit->t < min_so_far);
       min_so_far = this_hit->t;
@@ -85,6 +89,10 @@ std::optional<Hit> hit_objects(const std::vector<Object> &objs,
   }
 
   if (min_so_far < f32_max) {
+    // Delay computing the scattered and emitted results until we've figured
+    // out which object we actually hit (if any)
+    hit->scatter = objs[last_obj_hit].material->scatter(ray, *last_hit);
+    hit->emitted = objs[last_obj_hit].material->emitted(ray, *last_hit);
     return hit;
   }
 
