@@ -37,7 +37,7 @@ set(Boost_USE_MULTITHREADED OFF)
 find_package(Catch2 2.13 REQUIRED)
 find_package(Boost COMPONENTS program_options json REQUIRED)
 
-include_directories(inc ${Boost_INCLUDE_DIR})
+include_directories(inc vendor ${Boost_INCLUDE_DIR})
 
 file(GLOB SOURCES "lib/*.cpp")
 file(GLOB PATH_TRACER_SOURCES "app/*.cpp")
@@ -49,6 +49,12 @@ add_executable(tests ${SOURCES} ${TEST_SOURCES})
 target_link_libraries(path_tracer Boost::program_options Boost::json)
 target_link_libraries(tests PRIVATE Catch2::Catch2 Boost::program_options Boost::json)
 
+add_definitions(-DDBG_MACRO_NO_WARNING)
+
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     add_definitions(-DDEBUG)
+endif()
+
+if (CMAKE_BUILD_TYPE STREQUAL "Release")
+    add_definitions(-DDBG_MACRO_DISABLE)
 endif()
