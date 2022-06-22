@@ -11,19 +11,22 @@
       "type": "light",
       "emittance": [1, 1, 1]
     }
-  }
+  },
   "objects": [
     {
+      "name": "white triangle",
       "material": "light",
-      "primitive": {
-        "type": "triangle",
-        "vertices": [
-          [0, 10, 0],
-          [-5, 0, 0],
-          [5, 0, 0]
-        ],
-        "normal": -1
-      }
+      "primitives": [
+        {
+          "type": "triangle",
+          "vertices": [
+            [0, 10, 0],
+            [-5, 0, 0],
+            [5, 0, 0]
+          ],
+          "normal": -1
+        }
+      ]
     }
   ]
 }

@@ -93,7 +93,15 @@ int main(int argc, char **argv) {
   opt.allow_trailing_commas = true;
 
   monotonic_resource mr;
-  const value jv = parse(sstr.str(), &mr, opt);
+  value jv;
+
+  try {
+    jv = parse(sstr.str(), &mr, opt);
+  } catch (std::exception &e) {
+    std::cout << "ERROR: Failed to parse JSON: " << e.what() << '\n';
+    return 1;
+  }
+
   const auto aspect_r = (float)config.width / (float)config.height;
   const auto scene = pt::Scene::from_json(jv.as_object(), aspect_r);
 

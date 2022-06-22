@@ -40,10 +40,11 @@ const Object object_from_json(const object &obj,
   }
 
   const auto material = materials.at(material_key);
+  const auto primitive =
+      Primitive::from_json(at(obj, "primitive", "objects").as_object());
 
   return {
-      .primitive =
-          Primitive::from_json(at(obj, "primitive", "objects").as_object()),
+      .primitive = primitive,
       .material = material,
   };
 }
@@ -147,17 +148,33 @@ Vec3 Scene::trace(const float u, const float v) const {
 std::optional<Scene> Scene::from_json(const object &obj, const float aspect_r) {
   try {
     const auto material_obj = at(obj, "materials").as_object();
-    const auto mats = materials_from_json(material_obj);
+    const auto materials = materials_from_json(material_obj);
 
     const auto json_objs = at(obj, "objects").as_array();
     std::vector<Object> objs;
     objs.reserve(json_objs.size());
+
     for (const auto &o : json_objs) {
-      objs.push_back(object_from_json(o.as_object(), mats));
+      const auto o_as_obj = o.as_object();
+      const auto material_key =
+          get<std::string>(o_as_obj, "material", "objects");
+
+      if (!materials.contains(material_key)) {
+        throw std::runtime_error("Undefined reference to material \"" +
+                                 material_key + "\"");
+      }
+
+      const auto material = materials.at(material_key);
+      const auto primitives = at(o_as_obj, "primitives", "objects");
+
+      for (const auto &p : primitives.as_array()) {
+        const auto primitive = Primitive::from_json(p.as_object());
+        objs.push_back({.primitive = primitive, .material = material});
+      }
     }
 
     const auto cam = Camera(at(obj, "camera").as_object(), aspect_r);
-    return Scene(objs, mats, cam);
+    return Scene(objs, materials, cam);
   } catch (std::exception &e) {
     std::cout << "ERROR: Failed to parse scene from JSON: " << e.what() << '\n';
     return std::nullopt;

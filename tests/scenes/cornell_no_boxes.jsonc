@@ -26,153 +26,152 @@
   },
   "objects": [
     {
+      "name": "light",
       "material": "light",
-      "primitive": {
-        "type": "triangle",
-        "vertices": [
-          [343.0, 549.999999, 227.0],
-          [343.0, 549.999999, 332.0],
-          [213.0, 549.999999, 332.0]
-        ],
-        "normal": 1
-      }
-    },
-    {
-      "material": "light",
-      "primitive": {
-        "type": "triangle",
-        "vertices": [
-          [343.0, 548.799999, 227.0],
-          [213.0, 548.799999, 332.0],
-          [213.0, 548.799999, 227.0]
-        ],
-        "normal": 1
-      }
+      "primitives": [
+        {
+          "type": "triangle",
+          "vertices": [
+            [344.25, 549.99, 206.25],
+            [344.25, 549.99, 344.25],
+            [206.25, 549.99, 344.25]
+          ],
+          "normal": 1
+        },
+        {
+          "type": "triangle",
+          "vertices": [
+            [344.25, 549.99, 206.25],
+            [206.25, 549.99, 344.25],
+            [206.25, 549.99, 206.25]
+          ],
+          "normal": 1
+        }
+      ]
     },
     // Floor
     {
+      "name": "floor",
       "material": "white",
-      "primitive": {
-        "type": "triangle",
-        "vertices": [
-          [550, 0.0, 0.0],
-          [0.0, 0.0, 0.0],
-          [0.0, 0.0, 550]
-        ],
-        "normal": 1
-      }
-    },
-    {
-      "material": "white",
-      "primitive": {
-        "type": "triangle",
-        "vertices": [
-          [550, 0.0, 0.0],
-          [0.0, 0.0, 550],
-          [550, 0.0, 550]
-        ],
-        "normal": 1
-      }
+      "primitives": [
+        {
+          "type": "triangle",
+          "vertices": [
+            [550, 0.0, 0.0],
+            [0.0, 0.0, 0.0],
+            [0.0, 0.0, 550]
+          ],
+          "normal": 1
+        },
+        {
+          "type": "triangle",
+          "vertices": [
+            [550, 0.0, 0.0],
+            [0.0, 0.0, 550],
+            [550, 0.0, 550]
+          ],
+          "normal": 1
+        }
+      ]
     },
     // Back wall
     {
+      "name": "back wall",
       "material": "white",
-      "primitive": {
-        "type": "triangle",
-        "vertices": [
-          [550, 0.0, 550],
-          [0.0, 0.0, 550],
-          [0.0, 550, 550]
-        ],
-        "normal": 1
-      }
-    },
-    {
-      "material": "white",
-      "primitive": {
-        "type": "triangle",
-        "vertices": [
-          [550, 0.0, 550],
-          [0.0, 550, 550],
-          [550, 550, 550]
-        ],
-        "normal": 1
-      }
+      "primitives": [
+        {
+          "type": "triangle",
+          "vertices": [
+            [550, 0.0, 550],
+            [0.0, 0.0, 550],
+            [0.0, 550, 550]
+          ],
+          "normal": 1
+        },
+        {
+          "type": "triangle",
+          "vertices": [
+            [550, 0.0, 550],
+            [0.0, 550, 550],
+            [550, 550, 550]
+          ],
+          "normal": 1
+        }
+      ]
     },
     // Right wall (green)
     {
+      "name": "right wall",
       "material": "green",
-      "primitive": {
-        "type": "triangle",
-        "vertices": [
-          [0.0, 0.0, 550],
-          [0.0, 0.0, 0.0],
-          [0.0, 550, 0.0]
-        ],
-        "normal": 1
-      }
-    },
-    {
-      "material": "green",
-      "primitive": {
-        "type": "triangle",
-        "vertices": [
-          [0.0, 0.0, 550],
-          [0.0, 550, 0.0],
-          [0.0, 550, 550]
-        ],
-        "normal": 1
-      }
+      "primitives": [
+        {
+          "type": "triangle",
+          "vertices": [
+            [0.0, 0.0, 550],
+            [0.0, 0.0, 0.0],
+            [0.0, 550, 0.0]
+          ],
+          "normal": 1
+        },
+        {
+          "type": "triangle",
+          "vertices": [
+            [0.0, 0.0, 550],
+            [0.0, 550, 0.0],
+            [0.0, 550, 550]
+          ],
+          "normal": 1
+        }
+      ]
     },
     // Left wall (red)
     {
       "material": "red",
-      "primitive": {
-        "type": "triangle",
-        "vertices": [
-          [550, 0.0, 0.0],
-          [550, 0.0, 550],
-          [550, 550, 550]
-        ],
-        "normal": 1
-      }
-    },
-    {
-      "material": "red",
-      "primitive": {
-        "type": "triangle",
-        "vertices": [
-          [550, 0.0, 0.0],
-          [550, 550, 550],
-          [550, 550, 0.0]
-        ],
-        "normal": 1
-      }
+      "primitives": [
+        {
+          "type": "triangle",
+          "vertices": [
+            [550, 0.0, 0.0],
+            [550, 0.0, 550],
+            [550, 550, 550]
+          ],
+          "normal": 1
+        },
+        {
+          "type": "triangle",
+          "vertices": [
+            [550, 0.0, 0.0],
+            [550, 550, 550],
+            [550, 550, 0.0]
+          ],
+          "normal": 1
+        }
+      ]
     },
     // Ceiling
     {
+      "name": "ceiling",
       "material": "white",
-      "primitive": {
-        "type": "triangle",
-        "vertices": [
-          [550, 550, 0.0],
-          [550, 550, 550],
-          [0.0, 550, 550]
-        ],
-        "normal": 1
-      }
+      "primitives": [
+        {
+          "type": "triangle",
+          "vertices": [
+            [550, 550, 0.0],
+            [550, 550, 550],
+            [0.0, 550, 550]
+          ],
+          "normal": 1
+        },
+        {
+          "type": "triangle",
+          "vertices": [
+            [550, 550, 0.0],
+            [0.0, 550, 550],
+            [0.0, 550, 0.0]
+          ],
+          "normal": 1
+        }
+      ]
     },
-    {
-      "material": "white",
-      "primitive": {
-        "type": "triangle",
-        "vertices": [
-          [550, 550, 0.0],
-          [0.0, 550, 550],
-          [0.0, 550, 0.0]
-        ],
-        "normal": 1
-      }
-    }
   ]
 }
