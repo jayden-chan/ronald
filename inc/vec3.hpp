@@ -271,41 +271,15 @@ inline Vec3 vector_reflect(const Vec3 &v, const Vec3 &n) {
   return v - 2.0f * v.dot(n) * n;
 }
 
-inline Vec3 refract(const Vec3 &uv, const Vec3 &n, float etai_over_etat) {
-  const auto cos_theta = fminf((-uv).dot(n), 1.0f);
-  Vec3 r_out_perp = etai_over_etat * (uv + cos_theta * n);
-  Vec3 r_out_parallel = -sqrtf(fabsf(1.0f - r_out_perp.length_squared())) * n;
-  return r_out_perp + r_out_parallel;
-}
-
-// inline std::optional<Vec3> vector_refract(const Vec3 &v_a, const Vec3 &n,
-//                                           const float ni_over_nt) {
-//   const auto v = v_a.normalize();
-//   const auto dt = v.dot(n);
-//   const auto discriminant = 1.0f - ni_over_nt * ni_over_nt * (1.0f - dt *
-//   dt);
-//
-//   if (discriminant > 0.0) {
-//     return ni_over_nt * (v - n * dt) - n * sqrtf(discriminant);
-//   }
-//   return std::nullopt;
-// }
-
 inline std::optional<Vec3> vector_refract(const Vec3 &v_a, const Vec3 &n,
                                           const float ni_over_nt) {
   const auto v = v_a.normalize();
   const auto dt = v.dot(n);
   const auto discriminant = 1.0f - ni_over_nt * ni_over_nt * (1.0f - dt * dt);
 
-  dbg(v);
-  dbg(n);
-  dbg(dt);
-  dbg(discriminant);
-
   // Ray refracts
   if (discriminant > 0.0) {
     const auto ret = ni_over_nt * (v - n * dt) - n * sqrtf(discriminant);
-    dbg(ret);
     return ret;
   }
 
