@@ -135,7 +135,7 @@ public:
    * 1 / sqrt(mag(vector))
    */
   [[nodiscard]] inline float inv_mag() const {
-    return 1.0f / sqrtf(this->length_squared());
+    return Q_rsqrt(this->length_squared());
   }
 
   /**
