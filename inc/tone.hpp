@@ -24,20 +24,22 @@ namespace path_tracer {
 constexpr float clamp_max = 1.0f;
 
 inline void tmo_clamp(Vec3 &pixel) {
-  if (pixel.x > clamp_max) {
-    pixel.x = clamp_max;
+  if (pixel.x() > clamp_max) {
+    pixel.set_x(clamp_max);
   }
-  if (pixel.y > clamp_max) {
-    pixel.y = clamp_max;
+
+  if (pixel.y() > clamp_max) {
+    pixel.set_y(clamp_max);
   }
-  if (pixel.z > clamp_max) {
-    pixel.z = clamp_max;
+
+  if (pixel.z() > clamp_max) {
+    pixel.set_z(clamp_max);
   }
 
   // This should never happen in normal circumstances unless someone
   // creates an invalid input such as a light source that has negative
   // emittance.
-  if (pixel.x < 0 || pixel.y < 0 || pixel.z < 0) {
+  if (pixel.x() < 0 || pixel.y() < 0 || pixel.z() < 0) {
     throw std::runtime_error("ERROR: Pixel value cannot be lower than zero");
   }
 }

@@ -115,8 +115,10 @@ Vec3 Scene::trace(const float u, const float v) const {
     // Terminate the path with a probability inversely proportional to the
     // current attenuation. Paths with lower contribution to the scene are more
     // likely to be terminated. This is known as "Russian Roulette" termination.
-    const auto p = std::max(total_attenuation.x,
-                            std::max(total_attenuation.y, total_attenuation.z));
+    const auto p =
+        std::max(total_attenuation.x(),
+                 std::max(total_attenuation.y(), total_attenuation.z()));
+
     if (random_float() > p) {
       return total_attenuation * total_emitted;
     }

@@ -22,39 +22,39 @@ using path_tracer::Vec3;
 
 TEST_CASE("Vector default constructor", "[vector]") {
   const Vec3 v;
-  REQUIRE(v.x == 0);
-  REQUIRE(v.y == 0);
-  REQUIRE(v.z == 0);
+  REQUIRE(v.x() == 0);
+  REQUIRE(v.y() == 0);
+  REQUIRE(v.z() == 0);
 }
 
 TEST_CASE("Vector initialization", "[vector]") {
   const auto v = Vec3(1, 2, 3);
-  REQUIRE(v.x == 1);
-  REQUIRE(v.y == 2);
-  REQUIRE(v.z == 3);
+  REQUIRE(v.x() == 1);
+  REQUIRE(v.y() == 2);
+  REQUIRE(v.z() == 3);
   REQUIRE(v == Vec3(1, 2, 3));
 }
 
 TEST_CASE("Vector zeros", "[vector]") {
   const auto v = Vec3::zeros();
-  REQUIRE(v.x == 0);
-  REQUIRE(v.y == 0);
-  REQUIRE(v.z == 0);
+  REQUIRE(v.x() == 0);
+  REQUIRE(v.y() == 0);
+  REQUIRE(v.z() == 0);
 }
 
 TEST_CASE("Vector ones", "[vector]") {
   const auto v = Vec3::ones();
-  REQUIRE(v.x == 1);
-  REQUIRE(v.y == 1);
-  REQUIRE(v.z == 1);
+  REQUIRE(v.x() == 1);
+  REQUIRE(v.y() == 1);
+  REQUIRE(v.z() == 1);
 }
 
 TEST_CASE("Vector normalize", "[vector]") {
   const auto v = Vec3(1, 2, 3);
   const auto result = v.normalize();
-  REQUIRE(result.x == Approx(0.2672612));
-  REQUIRE(result.y == Approx(0.5345225));
-  REQUIRE(result.z == Approx(0.8017837));
+  REQUIRE(result.x() == Approx(0.2672612));
+  REQUIRE(result.y() == Approx(0.5345225));
+  REQUIRE(result.z() == Approx(0.8017837));
   REQUIRE(v == Vec3(1, 2, 3));
 }
 

@@ -107,7 +107,7 @@ public:
    */
   Ray get_ray(const float s, const float t) const {
     const auto rd = lens_radius * random_in_unit_disk();
-    const auto offset = u * rd.x + v * rd.y;
+    const auto offset = u * rd.x() + v * rd.y();
 
     const auto ori = origin + offset;
     const auto dir =

@@ -51,26 +51,28 @@ constexpr float Q_rsqrt(const float number) noexcept {
 }
 
 class Vec3 {
-public:
-  float x = 0;
-  float y = 0;
-  float z = 0;
+private:
+  float v[3] = {0.0f, 0.0f, 0.0f};
 
+public:
   constexpr Vec3() = default;
   /**
    * Construct a Vec3 from x, y, and z values
    */
-  constexpr Vec3(const float x_a, const float y_a, const float z_a)
-      : x(x_a), y(y_a), z(z_a) {}
+  constexpr Vec3(const float x, const float y, const float z) {
+    v[0] = x;
+    v[1] = y;
+    v[2] = z;
+  }
 
   /**
    * Construct a Vec3 from a std::array containing exactly
    * three floats (x, y, z in that order)
    */
   explicit Vec3(const std::array<float, 3> vals) {
-    x = vals.at(0);
-    y = vals.at(1);
-    z = vals.at(2);
+    v[0] = vals.at(0);
+    v[1] = vals.at(1);
+    v[2] = vals.at(2);
   }
 
   /**
@@ -92,50 +94,87 @@ public:
   }
 
   /**
+   * Access the x value
+   */
+  [[nodiscard]] inline float x() const noexcept { return v[0]; }
+
+  /**
+   * Access the y value
+   */
+  [[nodiscard]] inline float y() const { return v[1]; }
+
+  /**
+   * Access the z value
+   */
+  [[nodiscard]] inline float z() const { return v[2]; }
+
+  /**
+   * Set the x value
+   */
+  inline void set_x(const float val) noexcept { v[0] = val; }
+
+  /**
+   * Set the y value
+   */
+  inline void set_y(const float val) noexcept { v[1] = val; }
+
+  /**
+   * Set the z value
+   */
+  inline void set_z(const float val) noexcept { v[2] = val; }
+
+  /**
    * Return a vector with the same direction but with length 1
    */
-  inline Vec3 normalize() const {
+  [[nodiscard]] inline Vec3 normalize() const {
     const auto mag_inv = this->inv_mag();
-    return Vec3(x * mag_inv, y * mag_inv, z * mag_inv);
+    return Vec3(v[0] * mag_inv, v[1] * mag_inv, v[2] * mag_inv);
   }
 
   /**
    * 1 / sqrt(mag(vector))
    */
-  inline float inv_mag() const { return 1.0f / sqrtf(this->length_squared()); }
+  [[nodiscard]] inline float inv_mag() const {
+    return 1.0f / sqrtf(this->length_squared());
+  }
 
   /**
    * Length of the vector
    */
-  inline float length() const noexcept { return sqrtf(this->length_squared()); }
+  [[nodiscard]] inline float length() const noexcept {
+    return sqrtf(this->length_squared());
+  }
 
   /**
    * Length squared (faster than length since it avoids the sqrt)
    */
-  inline float length_squared() const noexcept { return x * x + y * y + z * z; }
+  [[nodiscard]] inline float length_squared() const noexcept {
+    return v[0] * v[0] + v[1] * v[1] + v[2] * v[2];
+  }
 
   /**
    * dot product of two vectors
    */
-  inline float dot(const Vec3 &rhs) const noexcept {
-    return x * rhs.x + y * rhs.y + z * rhs.z;
+  [[nodiscard]] inline float dot(const Vec3 &rhs) const noexcept {
+    return v[0] * rhs.x() + v[1] * rhs.y() + v[2] * rhs.z();
   }
 
   /**
    * cross product of two vectors
    */
-  inline Vec3 cross(const Vec3 &rhs) const noexcept {
-    return Vec3(y * rhs.z - z * rhs.y, z * rhs.x - x * rhs.z,
-                x * rhs.y - y * rhs.x);
+  [[nodiscard]] inline Vec3 cross(const Vec3 &rhs) const noexcept {
+    return Vec3(v[1] * rhs.z() - v[2] * rhs.y(),
+                v[2] * rhs.x() - v[0] * rhs.z(),
+                v[0] * rhs.y() - v[1] * rhs.x());
   }
 
   /**
    * Add another vector to this vector
    */
-  Vec3 &operator+=(const Vec3 &v) noexcept {
-    x += v.x;
-    y += v.y;
-    z += v.z;
+  Vec3 &operator+=(const Vec3 &rhs) noexcept {
+    v[0] += rhs.x();
+    v[1] += rhs.y();
+    v[2] += rhs.z();
     return *this;
   }
 
@@ -143,19 +182,19 @@ public:
    * Multiply all vector elements by a constant
    */
   Vec3 &operator*=(const float t) noexcept {
-    x *= t;
-    y *= t;
-    z *= t;
+    v[0] *= t;
+    v[1] *= t;
+    v[2] *= t;
     return *this;
   }
 
   /**
    * Multiply-assign vector element-wise between this vector and rhs
    */
-  Vec3 &operator*=(const Vec3 v) noexcept {
-    x *= v.x;
-    y *= v.y;
-    z *= v.z;
+  Vec3 &operator*=(const Vec3 rhs) noexcept {
+    v[0] *= rhs.x();
+    v[1] *= rhs.y();
+    v[2] *= rhs.z();
     return *this;
   }
 
@@ -167,36 +206,22 @@ public:
   /**
    * Negate all elements of the vector
    */
-  Vec3 operator-() const { return Vec3(-this->x, -this->y, -this->z); }
+  [[nodiscard]] Vec3 operator-() const { return Vec3(-v[0], -v[1], -v[2]); }
 
   /**
-   * Access the elements of the vector by numeric index. 0=x, 1=y, 2=z
+   * Access the elements of the vector by numeric index. 0=x, 1=y, 2=z.
+   * Any index less than zero or greater than 2 is undefined behavior
    */
   float operator[](const size_t idx) const {
     assert(idx < 3);
-
-    switch (idx) {
-    case 0:
-      return x;
-    case 1:
-      return y;
-    case 2:
-      return z;
-    }
-
-    // I wanted to use std::unreachable() but that's C++23. This function should
-    // be undefined behavior when the index is out of range but I couldn't
-    // figure out a good way of making that happen without the compiler and
-    // linter complaining about the code paths that don't have a return
-    // statement. So I just put this here
-    abort();
+    return v[idx];
   }
 
   /**
    * Stream insertion operator
    */
   friend std::ostream &operator<<(std::ostream &output, const Vec3 &V) {
-    output << "[ " << V.x << " " << V.y << " " << V.z << " ]";
+    output << "[ " << V.x() << " " << V.y() << " " << V.z() << " ]";
     return output;
   }
 };
@@ -208,53 +233,58 @@ public:
 /**
  * Add two vectors together
  */
-inline Vec3 operator+(const Vec3 &lhs, const Vec3 &rhs) noexcept {
-  return Vec3(lhs.x + rhs.x, lhs.y + rhs.y, lhs.z + rhs.z);
+[[nodiscard]] inline Vec3 operator+(const Vec3 &lhs, const Vec3 &rhs) noexcept {
+  return Vec3(lhs.x() + rhs.x(), lhs.y() + rhs.y(), lhs.z() + rhs.z());
 }
 
 /**
  * Add a constant to all elements of a vector
  */
-inline Vec3 operator+(const Vec3 &lhs, const float &rhs) noexcept {
-  return Vec3(lhs.x + rhs, lhs.y + rhs, lhs.z + rhs);
+[[nodiscard]] inline Vec3 operator+(const Vec3 &lhs,
+                                    const float &rhs) noexcept {
+  return Vec3(lhs.x() + rhs, lhs.y() + rhs, lhs.z() + rhs);
 }
 
 /**
  * Subtract one vector from another
  */
-inline Vec3 operator-(const Vec3 &lhs, const Vec3 &rhs) noexcept {
-  return Vec3(lhs.x - rhs.x, lhs.y - rhs.y, lhs.z - rhs.z);
+[[nodiscard]] inline Vec3 operator-(const Vec3 &lhs, const Vec3 &rhs) noexcept {
+  return Vec3(lhs.x() - rhs.x(), lhs.y() - rhs.y(), lhs.z() - rhs.z());
 }
 
 /**
  * Multiply two vectors element-wise
  */
-inline Vec3 operator*(const Vec3 &lhs, const Vec3 &rhs) noexcept {
-  return Vec3(lhs.x * rhs.x, lhs.y * rhs.y, lhs.z * rhs.z);
+[[nodiscard]] inline Vec3 operator*(const Vec3 &lhs, const Vec3 &rhs) noexcept {
+  return Vec3(lhs.x() * rhs.x(), lhs.y() * rhs.y(), lhs.z() * rhs.z());
 }
 
 /**
  * Multiply a vector by a constant element-wise
  */
-inline Vec3 operator*(const float t, const Vec3 &v) noexcept {
-  return Vec3(t * v.x, t * v.y, t * v.z);
+[[nodiscard]] inline Vec3 operator*(const float t, const Vec3 &v) noexcept {
+  return Vec3(t * v.x(), t * v.y(), t * v.z());
 }
 
 /**
  * Multiply a vector by a constant element-wise
  */
-inline Vec3 operator*(const Vec3 &v, const float t) noexcept { return t * v; }
+[[nodiscard]] inline Vec3 operator*(const Vec3 &v, const float t) noexcept {
+  return t * v;
+}
 
 /**
  * Divide a vector by a constant
  */
-inline Vec3 operator/(const Vec3 &v, const float t) { return (1 / t) * v; }
+[[nodiscard]] inline Vec3 operator/(const Vec3 &v, const float t) {
+  return (1 / t) * v;
+}
 
 /**
  * Divide two vectors element-wise
  */
-inline Vec3 operator/(const Vec3 &lhs, const Vec3 &rhs) {
-  return Vec3(lhs.x / rhs.x, lhs.y / rhs.y, lhs.z / rhs.z);
+[[nodiscard]] inline Vec3 operator/(const Vec3 &lhs, const Vec3 &rhs) {
+  return Vec3(lhs.x() / rhs.x(), lhs.y() / rhs.y(), lhs.z() / rhs.z());
 }
 
 /**
@@ -262,17 +292,17 @@ inline Vec3 operator/(const Vec3 &lhs, const Vec3 &rhs) {
  * within `EPSILON` of each other. This function is used for unit testing
  * only for now
  */
-inline bool operator==(const Vec3 &lhs, const Vec3 &rhs) {
-  return (abs(lhs.x - rhs.x) < EPSILON && abs(lhs.y - rhs.y) < EPSILON &&
-          abs(lhs.z - rhs.z) < EPSILON);
+[[nodiscard]] inline bool operator==(const Vec3 &lhs, const Vec3 &rhs) {
+  return (abs(lhs.x() - rhs.x()) < EPSILON &&
+          abs(lhs.y() - rhs.y()) < EPSILON && abs(lhs.z() - rhs.z()) < EPSILON);
 }
 
-inline Vec3 vector_reflect(const Vec3 &v, const Vec3 &n) {
+[[nodiscard]] inline Vec3 vector_reflect(const Vec3 &v, const Vec3 &n) {
   return v - 2.0f * v.dot(n) * n;
 }
 
-inline std::optional<Vec3> vector_refract(const Vec3 &v_a, const Vec3 &n,
-                                          const float ni_over_nt) {
+[[nodiscard]] inline std::optional<Vec3>
+vector_refract(const Vec3 &v_a, const Vec3 &n, const float ni_over_nt) {
   const auto v = v_a.normalize();
   const auto dt = v.dot(n);
   const auto discriminant = 1.0f - ni_over_nt * ni_over_nt * (1.0f - dt * dt);

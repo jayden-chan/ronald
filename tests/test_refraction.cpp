@@ -69,8 +69,8 @@ TEST_CASE("vertexwahn refraction case A", "[refract][vertexwahn]") {
   const auto refracted = vector_refract(incident, normal, ref_idx);
   REQUIRE(refracted.has_value());
   const auto normalized = refracted->normalize();
-  REQUIRE(normalized.x == Approx(-0.441975594f).epsilon(0.001f));
-  REQUIRE(normalized.y == Approx(-0.897027075f).epsilon(0.001f));
+  REQUIRE(normalized.x() == Approx(-0.441975594f).epsilon(0.001f));
+  REQUIRE(normalized.y() == Approx(-0.897027075f).epsilon(0.001f));
 }
 
 TEST_CASE("vertexwahn refraction case B", "[refract][vertexwahn]") {

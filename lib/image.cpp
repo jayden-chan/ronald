@@ -49,9 +49,9 @@ void Image::write(const std::string &path) const {
   file << "255\n";
 
   for (const auto p : this->buffer) {
-    const auto r = (sqrt(p.x) * EIGHT_BIT_MAX_F);
-    const auto g = (sqrt(p.y) * EIGHT_BIT_MAX_F);
-    const auto b = (sqrt(p.z) * EIGHT_BIT_MAX_F);
+    const auto r = (sqrt(p.x()) * EIGHT_BIT_MAX_F);
+    const auto g = (sqrt(p.y()) * EIGHT_BIT_MAX_F);
+    const auto b = (sqrt(p.z()) * EIGHT_BIT_MAX_F);
     assert(r >= 0 && r <= EIGHT_BIT_MAX_F);
     assert(g >= 0 && g <= EIGHT_BIT_MAX_F);
     assert(b >= 0 && b <= EIGHT_BIT_MAX_F);
