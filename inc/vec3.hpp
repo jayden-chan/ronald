@@ -27,7 +27,10 @@
 #include <stdexcept>
 #include <utility>
 
+#include "dbg.h"
 #include "rand.hpp"
+
+constexpr float EPSILON = 0.00000001F;
 
 namespace path_tracer {
 
@@ -71,7 +74,8 @@ public:
   }
 
   /**
-   * Vector of just zeros
+   * Vector of just zeros. The default constructor is all zeros as well but this
+   * is a bit more clear in the code
    */
   static constexpr Vec3 zeros() noexcept { return Vec3(0.0, 0.0, 0.0); }
 
@@ -90,17 +94,15 @@ public:
   /**
    * Return a vector with the same direction but with length 1
    */
-  inline Vec3 normalize() const noexcept {
-    auto mag_inv = this->inv_mag();
+  inline Vec3 normalize() const {
+    const auto mag_inv = this->inv_mag();
     return Vec3(x * mag_inv, y * mag_inv, z * mag_inv);
   }
 
   /**
    * 1 / sqrt(mag(vector))
    */
-  inline float inv_mag() const noexcept {
-    return Q_rsqrt((x * x) + (y * y) + (z * z));
-  }
+  inline float inv_mag() const { return 1.0f / sqrtf(this->length_squared()); }
 
   /**
    * Length of the vector
@@ -206,29 +208,29 @@ public:
 /**
  * Add two vectors together
  */
-inline Vec3 operator+(const Vec3 &u, const Vec3 &v) noexcept {
-  return Vec3(u.x + v.x, u.y + v.y, u.z + v.z);
+inline Vec3 operator+(const Vec3 &lhs, const Vec3 &rhs) noexcept {
+  return Vec3(lhs.x + rhs.x, lhs.y + rhs.y, lhs.z + rhs.z);
 }
 
 /**
  * Add a constant to all elements of a vector
  */
-inline Vec3 operator+(const Vec3 &u, const float &rhs) noexcept {
-  return Vec3(u.x + rhs, u.y + rhs, u.z + rhs);
+inline Vec3 operator+(const Vec3 &lhs, const float &rhs) noexcept {
+  return Vec3(lhs.x + rhs, lhs.y + rhs, lhs.z + rhs);
 }
 
 /**
  * Subtract one vector from another
  */
-inline Vec3 operator-(const Vec3 &u, const Vec3 &v) noexcept {
-  return Vec3(u.x - v.x, u.y - v.y, u.z - v.z);
+inline Vec3 operator-(const Vec3 &lhs, const Vec3 &rhs) noexcept {
+  return Vec3(lhs.x - rhs.x, lhs.y - rhs.y, lhs.z - rhs.z);
 }
 
 /**
  * Multiply two vectors element-wise
  */
-inline Vec3 operator*(const Vec3 &u, const Vec3 &v) noexcept {
-  return Vec3(u.x * v.x, u.y * v.y, u.z * v.z);
+inline Vec3 operator*(const Vec3 &lhs, const Vec3 &rhs) noexcept {
+  return Vec3(lhs.x * rhs.x, lhs.y * rhs.y, lhs.z * rhs.z);
 }
 
 /**
@@ -255,21 +257,60 @@ inline Vec3 operator/(const Vec3 &lhs, const Vec3 &rhs) {
   return Vec3(lhs.x / rhs.x, lhs.y / rhs.y, lhs.z / rhs.z);
 }
 
+/**
+ * Vectors will be considered equal if all of their elements are
+ * within `EPSILON` of each other. This function is used for unit testing
+ * only for now
+ */
+inline bool operator==(const Vec3 &lhs, const Vec3 &rhs) {
+  return (abs(lhs.x - rhs.x) < EPSILON && abs(lhs.y - rhs.y) < EPSILON &&
+          abs(lhs.z - rhs.z) < EPSILON);
+}
+
 inline Vec3 vector_reflect(const Vec3 &v, const Vec3 &n) {
   return v - 2.0f * v.dot(n) * n;
 }
 
-inline std::optional<Vec3> vector_refract(const Vec3 &v, const Vec3 &n,
+inline Vec3 refract(const Vec3 &uv, const Vec3 &n, float etai_over_etat) {
+  const auto cos_theta = fminf((-uv).dot(n), 1.0f);
+  Vec3 r_out_perp = etai_over_etat * (uv + cos_theta * n);
+  Vec3 r_out_parallel = -sqrtf(fabsf(1.0f - r_out_perp.length_squared())) * n;
+  return r_out_perp + r_out_parallel;
+}
+
+// inline std::optional<Vec3> vector_refract(const Vec3 &v_a, const Vec3 &n,
+//                                           const float ni_over_nt) {
+//   const auto v = v_a.normalize();
+//   const auto dt = v.dot(n);
+//   const auto discriminant = 1.0f - ni_over_nt * ni_over_nt * (1.0f - dt *
+//   dt);
+//
+//   if (discriminant > 0.0) {
+//     return ni_over_nt * (v - n * dt) - n * sqrtf(discriminant);
+//   }
+//   return std::nullopt;
+// }
+
+inline std::optional<Vec3> vector_refract(const Vec3 &v_a, const Vec3 &n,
                                           const float ni_over_nt) {
-  const auto v1 = v.normalize();
-  const auto dt = v1.dot(n);
+  const auto v = v_a.normalize();
+  const auto dt = v.dot(n);
   const auto discriminant = 1.0f - ni_over_nt * ni_over_nt * (1.0f - dt * dt);
 
+  dbg(v);
+  dbg(n);
+  dbg(dt);
+  dbg(discriminant);
+
+  // Ray refracts
   if (discriminant > 0.0) {
-    return ni_over_nt * (v1 - n * dt) - n * sqrtf(discriminant);
-  } else {
-    return std::nullopt;
+    const auto ret = ni_over_nt * (v - n * dt) - n * sqrtf(discriminant);
+    dbg(ret);
+    return ret;
   }
+
+  // Total internal reflection
+  return std::nullopt;
 }
 
 } // namespace path_tracer
