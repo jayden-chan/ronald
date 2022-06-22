@@ -61,4 +61,10 @@ std::optional<Intersection> Sphere::hit(const Ray &r, const float t_min,
       .t = root,
   }};
 }
+
+AABB Sphere::aabb() const {
+  return AABB(center - Vec3(radius, radius, radius),
+              center + Vec3(radius, radius, radius));
+}
+
 } // namespace path_tracer

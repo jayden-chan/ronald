@@ -33,10 +33,10 @@ Triangle::Triangle(const object &obj) {
   const auto vertices =
       get<std::array<std::array<float, 3>, 3>>(obj, "vertices", "primitive");
 
-  const auto v1 = Vec3(vertices[1]);
-  const auto v2 = Vec3(vertices[2]);
-
   v0 = Vec3(vertices[0]);
+  v1 = Vec3(vertices[1]);
+  v2 = Vec3(vertices[2]);
+
   edge1 = v1 - v0;
   edge2 = v2 - v0;
   normal = edge1.cross(edge2).normalize() * norm;
@@ -84,6 +84,23 @@ std::optional<Intersection> Triangle::hit(const Ray &r, const float t_min,
   }
 
   return std::nullopt;
+}
+
+AABB Triangle::aabb() const {
+  const auto min_x =
+      std::min(std::min(v0.x(), v1.x()), std::min(v1.x(), v2.x()));
+  const auto min_y =
+      std::min(std::min(v0.y(), v1.y()), std::min(v1.y(), v2.y()));
+  const auto min_z =
+      std::min(std::min(v0.z(), v1.z()), std::min(v1.z(), v2.z()));
+  const auto max_x =
+      std::max(std::max(v0.x(), v1.x()), std::max(v1.x(), v2.x()));
+  const auto max_y =
+      std::max(std::max(v0.y(), v1.y()), std::max(v1.y(), v2.y()));
+  const auto max_z =
+      std::max(std::max(v0.z(), v1.z()), std::max(v1.z(), v2.z()));
+
+  return AABB(Vec3(min_x, min_y, min_z), Vec3(max_x, max_y, max_z));
 }
 
 } // namespace path_tracer

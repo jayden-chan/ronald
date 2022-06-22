@@ -17,6 +17,7 @@
 #ifndef PRIMITIVE_H
 #define PRIMITIVE_H
 
+#include "aabb.hpp"
 #include "ray.hpp"
 #include "vec3.hpp"
 
@@ -49,6 +50,11 @@ public:
                                           float t_max) const = 0;
 
   /**
+   * Fetch the AABB that encloses this primitive
+   */
+  virtual AABB aabb() const = 0;
+
+  /**
    * Construct a boxed Primitive from the given JSON value.
    */
   static const std::shared_ptr<Primitive> from_json(const object &obj);
@@ -76,6 +82,7 @@ public:
 
   std::optional<Intersection> hit(const Ray &r, float t_min,
                                   float t_max) const override;
+  virtual AABB aabb() const override;
 };
 
 /**
@@ -85,6 +92,8 @@ public:
  */
 class Triangle : public Primitive {
   Vec3 v0;
+  Vec3 v1;
+  Vec3 v2;
   Vec3 normal;
   Vec3 edge1;
   Vec3 edge2;
@@ -105,6 +114,7 @@ public:
 
   std::optional<Intersection> hit(const Ray &r, float t_min,
                                   float t_max) const override;
+  virtual AABB aabb() const override;
 };
 
 } // namespace path_tracer
