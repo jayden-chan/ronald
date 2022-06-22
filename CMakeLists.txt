@@ -19,7 +19,8 @@ set(CMAKE_CXX_FLAGS         "-Wall -Wextra -Wpedantic -Wshadow -Wconversion -pth
 # we will use -O2 in debug since the performance will make testing
 # mostly unusable without optimization, especially with the sanitizers
 set(CMAKE_CXX_FLAGS_DEBUG   "-O2 -g -fsanitize=undefined -fsanitize=address")
-set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
+set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O3 -g")
+set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
 # LTO doesn't work on the lab machines so just use it locally
 if (DEFINED ENV{PT_THINLTO_YES})
@@ -28,6 +29,7 @@ endif()
 
 set(CMAKE_CXX_LINK_OPTIONS "-pthread")
 set(CMAKE_CXX_LINK_OPTIONS_DEBUG "-fsanitize=undefined -fsanitize=address -rdynamic")
+set(CMAKE_CXX_LINK_OPTIONS_RELWITHDEBINFO "")
 set(CMAKE_CXX_LINK_OPTIONS_RELEASE "")
 
 set(CMAKE_CXX_STANDARD 20)
@@ -56,5 +58,11 @@ if (CMAKE_BUILD_TYPE STREQUAL "Debug")
 endif()
 
 if (CMAKE_BUILD_TYPE STREQUAL "Release")
+    add_definitions(-DDBG_MACRO_DISABLE)
+    add_definitions(-DNDEBUG)
+endif()
+
+if (CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
+    add_definitions(-DDEBUG)
     add_definitions(-DDBG_MACRO_DISABLE)
 endif()
