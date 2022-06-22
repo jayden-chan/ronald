@@ -24,8 +24,8 @@
 
 namespace path_tracer {
 
-// 15 bounces should be more than enough for most scenes
-constexpr size_t MAX_RECURSIVE_DEPTH = 15;
+// 20 bounces should be more than enough for most scenes
+constexpr size_t MAX_RECURSIVE_DEPTH = 20;
 
 const Object object_from_json(const object &obj,
                               const material_map &materials) {
