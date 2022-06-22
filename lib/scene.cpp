@@ -16,11 +16,14 @@
 
 #include "scene.hpp"
 #include "material.hpp"
+#include "progress.hpp"
 #include "util.hpp"
 #include "vec3.hpp"
 
 #include <boost/lockfree/queue.hpp>
 #include <thread>
+
+using namespace std::chrono_literals;
 
 namespace path_tracer {
 
@@ -162,11 +165,13 @@ Image Scene::render_single_threaded(const Config &config) const {
   auto img = Image(width, height, ReinhardJodie);
 
   for (size_t y = 0; y < height; ++y) {
+    const auto yf = static_cast<float>(height - 1 - y);
+
     for (size_t x = 0; x < width; ++x) {
+      const auto xf = static_cast<float>(x);
+
       auto curr_pixel = Vec3::zeros();
       for (size_t i = 0; i < config.samples; ++i) {
-        const auto xf = static_cast<float>(x);
-        const auto yf = static_cast<float>(height - 1 - y);
         const auto u = (xf + random_float()) / widthf;
         const auto v = (yf + random_float()) / heightf;
         curr_pixel += trace(u, v);
@@ -175,8 +180,11 @@ Image Scene::render_single_threaded(const Config &config) const {
       curr_pixel /= samplesf;
       img.set_pixel(x, y, curr_pixel);
     }
+
+    print_progress((float)y / heightf);
   }
 
+  std::cout << std::endl;
   return img;
 }
 
@@ -191,17 +199,20 @@ Image Scene::render_multi_threaded(const Config &config) const {
 
   auto img = Image(width, height, ReinhardJodie);
 
-  boost::lockfree::queue<size_t> rows(num_threads);
-  rows.reserve(height);
+  boost::lockfree::queue<size_t> in_progress_rows(num_threads);
+  boost::lockfree::queue<size_t> completed_rows(num_threads);
+  in_progress_rows.reserve(height);
+  completed_rows.reserve(height);
+
   for (size_t i = 0; i < height; ++i) {
-    rows.push(i);
+    in_progress_rows.push(i);
   }
 
   // the code our threads will execute
   const auto thread_func = [&]() {
     size_t row_to_render = 0;
     for (;;) {
-      const auto did_pop = rows.pop(row_to_render);
+      const auto did_pop = in_progress_rows.pop(row_to_render);
 
       // No more rows to render -- terminate the thread
       if (!did_pop) {
@@ -209,6 +220,7 @@ Image Scene::render_multi_threaded(const Config &config) const {
       }
 
       const auto y = row_to_render;
+      const auto yf = static_cast<float>(height - 1 - y);
 
       // We did get a row to render -- go ahead and render it
       // THREAD SAFETY: geometry and material info from `this` is being
@@ -218,10 +230,10 @@ Image Scene::render_multi_threaded(const Config &config) const {
       // threads. This is also fine since the write portions of the array will
       // be non-overlapping
       for (size_t x = 0; x < width; ++x) {
+        const auto xf = static_cast<float>(x);
+
         auto curr_pixel = Vec3::zeros();
         for (size_t i = 0; i < samples; ++i) {
-          const auto xf = static_cast<float>(x);
-          const auto yf = static_cast<float>(height - 1 - y);
           const auto u = (xf + random_float()) / widthf;
           const auto v = (yf + random_float()) / heightf;
           curr_pixel += trace(u, v);
@@ -230,6 +242,8 @@ Image Scene::render_multi_threaded(const Config &config) const {
         curr_pixel /= samplesf;
         img.set_pixel(x, y, curr_pixel);
       }
+
+      completed_rows.push(row_to_render);
     }
   };
 
@@ -239,6 +253,27 @@ Image Scene::render_multi_threaded(const Config &config) const {
   for (size_t i = 0; i < num_threads; ++i) {
     threads.emplace_back(std::thread(thread_func));
   }
+
+  size_t rows_completed = 0;
+
+  // There's no way to "block on" the output queue so we'll just read it
+  // every 300ms
+  for (;;) {
+    size_t tmp;
+    while (completed_rows.pop(tmp)) {
+      rows_completed += 1;
+    }
+
+    print_progress((float)rows_completed / heightf);
+
+    if (rows_completed == height) {
+      break;
+    }
+
+    std::this_thread::sleep_for(300ms);
+  }
+
+  std::cout << std::endl;
 
   // wait for completion
   for (auto &thread : threads) {
