@@ -59,7 +59,9 @@ material_map materials_from_json(const object &obj) {
 
 std::optional<Hit> hit_objects(const std::vector<Object> &objs,
                                const Ray &ray) {
-  const auto f32_max = std::numeric_limits<float>::max();
+  constexpr float T_MIN = 0.0005f;
+  constexpr auto f32_max = std::numeric_limits<float>::max();
+
   auto min_so_far = f32_max;
   std::optional<Hit> hit = {{
       .hit = {Vec3::zeros(), Vec3::zeros(), 0.0},
@@ -68,7 +70,7 @@ std::optional<Hit> hit_objects(const std::vector<Object> &objs,
   }};
 
   for (const auto &o : objs) {
-    const auto this_hit = o.primitive->hit(ray, 0.000005F, min_so_far);
+    const auto this_hit = o.primitive->hit(ray, T_MIN, min_so_far);
     if (this_hit.has_value()) {
       hit->hit = *this_hit;
       hit->scatter = o.material->scatter(ray, *this_hit);
