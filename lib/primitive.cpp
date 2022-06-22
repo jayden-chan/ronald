@@ -72,32 +72,34 @@ Triangle::Triangle(const object &obj) {
 
 std::optional<Intersection> Sphere::hit(const Ray &r, const float t_min,
                                         const float t_max) const {
-  const auto oc = r.origin() - this->center;
+  Vec3 oc = r.origin() - center;
+  const auto a = r.direction().length_squared();
+  const auto half_b = oc.dot(r.direction());
+  const auto c = oc.length_squared() - radius * radius;
 
-  const auto a = r.direction().dot(r.direction());
-  const auto b = oc.dot(r.direction());
-  const auto c = oc.dot(oc) - this->radius * this->radius;
-  const auto discriminant = b * b - a * c;
+  const auto discriminant = half_b * half_b - a * c;
 
-  if (discriminant > 0.0) {
-    auto q_eq = (-b - sqrtf(discriminant)) / a;
+  if (discriminant < 0) {
+    return std::nullopt;
+  }
 
-    // If the minus variant is out of range try the plus one
-    if (q_eq >= t_max || q_eq <= t_min) {
-      q_eq = (-b + sqrtf(discriminant)) / a;
-    }
+  const auto sqrtd = sqrtf(discriminant);
 
-    if (q_eq < t_max && q_eq > t_min) {
-      const auto point_at_parameter = r.point_at_parameter(q_eq);
-      return {{
-          point_at_parameter,
-          (point_at_parameter - this->center) / this->radius,
-          q_eq,
-      }};
+  // Find the nearest root that lies in the acceptable range.
+  auto root = (-half_b - sqrtd) / a;
+  if (root < t_min || t_max < root) {
+    root = (-half_b + sqrtd) / a;
+    if (root < t_min || t_max < root) {
+      return std::nullopt;
     }
   }
 
-  return std::nullopt;
+  const auto point = r.point_at_parameter(root);
+  return {{
+      .point = point,
+      .normal = (point - center) / radius,
+      .t = root,
+  }};
 }
 
 /**
