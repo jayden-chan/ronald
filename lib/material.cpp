@@ -109,10 +109,10 @@ Dielectric::Dielectric(const object &obj) {
 }
 
 float schlick(const float cosine, const float ref_idx) {
-  auto r0 = (1.0f - ref_idx) / (1.0f + ref_idx);
-  r0 = r0 * r0;
+  const auto r0 = (1.0f - ref_idx) / (1.0f + ref_idx);
+  const auto r1 = r0 * r0;
 
-  return r0 + (1.0f - r0) * powf(1.0f - cosine, 5.0);
+  return r1 + (1.0f - r1) * powf(1.0f - cosine, 5.0);
 }
 
 /**
@@ -120,35 +120,35 @@ float schlick(const float cosine, const float ref_idx) {
  */
 std::optional<Scatter> Dielectric::scatter(Ray const &r,
                                            Intersection const &i) const {
-  Vec3 outward_normal;
-  float ni_over_nt;
-  float cosine;
+  const auto ray_dir = r.direction().normalize();
+  const auto is_inward = ray_dir.dot(i.normal) > 0.0;
+  const auto outward_normal = is_inward ? -i.normal : i.normal;
+  const auto ni_over_nt =
+      is_inward ? refractive_index : 1.0f / refractive_index;
 
-  if (r.direction().dot(i.normal) > 0.0) {
-    outward_normal = -i.normal;
-    ni_over_nt = this->refractive_index;
-    cosine = this->refractive_index * r.direction().dot(i.normal) *
-             r.direction().inv_mag();
-  } else {
-    outward_normal = i.normal;
-    ni_over_nt = 1.0f / this->refractive_index;
-    cosine = -r.direction().dot(i.normal) * r.direction().inv_mag();
-  };
+  const auto cosine =
+      is_inward ? refractive_index * ray_dir.dot(i.normal) * ray_dir.inv_mag()
+                : -ray_dir.dot(i.normal) * ray_dir.inv_mag();
 
-  const auto reflected = vector_reflect(r.direction(), i.normal);
-  const auto refracted =
-      vector_refract(r.direction(), outward_normal, ni_over_nt);
+  const auto refracted = vector_refract(ray_dir, outward_normal, ni_over_nt);
 
-  const auto reflect_probability =
-      refracted.has_value() ? schlick(cosine, this->refractive_index) : 1.0;
+  if (refracted.has_value()) {
+    const auto reflect_probability =
+        refracted.has_value() ? schlick(cosine, ni_over_nt) : 1.0f;
 
-  const auto dir =
-      random_float() < reflect_probability ? reflected : *refracted;
+    if (random_float() >= reflect_probability) {
+      return {{
+          .specular = Ray(i.point, *refracted),
+          .attenuation = Vec3::ones(),
+      }};
+    }
+  }
 
-  return std::optional<Scatter>({
-      Ray(i.point, dir),
-      Vec3::ones(),
-  });
+  const auto reflected = vector_reflect(ray_dir, i.normal);
+  return {{
+      .specular = Ray(i.point, reflected),
+      .attenuation = Vec3::ones(),
+  }};
 }
 
 } // namespace path_tracer
