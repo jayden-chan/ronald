@@ -37,6 +37,23 @@ Extended Feature Set (Scope B only)
 
 ## Progress Updates
 
+### 2022-06-21 -- Resolved Dielectric material artifact errors
+
+There was a long-standing error with Dielectric materials caused by setting `T_MIN` too
+low in the `hit_objects` function. After hours of rummaging around in the code the bug
+was located and fixed. Now the program can render nice looking glass materials.
+
+| Config      | Value          |
+| ---         | ---            |
+| Resolution  | 512x512        |
+| Samples     | 10000          |
+| Threads     | 10             |
+| TMO         | Reinhard Jodie |
+| Render Time | 18m57s         |
+| Commit      | a9d5e33f       |
+
+![Cornell Box](./img/cornell_glass_sphere.png "Cornell Box")
+
 ### 2022-06-15 -- Implemented Russian Roulette Path Termination
 
 A description of Russian Roulette termination can be found in the `/resources` folder.
