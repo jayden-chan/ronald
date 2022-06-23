@@ -1,17 +1,17 @@
 /*
  * Copyright © 2022 Jayden Chan. All rights reserved.
  *
- * path_tracer is free software: you can redistribute it and/or modify
+ * Ronald is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3
  * as published by the Free Software Foundation.
  *
- * path_tracer is distributed in the hope that it will be useful,
+ * Ronald is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with path_tracer. If not, see <https://www.gnu.org/licenses/>.
+ * along with Ronald. If not, see <https://www.gnu.org/licenses/>.
  */
 
 #include "image.hpp"
@@ -24,7 +24,6 @@
 #include <iostream>
 
 namespace po = boost::program_options;
-namespace pt = path_tracer;
 
 int main(int argc, char **argv) {
   po::options_description desc("Allowed options");
@@ -51,7 +50,7 @@ int main(int argc, char **argv) {
         vm);
     po::notify(vm);
   } catch (po::error &e) {
-    constexpr auto desc_written = "Usage: path_tracer [options] <scene.json>";
+    constexpr auto desc_written = "Usage: ronald [options] <scene.json>";
     if (vm.count("help")) {
       std::cout << desc_written << "\n\n";
       std::cout << desc << '\n';
@@ -65,9 +64,9 @@ int main(int argc, char **argv) {
     }
   }
 
-  pt::Config config;
+  ronald::Config config;
   try {
-    config = pt::Config(vm);
+    config = ronald::Config(vm);
   } catch (const char *err) {
     std::cerr << "Input validation error: " << err << '\n';
     return 1;
@@ -103,13 +102,13 @@ int main(int argc, char **argv) {
   }
 
   const auto aspect_r = (float)config.width / (float)config.height;
-  const auto scene = pt::Scene::from_json(jv.as_object(), aspect_r);
+  const auto scene = ronald::Scene::from_json(jv.as_object(), aspect_r);
 
   if (!scene.has_value()) {
     return 1;
   }
 
-  pt::Image im;
+  ronald::Image im;
   // Technically calling render_multi_threaded with one thread is fine, but the
   // code is a lot cleaner when it's just one thread so we'll have separate
   // methods

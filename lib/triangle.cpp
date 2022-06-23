@@ -1,24 +1,24 @@
 /*
  * Copyright © 2022 Jayden Chan. All rights reserved.
  *
- * path_tracer is free software: you can redistribute it and/or modify
+ * Ronald is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3
  * as published by the Free Software Foundation.
  *
- * path_tracer is distributed in the hope that it will be useful,
+ * Ronald is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with path_tracer. If not, see <https://www.gnu.org/licenses/>.
+ * along with Ronald. If not, see <https://www.gnu.org/licenses/>.
  */
 
 #include "primitive.hpp"
 #include "util.hpp"
 #include "vec3.hpp"
 
-namespace path_tracer {
+namespace ronald {
 
 Triangle::Triangle(const Vec3 &v0_a, const Vec3 &v1_a, const Vec3 &v2_a,
                    const float normal_a) {
@@ -103,4 +103,4 @@ AABB Triangle::aabb() const {
   return AABB(Vec3(min_x, min_y, min_z), Vec3(max_x, max_y, max_z));
 }
 
-} // namespace path_tracer
+} // namespace ronald

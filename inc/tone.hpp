@@ -1,17 +1,17 @@
 /*
  * Copyright © 2022 Jayden Chan. All rights reserved.
  *
- * path_tracer is free software: you can redistribute it and/or modify
+ * Ronald is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3
  * as published by the Free Software Foundation.
  *
- * path_tracer is distributed in the hope that it will be useful,
+ * Ronald is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with path_tracer. If not, see <https://www.gnu.org/licenses/>.
+ * along with Ronald. If not, see <https://www.gnu.org/licenses/>.
  */
 
 #ifndef TONE_H
@@ -19,7 +19,7 @@
 
 #include "vec3.hpp"
 #include <stdexcept>
-namespace path_tracer {
+namespace ronald {
 
 constexpr float clamp_max = 1.0f;
 
@@ -59,6 +59,6 @@ inline void tmo_reinhard_jodie(Vec3 &pixel) {
   pixel = lerp(pixel / (1.0f + l), tv, tv);
 }
 
-} // namespace path_tracer
+} // namespace ronald
 
 #endif // TONE_H

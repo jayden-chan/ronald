@@ -1,10 +1,10 @@
 release:
 	cmake -B build . -DCMAKE_BUILD_TYPE=Release
-	cmake --build build --target path_tracer
+	cmake --build build --target ronald
 
 debug:
 	cmake -B build . -DCMAKE_BUILD_TYPE=Debug
-	cmake --build build --target path_tracer
+	cmake --build build --target ronald
 
 test:
 	cmake -B build . -DCMAKE_BUILD_TYPE=Debug

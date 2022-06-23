@@ -1,17 +1,17 @@
 /*
  * Copyright © 2022 Jayden Chan. All rights reserved.
  *
- * path_tracer is free software: you can redistribute it and/or modify
+ * Ronald is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 3
  * as published by the Free Software Foundation.
  *
- * path_tracer is distributed in the hope that it will be useful,
+ * Ronald is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with path_tracer. If not, see <https://www.gnu.org/licenses/>.
+ * along with Ronald. If not, see <https://www.gnu.org/licenses/>.
  */
 
 #include <optional>
@@ -22,7 +22,7 @@
 #include "util.hpp"
 #include "vec3.hpp"
 
-namespace path_tracer {
+namespace ronald {
 
 const std::shared_ptr<Primitive> Primitive::from_json(const object &obj) {
   const auto type = get<std::string>(obj, "type", "primitive");
@@ -38,4 +38,4 @@ const std::shared_ptr<Primitive> Primitive::from_json(const object &obj) {
   throw std::runtime_error("Primitive must be either `triangle` or `sphere`");
 }
 
-} // namespace path_tracer
+} // namespace ronald

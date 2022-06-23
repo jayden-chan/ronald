@@ -1,4 +1,4 @@
-# path_tracer
+# Ronald
 
 Path tracing rendering engine in very poorly written C++17
 
@@ -6,7 +6,7 @@ Path tracing rendering engine in very poorly written C++17
 ```bash
 # Release build
 make release
-./build/path_tracer --help
+./build/ronald --help
 
 # Debug build
 make debug

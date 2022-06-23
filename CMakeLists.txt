@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.13 FATAL_ERROR)
 
-project(path_tracer LANGUAGES CXX)
+project(Ronald LANGUAGES CXX)
 # set(CMAKE_VERBOSE_MAKEFILE true)
 set(CMAKE_EXPORT_COMPILE_COMMANDS true)
 
@@ -42,13 +42,13 @@ find_package(Boost COMPONENTS program_options json REQUIRED)
 include_directories(inc vendor ${Boost_INCLUDE_DIR})
 
 file(GLOB SOURCES "lib/*.cpp")
-file(GLOB PATH_TRACER_SOURCES "app/*.cpp")
+file(GLOB RONALD_SOURCES "app/*.cpp")
 file(GLOB TEST_SOURCES "tests/*.cpp")
 
-add_executable(path_tracer ${SOURCES} ${PATH_TRACER_SOURCES})
+add_executable(ronald ${SOURCES} ${RONALD_SOURCES})
 add_executable(tests ${SOURCES} ${TEST_SOURCES})
 
-target_link_libraries(path_tracer Boost::program_options Boost::json)
+target_link_libraries(ronald Boost::program_options Boost::json)
 target_link_libraries(tests PRIVATE Catch2::Catch2 Boost::program_options Boost::json)
 
 add_definitions(-DDBG_MACRO_NO_WARNING)
