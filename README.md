@@ -1,6 +1,6 @@
 # Ronald
 
-Path tracing rendering engine in very poorly written C++17
+Path tracing rendering engine in very poorly written C++20
 
 ## Building / Testing / Running
 ```bash

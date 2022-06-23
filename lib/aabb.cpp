@@ -39,4 +39,17 @@ bool AABB::hit(const Ray &r, float t_min, float t_max) const {
 
   return true;
 }
+
+AABB AABB::surrounding_box(const AABB &a, const AABB &b) {
+  const auto small =
+      Vec3(std::min(a.min.x(), b.min.x()), std::min(a.min.y(), b.min.y()),
+           std::min(a.min.z(), b.min.z()));
+
+  const auto big =
+      Vec3(std::max(a.max.x(), b.max.x()), std::max(a.max.y(), b.max.y()),
+           std::max(a.max.z(), b.max.z()));
+
+  return AABB(small, big);
+}
+
 } // namespace ronald

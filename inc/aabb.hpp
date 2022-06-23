@@ -33,10 +33,10 @@ namespace ronald {
  * expensive operation of the entire program
  */
 class AABB {
+public:
   Vec3 min;
   Vec3 max;
 
-public:
   /**
    * Construct an AABB from the given `min` and `max` vectors
    */
@@ -46,6 +46,11 @@ public:
    * Check whether the given Ray intersects the AABB.
    */
   bool hit(const Ray &r, float t_min, float t_max) const;
+
+  /**
+   * Return a new AABB which completely contains the two provided bounding boxes
+   */
+  static AABB surrounding_box(const AABB &a, const AABB &b);
 };
 
 } // namespace ronald
