@@ -29,7 +29,8 @@
     },
     "glass": {
       "type": "dielectric",
-      "refractive_index": 1.52
+      "refractive_index": 1.52,
+      "attenuation": [0.3, 0.7, 1]
     }
   },
   "objects": [

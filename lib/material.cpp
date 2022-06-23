@@ -103,9 +103,19 @@ std::optional<Scatter> Reflector::scatter(Ray const &r,
   }
 }
 
-Dielectric::Dielectric(const float _ref_idx) : refractive_index(_ref_idx){};
+Dielectric::Dielectric(const float _ref_idx, const Vec3 _attenuation)
+    : refractive_index(_ref_idx), attenuation(_attenuation){};
+
 Dielectric::Dielectric(const object &obj) {
   refractive_index = get<float>(obj, "refractive_index", "primitive");
+
+  if (obj.contains("attenuation")) {
+    const auto atten =
+        get<std::array<float, 3>>(obj, "attenuation", "primitive");
+    attenuation = Vec3(atten);
+  } else {
+    attenuation = Vec3::ones();
+  }
 }
 
 float schlick(const float cosine, const float ref_idx) {
@@ -139,7 +149,7 @@ std::optional<Scatter> Dielectric::scatter(Ray const &r,
     if (random_float() >= reflect_probability) {
       return {{
           .specular = Ray(i.point, *refracted),
-          .attenuation = Vec3::ones(),
+          .attenuation = attenuation,
       }};
     }
   }

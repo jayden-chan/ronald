@@ -140,12 +140,13 @@ public:
 class Dielectric : public Material {
 private:
   float refractive_index;
+  Vec3 attenuation;
 
 public:
   /**
    * Construct a Dielectric material from the given refractive index
    */
-  explicit Dielectric(float _ref_idx);
+  explicit Dielectric(const float _ref_idx, const Vec3 _attenuation);
 
   /**
    * Construct a Dielectric material from the given JSON object containing
