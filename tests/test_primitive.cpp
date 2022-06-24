@@ -21,7 +21,6 @@
 #include "vec3.hpp"
 #include "vec3_tests.hpp"
 
-using namespace ronald;
 using ronald::Ray;
 using ronald::Sphere;
 using ronald::Triangle;
@@ -38,24 +37,28 @@ TEST_CASE("Ray/Sphere intersection", "[primitive][ray][sphere]") {
 
   // send a ray through the origin and ensure it hits
   auto ray_origin = Vec3(0, 0, -10);
-  auto dir = (Vec3(0, 0, 0) - ray_origin).normalize();
-  auto ray = Ray(ray_origin, dir);
-  REQUIRE(sphere.hit(ray, t_min, t_max));
+  auto ray_dest = Vec3(0, 0, 0);
+  auto ray = Ray(ray_origin, (ray_dest - ray_origin).normalize());
+  auto hitr = sphere.hit(ray, t_min, t_max);
+  REQUIRE(hitr.has_value());
 
   ray_origin = Vec3(0, -5.000001F, -10);
-  dir = (Vec3(0, -5.000001F, 0) - ray_origin).normalize();
-  ray = Ray(ray_origin, dir);
-  REQUIRE(!sphere.hit(ray, t_min, t_max));
+  ray_dest = Vec3(0, -5.000001F, 0);
+  ray = Ray(ray_origin, (ray_dest - ray_origin).normalize());
+  hitr = sphere.hit(ray, t_min, t_max);
+  REQUIRE(!hitr.has_value());
 
   ray_origin = Vec3(0, -4.999999F, -10);
-  dir = (Vec3(0, -4.999999F, 0) - ray_origin).normalize();
-  ray = Ray(ray_origin, dir);
-  REQUIRE(sphere.hit(ray, t_min, t_max));
+  ray_dest = Vec3(0, -4.999999F, 0);
+  ray = Ray(ray_origin, (ray_dest - ray_origin).normalize());
+  hitr = sphere.hit(ray, t_min, t_max);
+  REQUIRE(hitr.has_value());
 
   ray_origin = Vec3(4, 4, -10);
-  dir = (Vec3(4, 4, 0) - ray_origin).normalize();
-  ray = Ray(ray_origin, dir);
-  REQUIRE(!sphere.hit(ray, t_min, t_max));
+  ray_dest = Vec3(4, 4, 0);
+  ray = Ray(ray_origin, (ray_dest - ray_origin).normalize());
+  hitr = sphere.hit(ray, t_min, t_max);
+  REQUIRE(!hitr.has_value());
 
   // generate a bunch of random rays through the origin and
   // ensure they all hit
@@ -112,40 +115,47 @@ TEST_CASE("Ray/Triangle intersection", "[primitive][ray][triangle]") {
 
   // send a ray through the origin and ensure it hits
   auto ray_origin = Vec3(0, 0, -10);
-  auto dir = (Vec3(0, 0, 0) - ray_origin).normalize();
-  auto ray = Ray(ray_origin, dir);
-  REQUIRE(triangle.hit(ray, t_min, t_max));
+  auto ray_dest = Vec3(0, 0, 0);
+  auto ray = Ray(ray_origin, (ray_dest - ray_origin).normalize());
+  auto hitr = triangle.hit(ray, t_min, t_max);
+  REQUIRE(hitr.has_value());
 
   // send some more manually-tuned rays and check their result
   ray_origin = Vec3(2, 2, -10);
-  dir = (Vec3(2, 2, 0) - ray_origin).normalize();
-  ray = Ray(ray_origin, dir);
-  REQUIRE(!triangle.hit(ray, t_min, t_max));
+  ray_dest = Vec3(2, 2, 0);
+  ray = Ray(ray_origin, (ray_dest - ray_origin).normalize());
+  hitr = triangle.hit(ray, t_min, t_max);
+  REQUIRE(!hitr.has_value());
 
   ray_origin = Vec3(-4.9999F, -4.9999F, -10);
-  dir = (Vec3(-4.9999F, -4.9999F, 0) - ray_origin).normalize();
-  ray = Ray(ray_origin, dir);
-  REQUIRE(triangle.hit(ray, t_min, t_max));
+  ray_dest = Vec3(-4.9999F, -4.9999F, 0);
+  ray = Ray(ray_origin, (ray_dest - ray_origin).normalize());
+  hitr = triangle.hit(ray, t_min, t_max);
+  REQUIRE(hitr.has_value());
 
   ray_origin = Vec3(10, 0, 10);
-  dir = Vec3(-1, 0, 0);
-  ray = Ray(ray_origin, dir);
-  REQUIRE(!triangle.hit(ray, t_min, t_max));
+  ray_dest = Vec3(0, 0, 10);
+  ray = Ray(ray_origin, (ray_dest - ray_origin).normalize());
+  hitr = triangle.hit(ray, t_min, t_max);
+  REQUIRE(!hitr.has_value());
 
   ray_origin = Vec3(-2.6F, 0, -10);
-  dir = (Vec3(-2.6F, 0, 0) - ray_origin).normalize();
-  ray = Ray(ray_origin, dir);
-  REQUIRE(!triangle.hit(ray, t_min, t_max));
+  ray_dest = Vec3(-2.6F, 0, 0);
+  ray = Ray(ray_origin, (ray_dest - ray_origin).normalize());
+  hitr = triangle.hit(ray, t_min, t_max);
+  REQUIRE(!hitr.has_value());
 
   ray_origin = Vec3(0, -5.00001F, -10);
-  dir = (Vec3(0, -5.00001F, 0) - ray_origin).normalize();
-  ray = Ray(ray_origin, dir);
-  REQUIRE(!triangle.hit(ray, t_min, t_max));
+  ray_dest = Vec3(0, -5.00001F, 0);
+  ray = Ray(ray_origin, (ray_dest - ray_origin).normalize());
+  hitr = triangle.hit(ray, t_min, t_max);
+  REQUIRE(!hitr.has_value());
 
   ray_origin = Vec3(0, -4.999999F, -10);
-  dir = (Vec3(0, -4.999999F, 0) - ray_origin).normalize();
-  ray = Ray(ray_origin, dir);
-  REQUIRE(triangle.hit(ray, t_min, t_max));
+  ray_dest = Vec3(0, -4.999999F, 0);
+  ray = Ray(ray_origin, (ray_dest - ray_origin).normalize());
+  hitr = triangle.hit(ray, t_min, t_max);
+  REQUIRE(hitr.has_value());
 
   // generate a bunch of random rays through the origin and
   // ensure they all hit
