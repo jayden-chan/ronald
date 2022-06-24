@@ -19,10 +19,11 @@
 #include "primitive.hpp"
 #include "ray.hpp"
 #include "vec3.hpp"
+#include "vec3_tests.hpp"
 
-using Ronald::Ray;
-using Ronald::Sphere;
-using Ronald::Vec3;
+using ronald::Ray;
+using ronald::Sphere;
+using ronald::Vec3;
 
 // https://psgraphics.blogspot.com/2020/12/debugging-refraction-in-ray-tracer.html
 TEST_CASE("Vector refraction E2E test", "") {
@@ -69,8 +70,8 @@ TEST_CASE("vertexwahn refraction case A", "[refract][vertexwahn]") {
   const auto refracted = vector_refract(incident, normal, ref_idx);
   REQUIRE(refracted.has_value());
   const auto normalized = refracted->normalize();
-  REQUIRE(normalized.x() == Approx(-0.441975594f).epsilon(0.001f));
-  REQUIRE(normalized.y() == Approx(-0.897027075f).epsilon(0.001f));
+  REQUIRE(normalized.x() == Approx(-0.441975594f).margin(0.001));
+  REQUIRE(normalized.y() == Approx(-0.897027075f).margin(0.01));
 }
 
 TEST_CASE("vertexwahn refraction case B", "[refract][vertexwahn]") {

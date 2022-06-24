@@ -19,15 +19,15 @@ namespace ronald {
 
 bool AABB::hit(const Ray &r, float t_min, float t_max) const {
   // check all three axes for if the ray misses
+  const auto inv_dir = 1.0f / r.direction();
   for (size_t axis = 0; axis < 3; ++axis) {
 
-    const auto t0 =
-        std::min((min[axis] - r.origin()[axis]) / r.direction()[axis],
-                 (max[axis] - r.origin()[axis]) / r.direction()[axis]);
+    const auto rval = r.origin()[axis];
+    const auto t0 = std::min((min[axis] - rval) * inv_dir[axis],
+                             (max[axis] - rval) * inv_dir[axis]);
 
-    const auto t1 =
-        std::max((min[axis] - r.origin()[axis]) / r.direction()[axis],
-                 (max[axis] - r.origin()[axis]) / r.direction()[axis]);
+    const auto t1 = std::max((min[axis] - rval) * inv_dir[axis],
+                             (max[axis] - rval) * inv_dir[axis]);
 
     const auto true_t_min = std::max(t0, t_min);
     const auto true_t_max = std::min(t1, t_max);

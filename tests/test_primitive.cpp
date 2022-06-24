@@ -19,11 +19,13 @@
 #include "primitive.hpp"
 #include "ray.hpp"
 #include "vec3.hpp"
+#include "vec3_tests.hpp"
 
-using Ronald::Ray;
-using Ronald::Sphere;
-using Ronald::Triangle;
-using Ronald::Vec3;
+using namespace ronald;
+using ronald::Ray;
+using ronald::Sphere;
+using ronald::Triangle;
+using ronald::Vec3;
 
 TEST_CASE("Ray/Sphere intersection", "[primitive][ray][sphere]") {
   // Sphere at the origin on the XY plane

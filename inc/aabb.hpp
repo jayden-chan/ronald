@@ -51,6 +51,14 @@ public:
    * Return a new AABB which completely contains the two provided bounding boxes
    */
   static AABB surrounding_box(const AABB &a, const AABB &b);
+
+  /**
+   * Stream insertion operator
+   */
+  friend std::ostream &operator<<(std::ostream &output, const AABB &a) {
+    output << "{ " << a.min << ", " << a.max << " }";
+    return output;
+  }
 };
 
 } // namespace ronald

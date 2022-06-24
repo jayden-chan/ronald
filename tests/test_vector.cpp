@@ -17,8 +17,9 @@
 #include <catch2/catch.hpp>
 
 #include "vec3.hpp"
+#include "vec3_tests.hpp"
 
-using Ronald::Vec3;
+using ronald::Vec3;
 
 TEST_CASE("Vector default constructor", "[vector]") {
   const Vec3 v;
@@ -52,15 +53,13 @@ TEST_CASE("Vector ones", "[vector]") {
 TEST_CASE("Vector normalize", "[vector]") {
   const auto v = Vec3(1, 2, 3);
   const auto result = v.normalize();
-  REQUIRE(result.x() == Approx(0.2672612));
-  REQUIRE(result.y() == Approx(0.5345225));
-  REQUIRE(result.z() == Approx(0.8017837));
+  REQUIRE(result == Vec3(0.2672612f, 0.5345225f, 0.8017837f));
   REQUIRE(v == Vec3(1, 2, 3));
 }
 
 TEST_CASE("Vector inv mag", "[vector]") {
   const auto mag = Vec3(1, 2, 3).inv_mag();
-  REQUIRE(mag == Approx(1.0f / 3.74165738677394138558));
+  REQUIRE(mag == Approx(1.0f / 3.74165738677394138558).epsilon(0.001));
 }
 
 TEST_CASE("Vector length", "[vector]") {

@@ -14,19 +14,21 @@
  * along with Ronald. If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include "vec3.hpp"
 #include <catch2/catch.hpp>
 
-#include "primitive.hpp"
-#include "ray.hpp"
-#include "vec3.hpp"
-#include "vec3_tests.hpp"
+namespace ronald {
 
-using ronald::Vec3;
-
-TEST_CASE("Vector reflection test", "[vector][reflect]") {
-  const auto v1 = Vec3(1, 1, 0);
-  const auto normal = Vec3(0, 1, 0);
-  const auto reflected = vector_reflect(v1, normal);
-
-  REQUIRE(reflected == Vec3(1, -1, 0));
+/**
+ * Vectors will be considered equal if all of their elements are
+ * within `EPSILON` of each other. This function is used for unit testing
+ * only for now
+ */
+[[nodiscard]] inline bool operator==(const ronald::Vec3 &lhs,
+                                     const ronald::Vec3 &rhs) {
+  const auto target = Approx(0).margin(0.002);
+  return (lhs.x() - rhs.x() == target && lhs.y() - rhs.y() == target &&
+          lhs.z() - rhs.z() == target);
 }
+
+} // namespace ronald

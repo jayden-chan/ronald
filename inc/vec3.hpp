@@ -281,20 +281,19 @@ public:
 }
 
 /**
+ * Divide a constant by a vector. The result will be a new vector
+ * where each element is equal to the constant divided by the respective
+ * element from the rhs vector
+ */
+[[nodiscard]] inline Vec3 operator/(const float t, const Vec3 &rhs) {
+  return Vec3(t / rhs.x(), t / rhs.y(), t / rhs.z());
+}
+
+/**
  * Divide two vectors element-wise
  */
 [[nodiscard]] inline Vec3 operator/(const Vec3 &lhs, const Vec3 &rhs) {
   return Vec3(lhs.x() / rhs.x(), lhs.y() / rhs.y(), lhs.z() / rhs.z());
-}
-
-/**
- * Vectors will be considered equal if all of their elements are
- * within `EPSILON` of each other. This function is used for unit testing
- * only for now
- */
-[[nodiscard]] inline bool operator==(const Vec3 &lhs, const Vec3 &rhs) {
-  return (abs(lhs.x() - rhs.x()) < EPSILON &&
-          abs(lhs.y() - rhs.y()) < EPSILON && abs(lhs.z() - rhs.z()) < EPSILON);
 }
 
 [[nodiscard]] inline Vec3 vector_reflect(const Vec3 &v, const Vec3 &n) {
