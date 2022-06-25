@@ -25,7 +25,6 @@
 #include <iostream>
 
 namespace po = boost::program_options;
-size_t ronald::BVH::num_leaf_nodes = 0;
 
 int main(int argc, char **argv) {
   po::options_description desc("Allowed options");

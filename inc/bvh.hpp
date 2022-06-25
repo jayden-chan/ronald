@@ -45,7 +45,6 @@ private:
   BVH(const NodeType type, const AABB &bbox, const Object &obj);
 
 public:
-  static size_t num_leaf_nodes;
   /**
    * Construct a BVH from the given vector of objects
    */

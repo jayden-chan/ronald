@@ -42,7 +42,6 @@ BVH BVH::build_bvh(std::vector<Object> &objs) {
     const auto obj = objs.front();
     const auto bb = obj.primitive->aabb();
     dbg(bb);
-    BVH::num_leaf_nodes += 1;
     return BVH(NodeType::Leaf, bb, obj);
   }
 
