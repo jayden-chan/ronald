@@ -75,7 +75,8 @@ BVH BVH::build_bvh(std::vector<Object> &objs, size_t *total_nodes) {
 
 std::optional<Hit> BVH::intersect(const Ray &r, const float t_min,
                                   const float t_max) const {
-  if (this->bbox.hit(r, t_min, t_max)) {
+  const auto inv_dir = 1.0f / r.direction().normalize();
+  if (this->bbox.hit(r, inv_dir, t_min, t_max)) {
     // we are an internal node -- check both child nodes and continue
     // traversing down the tree
     if (this->type == NodeType::Internal) {
@@ -104,6 +105,91 @@ std::optional<Hit> BVH::intersect(const Ray &r, const float t_min,
   }
 
   // ray misses the current node entirely
+  return std::nullopt;
+}
+
+FlatBVH::FlatBVH(std::vector<Object> &objs) {
+  size_t total_nodes = 0;
+  const auto bvh = BVH::build_bvh(objs, &total_nodes);
+  const FlatBVHNode def = {
+      .type = NodeType::Internal,
+      .bbox = AABB(),
+      .data = static_cast<size_t>(0),
+      .secondChildOffset = 0,
+  };
+
+  nodes = std::vector<FlatBVHNode>(total_nodes, def);
+  size_t offset = 0;
+  recursive_flatten(bvh, &offset);
+}
+
+size_t FlatBVH::recursive_flatten(const BVH &node, size_t *offset) {
+  FlatBVHNode *flatNode = &nodes[*offset];
+  flatNode->bbox = node.aabb();
+  flatNode->type = node.node_type();
+
+  const size_t myOffset = *offset;
+  *offset += 1;
+
+  if (node.node_type() == NodeType::Leaf) {
+    flatNode->data = std::get<Object>(node.get_data());
+  } else {
+    // Create interior flattened BVH node
+    const auto &[left, right] = std::get<BVHPair>(node.get_data());
+    recursive_flatten(*left, offset);
+    flatNode->secondChildOffset = recursive_flatten(*right, offset);
+  }
+
+  return myOffset;
+}
+
+std::optional<Hit> FlatBVH::intersect(const Ray &r, const float t_min,
+                                      const float t_max) const {
+  std::optional<Hit> curr_hit = {{
+      .hit = {Vec3::zeros(), Vec3::zeros(), 0.0},
+      .material = nullptr,
+  }};
+
+  auto min_so_far = t_max;
+
+  const auto inv_dir = 1.0f / r.direction().normalize();
+  // Follow ray through BVH nodes to find primitive intersections
+  size_t toVisitOffset = 0;
+  size_t currentNodeIndex = 0;
+  size_t nodesToVisit[64];
+  while (true) {
+    const FlatBVHNode *node = &nodes[currentNodeIndex];
+
+    if (node->bbox.hit(r, inv_dir, t_min, t_max)) {
+      if (node->type == NodeType::Leaf) {
+        const auto obj = std::get<Object>(node->data);
+        const auto hit_result = obj.primitive->hit(r, t_min, min_so_far);
+        if (hit_result.has_value()) {
+          curr_hit->hit = *hit_result;
+          curr_hit->material = obj.material;
+          min_so_far = hit_result->t;
+        }
+
+        if (toVisitOffset == 0) {
+          break;
+        }
+        currentNodeIndex = nodesToVisit[--toVisitOffset];
+
+      } else {
+        nodesToVisit[toVisitOffset++] = node->secondChildOffset;
+        currentNodeIndex += 1;
+      }
+    } else {
+      if (toVisitOffset == 0) {
+        break;
+      }
+      currentNodeIndex = nodesToVisit[--toVisitOffset];
+    }
+  }
+
+  if (curr_hit->material != nullptr) {
+    return curr_hit;
+  }
   return std::nullopt;
 }
 

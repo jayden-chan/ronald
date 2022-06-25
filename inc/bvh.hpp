@@ -66,6 +66,39 @@ public:
    * Get the type of node
    */
   [[nodiscard]] NodeType node_type() const { return this->type; }
+
+  /**
+   * Get the node data
+   */
+  [[nodiscard]] BVHData const &get_data() const { return this->data; }
+};
+
+class FlatBVH {
+  struct FlatBVHNode {
+    NodeType type;
+    AABB bbox;
+    std::variant<size_t, Object> data;
+    size_t secondChildOffset;
+  };
+
+  std::vector<FlatBVHNode> nodes;
+
+  /**
+   * Recursively flatten the given BVH into a FlatBVH
+   */
+  size_t recursive_flatten(const BVH &node, size_t *offset);
+
+public:
+  /**
+   * Construct a new FlatBVH from the given scene objects
+   */
+  explicit FlatBVH(std::vector<Object> &objs);
+
+  /**
+   * Test if a ray intersects the BVH
+   */
+  [[nodiscard]] std::optional<Hit> intersect(const Ray &r, float t_min,
+                                             float t_max) const;
 };
 
 } // namespace ronald

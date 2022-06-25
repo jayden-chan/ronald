@@ -61,7 +61,7 @@ private:
   // and an associated material from the materials vector
   // TODO: BVH
   const std::vector<Object> objects;
-  const BVH bvh;
+  const FlatBVH bvh;
 
   // Info about the camera
   const Camera camera;
@@ -79,8 +79,8 @@ public:
    */
   Scene(std::vector<Object> &objects_a, const material_map &materials_a,
         const Camera &camera_a)
-      : materials(materials_a), objects(objects_a),
-        bvh(BVH::build_bvh(objects_a)), camera(camera_a){};
+      : materials(materials_a), objects(objects_a), bvh(objects_a),
+        camera(camera_a){};
 
   /**
    * Construct a scene object from a JSON object containing the `objects` and
