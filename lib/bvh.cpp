@@ -19,6 +19,7 @@
 #include "dbg.h"
 #include "rand.hpp"
 #include <algorithm>
+#include <cstdlib>
 
 namespace ronald {
 
@@ -28,7 +29,7 @@ BVH::BVH(const NodeType _type, const AABB &_bbox, BVHPair children)
 BVH::BVH(const NodeType _type, const AABB &_bbox, const Object &obj)
     : type(_type), bbox(_bbox), data(obj){};
 
-BVH BVH::build_bvh(std::vector<Object> &objs) {
+BVH BVH::build_bvh(std::vector<Object> &objs, size_t *total_nodes) {
   // choose the axis to split on. for now we will just split on
   // a random axis -- this is pretty suboptimal but it's very
   // easy so we'll leave it as is for now
@@ -41,7 +42,7 @@ BVH BVH::build_bvh(std::vector<Object> &objs) {
   if (objs.size() == 1) {
     const auto obj = objs.front();
     const auto bb = obj.primitive->aabb();
-    dbg(bb);
+    *total_nodes += 1;
     return BVH(NodeType::Leaf, bb, obj);
   }
 
@@ -63,11 +64,10 @@ BVH BVH::build_bvh(std::vector<Object> &objs) {
   std::vector<Object> r_vec(m, objs.end());
 
   // construct the left and right subtrees
-  dbg(l_vec.size());
-  auto left = std::make_unique<BVH>(build_bvh(l_vec));
-  dbg(r_vec.size());
-  auto right = std::make_unique<BVH>(build_bvh(r_vec));
+  auto left = std::make_unique<BVH>(build_bvh(l_vec, total_nodes));
+  auto right = std::make_unique<BVH>(build_bvh(r_vec, total_nodes));
 
+  *total_nodes += 1;
   const auto surrounding_box = AABB::surrounding_box(left->bbox, right->bbox);
   return BVH(NodeType::Internal, surrounding_box,
              std::make_pair(std::move(left), std::move(right)));

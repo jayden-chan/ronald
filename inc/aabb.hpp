@@ -38,6 +38,11 @@ public:
   Vec3 max;
 
   /**
+   * Allow constructing a zeroed AABB
+   */
+  AABB() = default;
+
+  /**
    * Construct an AABB from the given `min` and `max` vectors
    */
   AABB(const Vec3 &min_a, const Vec3 &max_a) : min(min_a), max(max_a){};
@@ -45,7 +50,7 @@ public:
   /**
    * Check whether the given Ray intersects the AABB.
    */
-  bool hit(const Ray &r, float t_min, float t_max) const;
+  bool hit(const Ray &r, const Vec3 &inv_dir, float t_min, float t_max) const;
 
   /**
    * Return a new AABB which completely contains the two provided bounding boxes

@@ -17,9 +17,9 @@
 #include "aabb.hpp"
 namespace ronald {
 
-bool AABB::hit(const Ray &r, float t_min, float t_max) const {
+bool AABB::hit(const Ray &r, const Vec3 &inv_dir, float t_min,
+               float t_max) const {
   // check all three axes for if the ray misses
-  const auto inv_dir = 1.0f / r.direction();
   for (size_t axis = 0; axis < 3; ++axis) {
 
     const auto rval = r.origin()[axis];

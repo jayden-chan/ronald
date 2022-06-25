@@ -48,7 +48,8 @@ public:
   /**
    * Construct a BVH from the given vector of objects
    */
-  [[nodiscard]] static BVH build_bvh(std::vector<Object> &objs);
+  [[nodiscard]] static BVH build_bvh(std::vector<Object> &objs,
+                                     size_t *total_nodes);
 
   /**
    * Test if a ray intersects the BVH
