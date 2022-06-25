@@ -14,9 +14,9 @@
  * along with Ronald. If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include "common.hpp"
 #include "primitive.hpp"
 #include "ray.hpp"
-#include "util.hpp"
 
 namespace ronald {
 

@@ -15,9 +15,10 @@
  */
 
 #include "scene.hpp"
+#include "bvh.hpp"
+#include "common.hpp"
 #include "material.hpp"
 #include "progress.hpp"
-#include "util.hpp"
 #include "vec3.hpp"
 
 #include <boost/lockfree/queue.hpp>
@@ -67,11 +68,10 @@ std::optional<Hit> hit_objects(const std::vector<Object> &objs,
   constexpr auto f32_max = std::numeric_limits<float>::max();
 
   auto min_so_far = f32_max;
-  std::optional<Hit> hit = {{
+  Hit hit = {
       .hit = {Vec3::zeros(), Vec3::zeros(), 0.0},
-      .scatter = std::nullopt,
-      .emitted = Vec3::zeros(),
-  }};
+      .material = nullptr,
+  };
 
   std::optional<Intersection> last_hit = std::nullopt;
   size_t last_obj_hit = 0;
@@ -80,7 +80,7 @@ std::optional<Hit> hit_objects(const std::vector<Object> &objs,
     const auto &o = objs[i];
     const auto this_hit = o.primitive->hit(ray, T_MIN, min_so_far);
     if (this_hit.has_value()) {
-      hit->hit = *this_hit;
+      hit.hit = this_hit.value();
       last_hit = this_hit;
       last_obj_hit = i;
 
@@ -89,11 +89,12 @@ std::optional<Hit> hit_objects(const std::vector<Object> &objs,
     }
   }
 
-  if (min_so_far < f32_max) {
+  if (last_hit.has_value()) {
     // Delay computing the scattered and emitted results until we've figured
     // out which object we actually hit (if any)
-    hit->scatter = objs[last_obj_hit].material->scatter(ray, *last_hit);
-    hit->emitted = objs[last_obj_hit].material->emitted(ray, *last_hit);
+    // hit->scatter = objs[last_obj_hit].material->scatter(ray, *last_hit);
+    // hit->emitted = objs[last_obj_hit].material->emitted(ray, *last_hit);
+    hit.material = objs[last_obj_hit].material;
     return hit;
   }
 
@@ -101,28 +102,37 @@ std::optional<Hit> hit_objects(const std::vector<Object> &objs,
 }
 
 Vec3 Scene::trace(const float u, const float v) const {
+  constexpr float T_MIN = 0.0005f;
+  constexpr auto f32_max = std::numeric_limits<float>::max();
+
   auto curr_ray = this->camera.get_ray(u, v);
   auto total_attenuation = Vec3::ones();
   auto total_emitted = Vec3::zeros();
 
   for (size_t i = 0; i < MAX_RECURSIVE_DEPTH; ++i) {
-    const auto hit_result = hit_objects(this->objects, curr_ray);
+    // const auto hit_result = hit_objects(this->objects, curr_ray);
+    const auto hit_result = this->bvh.intersect(curr_ray, T_MIN, f32_max);
 
     // Ray did not hit anything -- return zero
     if (!hit_result.has_value()) {
       return Vec3::zeros();
     }
 
-    total_emitted += hit_result->emitted;
+    const auto emitted =
+        hit_result->material->emitted(curr_ray, hit_result->hit);
+    const auto scatter =
+        hit_result->material->scatter(curr_ray, hit_result->hit);
+
+    total_emitted += emitted;
 
     // Ray hit something but didn't scatter another ray -- path stops here
-    if (!hit_result->scatter.has_value()) {
+    if (!scatter.has_value()) {
       return total_attenuation * total_emitted;
     }
 
     // Ray hit something and scattered, continue tracing
-    total_attenuation *= hit_result->scatter->attenuation;
-    curr_ray = hit_result->scatter->specular;
+    total_attenuation *= scatter->attenuation;
+    curr_ray = scatter->specular;
 
     // Terminate the path with a probability inversely proportional to the
     // current attenuation. Paths with lower contribution to the scene are more
@@ -145,40 +155,34 @@ Vec3 Scene::trace(const float u, const float v) const {
   return Vec3::zeros();
 }
 
-std::optional<Scene> Scene::from_json(const object &obj, const float aspect_r) {
-  try {
-    const auto material_obj = at(obj, "materials").as_object();
-    const auto materials = materials_from_json(material_obj);
+Scene Scene::from_json(const object &obj, const float aspect_r) {
+  const auto material_obj = at(obj, "materials").as_object();
+  const auto mats = materials_from_json(material_obj);
 
-    const auto json_objs = at(obj, "objects").as_array();
-    std::vector<Object> objs;
-    objs.reserve(json_objs.size());
+  const auto json_objs = at(obj, "objects").as_array();
+  std::vector<Object> objs;
+  objs.reserve(json_objs.size());
 
-    for (const auto &o : json_objs) {
-      const auto o_as_obj = o.as_object();
-      const auto material_key =
-          get<std::string>(o_as_obj, "material", "objects");
+  for (const auto &o : json_objs) {
+    const auto o_as_obj = o.as_object();
+    const auto material_key = get<std::string>(o_as_obj, "material", "objects");
 
-      if (!materials.contains(material_key)) {
-        throw std::runtime_error("Undefined reference to material \"" +
-                                 material_key + "\"");
-      }
-
-      const auto material = materials.at(material_key);
-      const auto primitives = at(o_as_obj, "primitives", "objects");
-
-      for (const auto &p : primitives.as_array()) {
-        const auto primitive = Primitive::from_json(p.as_object());
-        objs.push_back({.primitive = primitive, .material = material});
-      }
+    if (!mats.contains(material_key)) {
+      throw std::runtime_error("Undefined reference to material \"" +
+                               material_key + "\"");
     }
 
-    const auto cam = Camera(at(obj, "camera").as_object(), aspect_r);
-    return Scene(objs, materials, cam);
-  } catch (std::exception &e) {
-    std::cout << "ERROR: Failed to parse scene from JSON: " << e.what() << '\n';
-    return std::nullopt;
+    const auto material = mats.at(material_key);
+    const auto primitives = at(o_as_obj, "primitives", "objects");
+
+    for (const auto &p : primitives.as_array()) {
+      const auto primitive = Primitive::from_json(p.as_object());
+      objs.push_back({.primitive = primitive, .material = material});
+    }
   }
+
+  const auto cam = Camera(at(obj, "camera").as_object(), aspect_r);
+  return Scene(objs, mats, cam);
 }
 
 Image Scene::render_single_threaded(const Config &config) const {
@@ -187,7 +191,7 @@ Image Scene::render_single_threaded(const Config &config) const {
   const auto widthf = static_cast<float>(config.width - 1);
   const auto heightf = static_cast<float>(config.height - 1);
   const auto samplesf = static_cast<float>(config.samples);
-  auto img = Image(width, height, ReinhardJodie);
+  auto img = Image(width, height, ToneMappingOperator::ReinhardJodie);
 
   for (size_t y = 0; y < height; ++y) {
     const auto yf = static_cast<float>(height - 1 - y);
@@ -222,7 +226,7 @@ Image Scene::render_multi_threaded(const Config &config) const {
   const auto heightf = static_cast<float>(config.height - 1);
   const auto samplesf = static_cast<float>(config.samples);
 
-  auto img = Image(width, height, ReinhardJodie);
+  auto img = Image(width, height, ToneMappingOperator::ReinhardJodie);
 
   boost::lockfree::queue<size_t> in_progress_rows(num_threads);
   boost::lockfree::queue<size_t> completed_rows(num_threads);

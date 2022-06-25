@@ -17,13 +17,13 @@
 #ifndef BVH_H
 #define BVH_H
 
-#include "scene.hpp"
+#include "common.hpp"
 #include <vector>
 
 namespace ronald {
 
 class BVH;
-using BVHPair = std::pair<std::shared_ptr<BVH>, std::shared_ptr<BVH>>;
+using BVHPair = std::pair<std::unique_ptr<BVH>, std::unique_ptr<BVH>>;
 using BVHData = std::variant<BVHPair, Object>;
 
 enum class NodeType { Internal, Leaf };
@@ -34,13 +34,38 @@ private:
   AABB bbox;
   BVHData data = {};
 
-public:
-  [[nodiscard]] static BVH build_bvh(std::vector<Object> &objs);
-  BVH(const NodeType type, const AABB bbox, const BVHPair children);
-  BVH(const NodeType type, const AABB bbox, const Object &obj);
+  /**
+   * Construct a BVH with the given node type, bbox, and child nodes
+   */
+  BVH(const NodeType type, const AABB &bbox, const BVHPair children);
 
-  [[nodiscard]] std::optional<Intersection> intersect(const Ray &r, float t_min,
-                                                      float t_max) const;
+  /**
+   * Construct a BVH with the given node type, bbox, and object leaf node
+   */
+  BVH(const NodeType type, const AABB &bbox, const Object &obj);
+
+public:
+  static size_t num_leaf_nodes;
+  /**
+   * Construct a BVH from the given vector of objects
+   */
+  [[nodiscard]] static BVH build_bvh(std::vector<Object> &objs);
+
+  /**
+   * Test if a ray intersects the BVH
+   */
+  [[nodiscard]] std::optional<Hit> intersect(const Ray &r, float t_min,
+                                             float t_max) const;
+
+  /**
+   * Get the bbox for this node of the BVH
+   */
+  [[nodiscard]] AABB aabb() const { return this->bbox; }
+
+  /**
+   * Get the type of node
+   */
+  [[nodiscard]] NodeType node_type() const { return this->type; }
 };
 
 } // namespace ronald

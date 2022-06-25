@@ -17,7 +17,9 @@
 #ifndef SCENE_H
 #define SCENE_H
 
+#include "bvh.hpp"
 #include "camera.hpp"
+#include "common.hpp"
 #include "image.hpp"
 #include "inputs.hpp"
 #include "material.hpp"
@@ -31,25 +33,6 @@
 using namespace boost::json;
 
 namespace ronald {
-
-using material_map = std::unordered_map<std::string, std::shared_ptr<Material>>;
-
-/**
- * An object is a primitive with an associated material
- */
-struct Object {
-  std::shared_ptr<Primitive> primitive;
-  std::shared_ptr<Material> material;
-};
-
-/**
- * Represents an occurrence of a light ray hitting a primitive geometric object
- */
-struct Hit {
-  Intersection hit;
-  std::optional<Scatter> scatter;
-  Vec3 emitted;
-};
 
 /**
  * Create an object from a JSON file containing the "material"
@@ -78,6 +61,7 @@ private:
   // and an associated material from the materials vector
   // TODO: BVH
   const std::vector<Object> objects;
+  const BVH bvh;
 
   // Info about the camera
   const Camera camera;
@@ -93,16 +77,16 @@ public:
    * Construct a scene object from the given objects and camera
    * position
    */
-  Scene(const std::vector<Object> &objects_a, const material_map &materials_a,
+  Scene(std::vector<Object> &objects_a, const material_map &materials_a,
         const Camera &camera_a)
-      : materials(materials_a), objects(objects_a), camera(camera_a){};
+      : materials(materials_a), objects(objects_a),
+        bvh(BVH::build_bvh(objects_a)), camera(camera_a){};
 
   /**
    * Construct a scene object from a JSON object containing the `objects` and
    * `camera` fields
    */
-  static std::optional<Scene> from_json(const object &obj,
-                                        const float aspect_r);
+  static Scene from_json(const object &obj, const float aspect_r);
   /**
    * Calls `trace` for each pixel in the scene for as many samples
    * as specified in the config

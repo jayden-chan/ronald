@@ -29,7 +29,7 @@ namespace ronald {
 
 using Pixel = Vec3;
 
-enum ToneMappingOperator {
+enum class ToneMappingOperator {
   Clamp,
   ReinhardJodie,
 };
@@ -38,7 +38,7 @@ class Image {
   std::vector<Pixel> buffer;
   size_t width = 0;
   size_t height = 0;
-  ToneMappingOperator tmo = ReinhardJodie;
+  ToneMappingOperator tmo = ToneMappingOperator::ReinhardJodie;
 
 public:
   Image() = default;

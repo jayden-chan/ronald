@@ -11,11 +11,14 @@ test:
 	cmake --build build --target tests
 	./build/tests
 
-lint:
+tidy:
 	clang-tidy \
 		-p build \
 		lib/*.cpp inc/*.hpp \
 		'-checks=-*,clang-analyzer-*,-clang-analyzer-cplusplus*,performance-*,readability-*,cppcoreguidelines-*'
 
+lint:
+	cppcheck --enable=warning,style,performance,portability --template=gcc app/*.cpp inc/*.hpp lib/*.cpp
 
-.PHONY: release debug test lint
+
+.PHONY: release debug test tidy lint

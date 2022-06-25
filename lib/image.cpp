@@ -68,12 +68,12 @@ void Image::set_pixel(const std::size_t u, const std::size_t v,
 
 void Image::apply_tmo() {
   switch (this->tmo) {
-  case Clamp:
+  case ToneMappingOperator::Clamp:
     for (auto &pixel : this->buffer) {
       tmo_clamp(pixel);
     }
     break;
-  case ReinhardJodie:
+  case ToneMappingOperator::ReinhardJodie:
     for (auto &pixel : this->buffer) {
       tmo_reinhard_jodie(pixel);
     }

@@ -15,14 +15,17 @@
  */
 
 #include "bvh.hpp"
+#include "common.hpp"
+#include "dbg.h"
 #include "rand.hpp"
 #include <algorithm>
+
 namespace ronald {
 
-BVH::BVH(const NodeType _type, const AABB _bbox, const BVHPair children)
-    : type(_type), bbox(_bbox), data(children) {}
+BVH::BVH(const NodeType _type, const AABB &_bbox, BVHPair children)
+    : type(_type), bbox(_bbox), data(std::move(children)) {}
 
-BVH::BVH(const NodeType _type, const AABB _bbox, const Object &obj)
+BVH::BVH(const NodeType _type, const AABB &_bbox, const Object &obj)
     : type(_type), bbox(_bbox), data(obj){};
 
 BVH BVH::build_bvh(std::vector<Object> &objs) {
@@ -37,8 +40,9 @@ BVH BVH::build_bvh(std::vector<Object> &objs) {
 
   if (objs.size() == 1) {
     const auto obj = objs.front();
-    objs.pop_back();
     const auto bb = obj.primitive->aabb();
+    dbg(bb);
+    BVH::num_leaf_nodes += 1;
     return BVH(NodeType::Leaf, bb, obj);
   }
 
@@ -48,7 +52,7 @@ BVH BVH::build_bvh(std::vector<Object> &objs) {
   // for now we will split at the midpoint of the minimums of the child bboxes.
   // this is not really optimal but it will get the job done for the time being
   std::nth_element(objs.begin(), m, objs.end(),
-                   [axis](const Object &a, const Object &b) {
+                   [axis](const auto &a, const auto &b) {
                      const auto box_left = a.primitive->aabb();
                      const auto box_right = b.primitive->aabb();
 
@@ -56,51 +60,48 @@ BVH BVH::build_bvh(std::vector<Object> &objs) {
                    });
 
   // split off the vector in two pieces at the partition point
-  const long half_size = objs.size() / 2;
-  std::vector<Object> l_vec(objs.begin(), objs.begin() + half_size);
-  std::vector<Object> r_vec(objs.begin() + half_size, objs.end());
+  std::vector<Object> l_vec(objs.begin(), m);
+  std::vector<Object> r_vec(m, objs.end());
 
   // construct the left and right subtrees
-  const auto left = std::make_shared<BVH>(build_bvh(l_vec));
-  const auto right = std::make_shared<BVH>(build_bvh(r_vec));
+  dbg(l_vec.size());
+  auto left = std::make_unique<BVH>(build_bvh(l_vec));
+  dbg(r_vec.size());
+  auto right = std::make_unique<BVH>(build_bvh(r_vec));
 
   const auto surrounding_box = AABB::surrounding_box(left->bbox, right->bbox);
-  return BVH(NodeType::Internal, surrounding_box, std::make_pair(left, right));
+  return BVH(NodeType::Internal, surrounding_box,
+             std::make_pair(std::move(left), std::move(right)));
 }
 
-std::optional<Intersection> BVH::intersect(const Ray &r, const float t_min,
-                                           const float t_max) const {
+std::optional<Hit> BVH::intersect(const Ray &r, const float t_min,
+                                  const float t_max) const {
   if (this->bbox.hit(r, t_min, t_max)) {
     // we are an internal node -- check both child nodes and continue
     // traversing down the tree
     if (this->type == NodeType::Internal) {
       const auto &[left, right] = std::get<BVHPair>(this->data);
       const auto left_hit = left->intersect(r, t_min, t_max);
-      const auto right_hit = right->intersect(r, t_min, t_max);
 
-      // both sides missed
-      if (!left_hit.has_value() && !right_hit.has_value()) {
-        return std::nullopt;
+      if (left_hit.has_value()) {
+        const auto right_hit = right->intersect(r, t_min, left_hit->hit.t);
+        return (!right_hit.has_value() || left_hit->hit.t < right_hit->hit.t)
+                   ? left_hit
+                   : right_hit;
+      } else {
+        return right->intersect(r, t_min, t_max);
       }
-
-      // only left side hit
-      if (left_hit.has_value() && !right_hit.has_value()) {
-        return left_hit;
-      }
-
-      // only right side hit
-      if (!left_hit.has_value() && right_hit.has_value()) {
-        return right_hit;
-      }
-
-      // both sides hit, figure out which intersection point is closer
-      return left_hit->t < right_hit->t ? left_hit : right_hit;
     }
 
     // we are a leaf node -- check if the ray intersects the leaf primitive
     const auto obj = std::get<Object>(this->data);
     const auto hit = obj.primitive->hit(r, t_min, t_max);
-    return hit;
+    if (hit.has_value()) {
+      return {{
+          .hit = hit.value(),
+          .material = obj.material,
+      }};
+    }
   }
 
   // ray misses the current node entirely

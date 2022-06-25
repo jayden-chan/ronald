@@ -17,9 +17,9 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
+#include "common.hpp"
 #include "math.hpp"
 #include "ray.hpp"
-#include "util.hpp"
 #include "vec3.hpp"
 
 #include <math.h>

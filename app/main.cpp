@@ -14,6 +14,7 @@
  * along with Ronald. If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include "dbg.h"
 #include "image.hpp"
 #include "inputs.hpp"
 #include "scene.hpp"
@@ -24,6 +25,7 @@
 #include <iostream>
 
 namespace po = boost::program_options;
+size_t ronald::BVH::num_leaf_nodes = 0;
 
 int main(int argc, char **argv) {
   po::options_description desc("Allowed options");
@@ -104,18 +106,14 @@ int main(int argc, char **argv) {
   const auto aspect_r = (float)config.width / (float)config.height;
   const auto scene = ronald::Scene::from_json(jv.as_object(), aspect_r);
 
-  if (!scene.has_value()) {
-    return 1;
-  }
-
   ronald::Image im;
   // Technically calling render_multi_threaded with one thread is fine, but the
   // code is a lot cleaner when it's just one thread so we'll have separate
   // methods
   if (config.threads == 1) {
-    im = scene->render_single_threaded(config);
+    im = scene.render_single_threaded(config);
   } else {
-    im = scene->render_multi_threaded(config);
+    im = scene.render_multi_threaded(config);
   }
 
   im.apply_tmo();

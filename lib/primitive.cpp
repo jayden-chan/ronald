@@ -16,10 +16,10 @@
 
 #include <optional>
 
+#include "common.hpp"
 #include "math.hpp"
 #include "primitive.hpp"
 #include "ray.hpp"
-#include "util.hpp"
 #include "vec3.hpp"
 
 namespace ronald {

@@ -1,0 +1,88 @@
+{
+  "camera": {
+    "look_from": [0, 0, 50],
+    "look_at": [0, 0, 0],
+    "vup": [0, 1, 0],
+    "vfov": 90,
+    "aperture": 0
+  },
+  "materials": {
+    "light": {
+      "type": "light",
+      "emittance": [2.0, 2.0, 2.0]
+    },
+    "white": {
+      "type": "lambertian",
+      "albedo": [1, 1, 1]
+    },
+    "red": {
+      "type": "lambertian",
+      "albedo": [1, 0, 0]
+    },
+    "blue": {
+      "type": "light",
+      "emittance": [0.25, 0.25, 1]
+    }
+  },
+  "objects": [
+    {
+      "name": "floor",
+      "material": "white",
+      "primitives": [
+        {
+          "type": "triangle",
+          "vertices": [
+            [0, -25, 300],
+            [200, -25, -400],
+            [-200, -25, -400]
+          ],
+          "normal": 1
+        }
+      ]
+    },
+    {
+      "name": "white sphere",
+      "material": "light",
+      "primitives": [
+        {
+          "type": "sphere",
+          "origin": [10, 10, 0],
+          "radius": 10
+        }
+      ]
+    },
+    {
+      "name": "blue sphere",
+      "material": "blue",
+      "primitives": [
+        {
+          "type": "sphere",
+          "origin": [-10, -10, 0],
+          "radius": 10
+        }
+      ]
+    },
+    {
+      "name": "blue sphere",
+      "material": "blue",
+      "primitives": [
+        {
+          "type": "sphere",
+          "origin": [10, -10, 10],
+          "radius": 5
+        }
+      ]
+    },
+    {
+      "name": "red sphere",
+      "material": "red",
+      "primitives": [
+        {
+          "type": "sphere",
+          "origin": [0, -20, 10],
+          "radius": 5
+        }
+      ]
+    }
+  ]
+}
