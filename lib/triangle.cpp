@@ -14,8 +14,8 @@
  * along with Ronald. If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include "common.hpp"
 #include "primitive.hpp"
-#include "util.hpp"
 #include "vec3.hpp"
 
 namespace ronald {
@@ -23,6 +23,8 @@ namespace ronald {
 Triangle::Triangle(const Vec3 &v0_a, const Vec3 &v1_a, const Vec3 &v2_a,
                    const float normal_a) {
   v0 = v0_a;
+  v1 = v1_a;
+  v2 = v2_a;
   edge1 = v1_a - v0_a;
   edge2 = v2_a - v0_a;
   normal = edge1.cross(edge2).normalize() * normal_a;
@@ -100,7 +102,11 @@ AABB Triangle::aabb() const {
   const auto max_z =
       std::max(std::max(v0.z(), v1.z()), std::max(v1.z(), v2.z()));
 
-  return AABB(Vec3(min_x, min_y, min_z), Vec3(max_x, max_y, max_z));
+  // we will add `EPSILON` padding to the bbox to prevent zero-volume bboxes
+  // when the triangle is axis-aligned
+  constexpr float ep = 0.0001f;
+  return AABB(Vec3(min_x - ep, min_y - ep, min_z - ep),
+              Vec3(max_x + ep, max_y + ep, max_z + ep));
 }
 
 } // namespace ronald
