@@ -76,7 +76,7 @@ std::optional<Intersection> Triangle::hit(const Ray &r, const float t_min,
 
   const auto t = f * edge2.dot(q);
 
-  if (t > EPSILON && t < 1.0 / EPSILON && t > t_min && t < t_max) {
+  if (t > EPSILON && t > t_min && t < t_max) {
     const auto point = r.origin() + r.direction() * t;
     return {{
         point,
