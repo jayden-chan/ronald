@@ -17,6 +17,7 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+#include "material.hpp"
 #include <stdlib.h>
 #include <string>
 
@@ -24,6 +25,24 @@
 using namespace boost::json;
 
 namespace ronald {
+
+using material_map = std::unordered_map<std::string, std::shared_ptr<Material>>;
+
+/**
+ * An object is a primitive with an associated material
+ */
+struct Object {
+  std::shared_ptr<Primitive> primitive;
+  std::shared_ptr<Material> material;
+};
+
+/**
+ * Represents an occurrence of a light ray hitting a primitive geometric object
+ */
+struct Hit {
+  Intersection hit;
+  std::shared_ptr<Material> material;
+};
 
 /**
  * Utility function for retrieving items from a JSON object with nicer
