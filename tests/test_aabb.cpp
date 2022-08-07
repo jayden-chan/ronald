@@ -60,38 +60,44 @@ TEST_CASE("AABB Sphere intersection test", "[aabb]") {
   auto ray_origin = Vec3(0, 0, -10);
   auto dir = (Vec3(0, 0, 0) - ray_origin).normalize();
   auto ray = Ray(ray_origin, dir);
+  auto inv_dir = 1.0 / ray.direction().normalize();
   REQUIRE(sphere.hit(ray, t_min, t_max));
-  REQUIRE(aabb.hit(ray, t_min, t_max));
+  REQUIRE(aabb.hit(ray, inv_dir, t_min, t_max));
 
   ray_origin = Vec3(4.5, 4.5, -10);
   dir = (Vec3(4.5, 4.5, 0) - ray_origin).normalize();
   ray = Ray(ray_origin, dir);
+  inv_dir = 1.0 / ray.direction().normalize();
   REQUIRE(!sphere.hit(ray, t_min, t_max));
-  REQUIRE(aabb.hit(ray, t_min, t_max));
+  REQUIRE(aabb.hit(ray, inv_dir, t_min, t_max));
 
   ray_origin = Vec3(4.9999f, 4.9999f, -10);
   dir = (Vec3(4.9999f, 4.9999f, 0) - ray_origin).normalize();
   ray = Ray(ray_origin, dir);
+  inv_dir = 1.0 / ray.direction().normalize();
   REQUIRE(!sphere.hit(ray, t_min, t_max));
-  REQUIRE(aabb.hit(ray, t_min, t_max));
+  REQUIRE(aabb.hit(ray, inv_dir, t_min, t_max));
 
   ray_origin = Vec3(0, -4.999999F, -10);
   dir = (Vec3(0, -4.999999F, 0) - ray_origin).normalize();
   ray = Ray(ray_origin, dir);
+  inv_dir = 1.0 / ray.direction().normalize();
   REQUIRE(sphere.hit(ray, t_min, t_max));
-  REQUIRE(aabb.hit(ray, t_min, t_max));
+  REQUIRE(aabb.hit(ray, inv_dir, t_min, t_max));
 
   ray_origin = Vec3(0, -5.000001F, -10);
   dir = (Vec3(0, -5.000001F, 0) - ray_origin).normalize();
   ray = Ray(ray_origin, dir);
+  inv_dir = 1.0 / ray.direction().normalize();
   REQUIRE(!sphere.hit(ray, t_min, t_max));
-  REQUIRE(!aabb.hit(ray, t_min, t_max));
+  REQUIRE(!aabb.hit(ray, inv_dir, t_min, t_max));
 
   ray_origin = Vec3(4, 4, -10);
   dir = (Vec3(4, 4, 0) - ray_origin).normalize();
   ray = Ray(ray_origin, dir);
+  inv_dir = 1.0 / ray.direction().normalize();
   REQUIRE(!sphere.hit(ray, t_min, t_max));
-  REQUIRE(aabb.hit(ray, t_min, t_max));
+  REQUIRE(aabb.hit(ray, inv_dir, t_min, t_max));
 }
 
 TEST_CASE("AABB surrounding_box test", "[aabb]") {

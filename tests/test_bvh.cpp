@@ -45,7 +45,8 @@ TEST_CASE("Basic BVH construction test", "[bvh]") {
       {.primitive = std::make_shared<Sphere>(s1), .material = mat},
       {.primitive = std::make_shared<Sphere>(s2), .material = mat}};
 
-  const auto bvh = BVH::build_bvh(objs);
+  size_t total_nodes = 0;
+  const auto bvh = BVH::build_bvh(objs, &total_nodes);
   REQUIRE(bvh.node_type() == NodeType::Internal);
 
   const auto surrounding_box = AABB::surrounding_box(s1.aabb(), s2.aabb());
@@ -63,7 +64,8 @@ TEST_CASE("Basic BVH intersection test", "[bvh]") {
       {.primitive = std::make_shared<Sphere>(s1), .material = mat},
       {.primitive = std::make_shared<Sphere>(s2), .material = mat}};
 
-  const auto bvh = BVH::build_bvh(objs);
+  size_t total_nodes = 0;
+  const auto bvh = BVH::build_bvh(objs, &total_nodes);
   REQUIRE(bvh.node_type() == NodeType::Internal);
 
   const auto surrounding_box = AABB::surrounding_box(s1.aabb(), s2.aabb());
