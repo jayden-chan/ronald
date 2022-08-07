@@ -16,6 +16,7 @@
 
 #include "inputs.hpp"
 #include <iostream>
+#include <thread>
 
 namespace ronald {
 
@@ -52,8 +53,14 @@ Config::Config(const po::variables_map &vm) {
     throw "Number of samples must be greater than zero";
   }
 
-  if (vm_threads <= 0) {
+  if (vm_threads < 0) {
     throw "Number of samples must be greater than zero";
+  } else if (vm_threads == 0) {
+    const auto hw_concurr = std::thread::hardware_concurrency();
+    if (hw_concurr != 0) {
+      throw "Hardware concurrency value is not available on this machine";
+    }
+    vm_threads = hw_concurr;
   }
 
   width = vm_width;
