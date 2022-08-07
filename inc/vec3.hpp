@@ -59,7 +59,7 @@ public:
   /**
    * Construct a Vec3 from x, y, and z values
    */
-  constexpr Vec3(const float x, const float y, const float z) {
+  [[nodiscard]] constexpr Vec3(const float x, const float y, const float z) {
     v[0] = x;
     v[1] = y;
     v[2] = z;
@@ -69,7 +69,7 @@ public:
    * Construct a Vec3 from a std::array containing exactly
    * three floats (x, y, z in that order)
    */
-  explicit Vec3(const std::array<float, 3> vals) {
+  [[nodiscard]] explicit Vec3(const std::array<float, 3> vals) {
     v[0] = vals.at(0);
     v[1] = vals.at(1);
     v[2] = vals.at(2);
@@ -79,17 +79,21 @@ public:
    * Vector of just zeros. The default constructor is all zeros as well but this
    * is a bit more clear in the code
    */
-  static constexpr Vec3 zeros() noexcept { return Vec3(0.0, 0.0, 0.0); }
+  [[nodiscard]] static constexpr Vec3 zeros() noexcept {
+    return Vec3(0.0, 0.0, 0.0);
+  }
 
   /**
    * Vector of just ones
    */
-  static constexpr Vec3 ones() noexcept { return Vec3(1.0, 1.0, 1.0); }
+  [[nodiscard]] static constexpr Vec3 ones() noexcept {
+    return Vec3(1.0, 1.0, 1.0);
+  }
 
   /**
    * Vector of random values from 0 to 1
    */
-  static Vec3 rand() {
+  [[nodiscard]] static Vec3 rand() {
     return Vec3(random_float(), random_float(), random_float());
   }
 

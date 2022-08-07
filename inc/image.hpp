@@ -43,8 +43,8 @@ class Image {
 public:
   Image() = default;
 
-  Image(const size_t width_a, const size_t height_a,
-        const ToneMappingOperator tmo_a)
+  [[nodiscard]] Image(const size_t width_a, const size_t height_a,
+                      const ToneMappingOperator tmo_a)
       : width(width_a), height(height_a), tmo(tmo_a) {
     this->buffer.reserve(width_a * height_a);
     this->buffer.resize(width_a * height_a);

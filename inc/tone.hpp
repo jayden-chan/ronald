@@ -45,11 +45,11 @@ inline void tmo_clamp(Vec3 &pixel) {
 }
 
 constexpr Vec3 luminance_triple = Vec3(0.2126f, 0.7152f, 0.0722f);
-inline float luminance(const Vec3 &pixel) {
+[[nodiscard]] inline float luminance(const Vec3 &pixel) {
   return pixel.dot(luminance_triple);
 }
 
-inline Vec3 lerp(const Vec3 &a, const Vec3 &b, const Vec3 &t) {
+[[nodiscard]] inline Vec3 lerp(const Vec3 &a, const Vec3 &b, const Vec3 &t) {
   return a + t * (b - a);
 }
 

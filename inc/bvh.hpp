@@ -37,12 +37,13 @@ private:
   /**
    * Construct a BVH with the given node type, bbox, and child nodes
    */
-  BVH(const NodeType type, const AABB &bbox, const BVHPair children);
+  [[nodiscard]] BVH(const NodeType type, const AABB &bbox,
+                    const BVHPair children);
 
   /**
    * Construct a BVH with the given node type, bbox, and object leaf node
    */
-  BVH(const NodeType type, const AABB &bbox, const Object &obj);
+  [[nodiscard]] BVH(const NodeType type, const AABB &bbox, const Object &obj);
 
 public:
   /**
@@ -92,7 +93,7 @@ public:
   /**
    * Construct a new FlatBVH from the given scene objects
    */
-  explicit FlatBVH(std::vector<Object> &objs);
+  [[nodiscard]] explicit FlatBVH(std::vector<Object> &objs);
 
   /**
    * Test if a ray intersects the BVH

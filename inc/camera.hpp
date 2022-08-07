@@ -73,13 +73,13 @@ public:
   /**
    * Construct a new camera with the given input parameters
    */
-  explicit Camera(const CameraConstructor &cam) { init(cam); }
+  [[nodiscard]] explicit Camera(const CameraConstructor &cam) { init(cam); }
 
   /**
    * Construct a camera from a JSON object containing the relevant fields for
    * camera initialization
    */
-  Camera(const object &obj, const float aspect_r) {
+  [[nodiscard]] Camera(const object &obj, const float aspect_r) {
     const auto look_from_vec =
         get<std::array<float, 3>>(obj, "look_from", "camera");
     const auto look_at_vec =
@@ -105,7 +105,7 @@ public:
    * 0.5 and 0.5 would mean the ray passes through the direct center of the
    * camera view port
    */
-  Ray get_ray(const float s, const float t) const {
+  [[nodiscard]] Ray get_ray(const float s, const float t) const {
     const auto rd = lens_radius * random_in_unit_disk();
     const auto offset = u * rd.x() + v * rd.y();
 

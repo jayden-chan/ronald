@@ -83,15 +83,15 @@ public:
   /**
    * Construct a Lambertian material from the given albedo vector
    */
-  explicit Lambertian(Vec3 _albedo);
+  [[nodiscard]] explicit Lambertian(Vec3 _albedo);
 
   /**
    * Construct a Lambertian material from the given JSON object containing
    * the `albedo` key.
    */
-  explicit Lambertian(const object &obj);
-  std::optional<Scatter> scatter(Ray const &r,
-                                 Intersection const &h) const override;
+  [[nodiscard]] explicit Lambertian(const object &obj);
+  [[nodiscard]] std::optional<Scatter>
+  scatter(Ray const &r, Intersection const &h) const override;
 };
 
 /**
@@ -106,18 +106,25 @@ public:
   /**
    * Construct a Light material from the given albedo vector
    */
-  explicit Light(Vec3 _emittance);
+  [[nodiscard]] explicit Light(Vec3 _emittance);
 
   /**
    * Construct a Light material from the given JSON object containing
    * the `emittance` key.
    */
-  explicit Light(const object &obj);
-  std::optional<Scatter> scatter(Ray const &r,
-                                 Intersection const &h) const override;
-  Vec3 emitted(Ray const &r, Intersection const &h) const override;
+  [[nodiscard]] explicit Light(const object &obj);
+
+  [[nodiscard]] std::optional<Scatter>
+  scatter(Ray const &r, Intersection const &h) const override;
+
+  [[nodiscard]] Vec3 emitted(Ray const &r,
+                             Intersection const &h) const override;
 };
 
+/**
+ * A reflector material simply reflects the incident ray using the
+ * law of reflection (angle of incidence = angle of reflection)
+ */
 class Reflector : public Material {
 private:
   Vec3 attenuation;
@@ -126,17 +133,24 @@ public:
   /**
    * Construct a Reflector material from the given attenuation vector
    */
-  explicit Reflector(Vec3 _attenuation);
+  [[nodiscard]] explicit Reflector(Vec3 _attenuation);
 
   /**
    * Construct a Reflector material from the given JSON object containing
    * the `attenuation` key.
    */
-  explicit Reflector(const object &obj);
-  std::optional<Scatter> scatter(Ray const &r,
-                                 Intersection const &h) const override;
+  [[nodiscard]] explicit Reflector(const object &obj);
+
+  [[nodiscard]] std::optional<Scatter>
+  scatter(Ray const &r, Intersection const &h) const override;
 };
 
+/**
+ * A dielectric material splits the incoming ray into a reflected
+ * and refracted ray depending on a probability factor related to its
+ * refractive index and the incident angle of the incoming ray. Examples
+ * of dielectric materials include water and glass.
+ */
 class Dielectric : public Material {
 private:
   float refractive_index;
@@ -146,15 +160,17 @@ public:
   /**
    * Construct a Dielectric material from the given refractive index
    */
-  explicit Dielectric(const float _ref_idx, const Vec3 _attenuation);
+  [[nodiscard]] explicit Dielectric(const float _ref_idx,
+                                    const Vec3 _attenuation);
 
   /**
    * Construct a Dielectric material from the given JSON object containing
    * the `refractive_index` key.
    */
-  explicit Dielectric(const object &obj);
-  std::optional<Scatter> scatter(Ray const &r,
-                                 Intersection const &h) const override;
+  [[nodiscard]] explicit Dielectric(const object &obj);
+
+  [[nodiscard]] std::optional<Scatter>
+  scatter(Ray const &r, Intersection const &h) const override;
 };
 
 } // namespace ronald

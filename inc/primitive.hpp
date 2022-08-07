@@ -46,18 +46,19 @@ public:
    * point along the ray between `t_min` and `t_max`. If the ray and primitive
    * do not intersect, std::nullopt is returned.
    */
-  virtual std::optional<Intersection> hit(const Ray &r, float t_min,
-                                          float t_max) const = 0;
+  [[nodiscard]] virtual std::optional<Intersection>
+  hit(const Ray &r, float t_min, float t_max) const = 0;
 
   /**
    * Fetch the AABB that encloses this primitive
    */
-  virtual AABB aabb() const = 0;
+  [[nodiscard]] virtual AABB aabb() const = 0;
 
   /**
    * Construct a boxed Primitive from the given JSON value.
    */
-  static const std::shared_ptr<Primitive> from_json(const object &obj);
+  [[nodiscard]] static const std::shared_ptr<Primitive>
+  from_json(const object &obj);
 };
 
 /**
@@ -72,17 +73,17 @@ public:
   /**
    * Construct a sphere from a given center point and radius
    */
-  Sphere(const Vec3 &center_a, const float radius_a);
+  [[nodiscard]] Sphere(const Vec3 &center_a, const float radius_a);
 
   /**
    * Construct a sphere from a JSON object containing
    * the `center` and `radius` fields
    */
-  explicit Sphere(const object &obj);
+  [[nodiscard]] explicit Sphere(const object &obj);
 
-  std::optional<Intersection> hit(const Ray &r, float t_min,
-                                  float t_max) const override;
-  virtual AABB aabb() const override;
+  [[nodiscard]] std::optional<Intersection> hit(const Ray &r, float t_min,
+                                                float t_max) const override;
+  [[nodiscard]] virtual AABB aabb() const override;
 };
 
 /**
@@ -103,18 +104,18 @@ public:
    * Construct a triangle given by three points in space and a normal. The
    * normal vector should be of length 1.
    */
-  Triangle(const Vec3 &v0_a, const Vec3 &v1_a, const Vec3 &v2_a,
-           float normal_a);
+  [[nodiscard]] Triangle(const Vec3 &v0_a, const Vec3 &v1_a, const Vec3 &v2_a,
+                         float normal_a);
 
   /**
    * Construct a triangle from a JSON object containing the `vertices`, and
    * `normal` fields
    */
-  explicit Triangle(const object &obj);
+  [[nodiscard]] explicit Triangle(const object &obj);
 
-  std::optional<Intersection> hit(const Ray &r, float t_min,
-                                  float t_max) const override;
-  virtual AABB aabb() const override;
+  [[nodiscard]] std::optional<Intersection> hit(const Ray &r, float t_min,
+                                                float t_max) const override;
+  [[nodiscard]] virtual AABB aabb() const override;
 };
 
 } // namespace ronald

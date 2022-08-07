@@ -38,12 +38,13 @@ namespace ronald {
  * Create an object from a JSON file containing the "material"
  * and "primitive" fields
  */
-const Object object_from_json(const object &obj, const material_map &materials);
+[[nodiscard]] const Object object_from_json(const object &obj,
+                                            const material_map &materials);
 
 /**
  * Create a list of materials from a JSON array containing material objects
  */
-material_map materials_from_json(const object &obj);
+[[nodiscard]] material_map materials_from_json(const object &obj);
 
 /**
  * The scene is composed of the objects and the camera
@@ -77,8 +78,8 @@ public:
    * Construct a scene object from the given objects and camera
    * position
    */
-  Scene(std::vector<Object> &objects_a, const material_map &materials_a,
-        const Camera &camera_a)
+  [[nodiscard]] Scene(std::vector<Object> &objects_a,
+                      const material_map &materials_a, const Camera &camera_a)
       : materials(materials_a), objects(objects_a), bvh(objects_a),
         camera(camera_a){};
 
@@ -86,12 +87,12 @@ public:
    * Construct a scene object from a JSON object containing the `objects` and
    * `camera` fields
    */
-  static Scene from_json(const object &obj, const float aspect_r);
+  [[nodiscard]] static Scene from_json(const object &obj, const float aspect_r);
   /**
    * Calls `trace` for each pixel in the scene for as many samples
    * as specified in the config
    */
-  Image render_single_threaded(const Config &config) const;
+  [[nodiscard]] Image render_single_threaded(const Config &config) const;
 
   /**
    * A multithreaded implementation of the main rendering loop. The
@@ -101,7 +102,7 @@ public:
    * more rows in the queue. Once the queue is exhausted the thread will
    * terminate. Rendering is complete once all threads have terminated
    */
-  Image render_multi_threaded(const Config &config) const;
+  [[nodiscard]] Image render_multi_threaded(const Config &config) const;
 };
 
 } // namespace ronald

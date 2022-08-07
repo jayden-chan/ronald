@@ -29,18 +29,19 @@ class Ray {
   Vec3 _dir;
 
 public:
-  Ray(const Vec3 origin, const Vec3 dir) : _origin(origin), _dir(dir) {}
+  [[nodiscard]] Ray(const Vec3 origin, const Vec3 dir)
+      : _origin(origin), _dir(dir) {}
 
   /**
    * Return the point in 3d space at the distance `t` along
    * the ray starting at the ray origin
    */
-  Vec3 point_at_parameter(const float t) const noexcept {
+  [[nodiscard]] Vec3 point_at_parameter(const float t) const noexcept {
     return this->_origin + this->_dir * t;
   }
 
-  inline Vec3 origin() const noexcept { return this->_origin; }
-  inline Vec3 direction() const noexcept { return this->_dir; }
+  [[nodiscard]] inline Vec3 origin() const noexcept { return this->_origin; }
+  [[nodiscard]] inline Vec3 direction() const noexcept { return this->_dir; }
 
   /**
    * Stream insertion operator

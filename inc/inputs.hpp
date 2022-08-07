@@ -36,7 +36,7 @@ public:
   size_t threads = 0;
 
   Config() = default;
-  explicit Config(const po::variables_map &vm);
+  [[nodiscard]] explicit Config(const po::variables_map &vm);
 
   void print() const;
 };

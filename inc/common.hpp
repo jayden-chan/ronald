@@ -49,8 +49,8 @@ struct Hit {
  * error messages for the user
  */
 template <typename T>
-T get(const object &obj, const std::string &key,
-      const std::string &parent = "<root>") {
+[[nodiscard]] T get(const object &obj, const std::string &key,
+                    const std::string &parent = "<root>") {
   try {
     return value_to<T>(obj.at(key));
   } catch (std::exception &e) {
@@ -60,8 +60,12 @@ T get(const object &obj, const std::string &key,
   }
 }
 
-inline value at(const object &obj, const std::string &key,
-                const std::string &parent = "<root>") {
+/**
+ * Convenience function for accessing JSON objects while providing
+ * some nicer error handling for failed accesses
+ */
+[[nodiscard]] inline value at(const object &obj, const std::string &key,
+                              const std::string &parent = "<root>") {
   try {
     return obj.at(key);
   } catch (std::exception &e) {

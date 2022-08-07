@@ -24,7 +24,7 @@ namespace ronald {
 /**
  * Generate a random float.
  */
-float random_float();
+[[nodiscard]] float random_float();
 
 } // namespace ronald
 

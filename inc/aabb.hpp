@@ -45,22 +45,24 @@ public:
   /**
    * Construct an AABB from the given `min` and `max` vectors
    */
-  AABB(const Vec3 &min_a, const Vec3 &max_a) : min(min_a), max(max_a){};
+  [[nodiscard]] AABB(const Vec3 &min_a, const Vec3 &max_a)
+      : min(min_a), max(max_a){};
 
   /**
    * Check whether the given Ray intersects the AABB.
    */
-  bool hit(const Ray &r, const Vec3 &inv_dir, float t_min, float t_max) const;
+  [[nodiscard]] bool hit(const Ray &r, const Vec3 &inv_dir, float t_min,
+                         float t_max) const;
 
   /**
    * Return the axis along with the box is largest
    */
-  size_t largest_extent() const;
+  [[nodiscard]] size_t largest_extent() const;
 
   /**
    * Return a new AABB which completely contains the two provided bounding boxes
    */
-  static AABB surrounding_box(const AABB &a, const AABB &b);
+  [[nodiscard]] static AABB surrounding_box(const AABB &a, const AABB &b);
 
   /**
    * Stream insertion operator

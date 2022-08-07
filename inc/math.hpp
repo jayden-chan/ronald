@@ -25,19 +25,19 @@ namespace ronald {
  * Produce a random 2D vector inside of a disk with
  * radius 1.
  */
-Vec3 random_in_unit_disk();
+[[nodiscard]] Vec3 random_in_unit_disk();
 
 /**
  * Produce a random 3D vector inside of a sphere with
  * radius 1
  */
-Vec3 random_in_unit_sphere();
+[[nodiscard]] Vec3 random_in_unit_sphere();
 
 /**
  * Produce a random 3D vector which lies on the surface
  * of a sphere with radius 1
  */
-Vec3 random_on_unit_sphere();
+[[nodiscard]] Vec3 random_on_unit_sphere();
 
 } // namespace ronald
 
