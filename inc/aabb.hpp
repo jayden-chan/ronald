@@ -53,6 +53,11 @@ public:
   bool hit(const Ray &r, const Vec3 &inv_dir, float t_min, float t_max) const;
 
   /**
+   * Return the axis along with the box is largest
+   */
+  size_t largest_extent() const;
+
+  /**
    * Return a new AABB which completely contains the two provided bounding boxes
    */
   static AABB surrounding_box(const AABB &a, const AABB &b);

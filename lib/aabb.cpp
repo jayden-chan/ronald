@@ -40,6 +40,21 @@ bool AABB::hit(const Ray &r, const Vec3 &inv_dir, float t_min,
   return true;
 }
 
+size_t AABB::largest_extent() const {
+  float curr_max = abs(max[0] - min[0]);
+  size_t max_dim = 0;
+
+  for (size_t i = 1; i < 3; ++i) {
+    const auto extent = abs(max[i] - min[i]);
+    if (extent > curr_max) {
+      curr_max = extent;
+      max_dim = i;
+    }
+  }
+
+  return max_dim;
+}
+
 AABB AABB::surrounding_box(const AABB &a, const AABB &b) {
   const auto small =
       Vec3(std::min(a.min.x(), b.min.x()), std::min(a.min.y(), b.min.y()),

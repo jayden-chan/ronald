@@ -33,7 +33,12 @@ BVH BVH::build_bvh(std::vector<Object> &objs, size_t *total_nodes) {
   // choose the axis to split on. for now we will just split on
   // a random axis -- this is pretty suboptimal but it's very
   // easy so we'll leave it as is for now
-  const auto axis = static_cast<size_t>(3.0 * random_float());
+  // const auto axis = static_cast<size_t>(3.0 * random_float());
+  auto full_bounds = AABB();
+  for (const auto &o : objs) {
+    full_bounds = AABB::surrounding_box(full_bounds, o.primitive->aabb());
+  }
+  const auto axis = full_bounds.largest_extent();
 
   if (objs.size() == 0) {
     throw std::runtime_error("invalid bvh length");
@@ -51,13 +56,17 @@ BVH BVH::build_bvh(std::vector<Object> &objs, size_t *total_nodes) {
   // partition the elements in the vector according to the split criteria.
   // for now we will split at the midpoint of the minimums of the child bboxes.
   // this is not really optimal but it will get the job done for the time being
-  std::nth_element(objs.begin(), m, objs.end(),
-                   [axis](const auto &a, const auto &b) {
-                     const auto box_left = a.primitive->aabb();
-                     const auto box_right = b.primitive->aabb();
+  std::nth_element(
+      objs.begin(), m, objs.end(), [axis](const auto &a, const auto &b) {
+        const auto box_left = a.primitive->aabb();
+        const auto box_right = b.primitive->aabb();
+        const auto left_midpoint =
+            std::midpoint(box_left.min[axis], box_left.max[axis]);
+        const auto right_midpoint =
+            std::midpoint(box_right.min[axis], box_right.max[axis]);
 
-                     return box_left.min[axis] - box_right.min[axis] < 0.0;
-                   });
+        return left_midpoint - right_midpoint < 0.0;
+      });
 
   // split off the vector in two pieces at the partition point
   std::vector<Object> l_vec(objs.begin(), m);
