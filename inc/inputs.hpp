@@ -36,6 +36,10 @@ public:
   size_t threads = 0;
 
   Config() = default;
+
+  /**
+   * Parse the Config from the given Boost variables map
+   */
   [[nodiscard]] explicit Config(const po::variables_map &vm);
 
   void print() const;

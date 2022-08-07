@@ -28,7 +28,9 @@ using namespace std::chrono_literals;
 
 namespace ronald {
 
-// 20 bounces should be more than enough for most scenes
+// 20 bounces should be more than enough for most scenes. Most
+// traces will never reach this depth anyway since they will
+// be terminated by Russian Roulette
 constexpr size_t MAX_RECURSIVE_DEPTH = 20;
 
 const Object object_from_json(const object &obj,
@@ -110,8 +112,8 @@ Vec3 Scene::trace(const float u, const float v) const {
   auto total_emitted = Vec3::zeros();
 
   for (size_t i = 0; i < MAX_RECURSIVE_DEPTH; ++i) {
-    const auto hit_result = hit_objects(this->objects, curr_ray);
-    // const auto hit_result = this->bvh.intersect(curr_ray, T_MIN, f32_max);
+    // const auto hit_result = hit_objects(this->objects, curr_ray);
+    const auto hit_result = this->bvh.intersect(curr_ray, T_MIN, f32_max);
 
     // Ray did not hit anything -- return zero
     if (!hit_result.has_value()) {
@@ -285,8 +287,9 @@ Image Scene::render_multi_threaded(const Config &config) const {
 
   size_t rows_completed = 0;
 
-  // There's no way to "block on" the output queue so we'll just read it
-  // every 300ms
+  // There's no native way to "block on" the output queue so we'll just read it
+  // every 300ms. It's not really worth the effort to implement a notification
+  // system with condvars for just a progress bar
   for (;;) {
     size_t tmp;
     while (completed_rows.pop(tmp)) {

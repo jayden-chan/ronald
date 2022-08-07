@@ -66,7 +66,7 @@ Light::Light(const object &obj) {
 }
 
 /**
- * The light material doesn't scatter light
+ * The light material doesn't scatter light -- return nullopt
  */
 std::optional<Scatter> Light::scatter(__attribute__((unused)) Ray const &r,
                                       __attribute__((unused))
@@ -88,9 +88,6 @@ Reflector::Reflector(const object &obj) {
   attenuation = Vec3(atten);
 }
 
-/**
- * The Reflector material reflects rays according to the law of reflection
- */
 std::optional<Scatter> Reflector::scatter(Ray const &r,
                                           Intersection const &h) const {
   const auto reflected = vector_reflect(r.direction().normalize(), h.normal);
@@ -118,6 +115,13 @@ Dielectric::Dielectric(const object &obj) {
   }
 }
 
+/**
+ * Schlick's approximation for the Fresnel factor of specular
+ * reflections. This is a very well-known optimization in the
+ * path tracing industry.
+ *
+ * https://en.wikipedia.org/wiki/Schlick%27s_approximation
+ */
 float schlick(const float cosine, const float ref_idx) {
   const auto r0 = (1.0f - ref_idx) / (1.0f + ref_idx);
   const auto r1 = r0 * r0;

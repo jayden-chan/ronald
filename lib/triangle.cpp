@@ -61,7 +61,7 @@ std::optional<Intersection> Triangle::hit(const Ray &r, const float t_min,
   const auto s = r.origin() - v0;
   const auto u = f * s.dot(h);
 
-  // this branch might be unpredictable, should check this
+  // TODO: this branch might be unpredictable, should profile this
   if (u < 0.0 || u > 1.0) {
     return std::nullopt;
   }
@@ -69,7 +69,7 @@ std::optional<Intersection> Triangle::hit(const Ray &r, const float t_min,
   const auto q = s.cross(edge1);
   const auto v = f * r.direction().dot(q);
 
-  // this might also be unpredictable, check it
+  // TODO: this might also be unpredictable, check it
   if (v < 0.0 || u + v > 1.0) {
     return std::nullopt;
   }

@@ -17,12 +17,22 @@
 #ifndef TONE_H
 #define TONE_H
 
+/**
+ * This file provides several utilities for mapping the linear
+ * HDR radiance values from the renderer down into 24bit LDR
+ * RGB values.
+ */
+
 #include "vec3.hpp"
 #include <stdexcept>
 namespace ronald {
 
 constexpr float clamp_max = 1.0f;
 
+/**
+ * Tone-map the image by clamping each pixel
+ * within the hard-coded clamp limits (1.0).
+ */
 inline void tmo_clamp(Vec3 &pixel) {
   if (pixel.x() > clamp_max) {
     pixel.set_x(clamp_max);
@@ -53,6 +63,15 @@ constexpr Vec3 luminance_triple = Vec3(0.2126f, 0.7152f, 0.0722f);
   return a + t * (b - a);
 }
 
+/**
+ * Reinhard-Jodie tone mapping algorithm as described here
+ * https://64.github.io/tonemapping/
+ *
+ * This page has a bunch of great information about tone
+ * mapping HDR images back down to standard 24 bit dynamic
+ * range images. I would have loved to implement some more of
+ * these but there just wasn't time.
+ */
 inline void tmo_reinhard_jodie(Vec3 &pixel) {
   const auto l = luminance(pixel);
   const auto tv = pixel / (pixel + 1.0f);
