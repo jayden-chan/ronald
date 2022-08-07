@@ -3,6 +3,7 @@
 Path tracing rendering engine in very poorly written C++20
 
 ## Building / Testing / Running
+
 ```bash
 # Release build
 make release
@@ -16,24 +17,31 @@ make test
 ```
 
 Basic Feature Set
-* [x] CLI parsing
-* [x] PPM image generation
-* [x] Vec3 class implementation
-* [x] Ray/Sphere intersection calculation
-* [x] Diffuse material scatter function
-* [x] Light source material
-* [x] Recursive tracing function
-* [x] Single threaded render loop
-* [x] Scene description parsing w/ Boost
-* [x] Ray/Triangle intersection
-* [x] Dielectric material scatter function
 
-Extended Feature Set (Scope B only)
-* [ ] Bounding Volume Hierarchy
-* [x] Multithreaded render loop
-* [x] Reinhard-Jodie Tone Mapping
-* [x] Reflective/semi-reflective material
-* [x] Russian Roulette path termination
+- [x] CLI parsing
+- [x] PPM image generation
+- [x] Vec3 class implementation
+- [x] Ray/Sphere intersection calculation
+- [x] Diffuse material scatter function
+- [x] Light source material
+- [x] Recursive tracing function
+- [x] Single threaded render loop
+- [x] Scene description parsing w/ Boost
+- [x] Ray/Triangle intersection
+- [x] Dielectric material scatter function
+
+Extended Feature Set (Not considered MVP or required for final submission)
+
+- [x] Bounding Volume Hierarchy [1]
+- [x] Multithreaded render loop
+- [x] Reinhard-Jodie Tone Mapping
+- [x] Reflective/semi-reflective material
+- [x] Russian Roulette path termination
+
+[1] BVH is implemented but currently has poor (but still correct) performance when used
+in a multi-threaded context. I have not had the time to profile the app and determine the
+cause of the performance degradation, and since the BVH was outside of the project MVP
+from the beginning I am going to leave it as-is.
 
 ## Progress Updates
 
@@ -44,7 +52,7 @@ low in the `hit_objects` function. After hours of rummaging around in the code t
 was located and fixed. Now the program can render nice looking glass materials.
 
 | Config      | Value          |
-| ---         | ---            |
+| ----------- | -------------- |
 | Resolution  | 512x512        |
 | Samples     | 10000          |
 | Threads     | 10             |
@@ -62,7 +70,7 @@ identical, but notice that the render time has gone down from 33 minutes to just
 minutes. This is a huge savings for just a few extra lines of code.
 
 | Config      | Value          |
-| ---         | ---            |
+| ----------- | -------------- |
 | Resolution  | 512x512        |
 | Samples     | 10000          |
 | Threads     | 10             |
@@ -79,7 +87,7 @@ completion of the "MVP" portion of the project. I think at this point the projec
 probably in a "submittable" state and would receive a good grade.
 
 | Config      | Value          |
-| ---         | ---            |
+| ----------- | -------------- |
 | Resolution  | 512x512        |
 | Samples     | 10000          |
 | Threads     | 10             |
@@ -97,7 +105,7 @@ There is still a persisting bug where the renderer produces "vertical line" arti
 perpendicular to the floor so there is some weird shading on the front of the taller box
 
 | Config      | Value          |
-| ---         | ---            |
+| ----------- | -------------- |
 | Resolution  | 512x512        |
 | Samples     | 10000          |
 | Threads     | 10             |
@@ -110,7 +118,7 @@ perpendicular to the floor so there is some weird shading on the front of the ta
 ### 2022-06-14 -- Implemented multi-threaded rendering
 
 | Config      | Value          |
-| ---         | ---            |
+| ----------- | -------------- |
 | Resolution  | 512x512        |
 | Samples     | 7000           |
 | Threads     | 10             |
@@ -123,7 +131,7 @@ perpendicular to the floor so there is some weird shading on the front of the ta
 ### 2022-06-12 -- Successfully rendered the Cornell Box exterior
 
 | Config      | Value          |
-| ---         | ---            |
+| ----------- | -------------- |
 | Resolution  | 512x512        |
 | Samples     | 7000           |
 | Threads     | 1              |
