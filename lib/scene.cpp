@@ -94,8 +94,6 @@ std::optional<Hit> hit_objects(const std::vector<Object> &objs,
   if (last_hit.has_value()) {
     // Delay computing the scattered and emitted results until we've figured
     // out which object we actually hit (if any)
-    // hit->scatter = objs[last_obj_hit].material->scatter(ray, *last_hit);
-    // hit->emitted = objs[last_obj_hit].material->emitted(ray, *last_hit);
     hit.material = objs[last_obj_hit].material;
     return hit;
   }
@@ -187,6 +185,10 @@ Scene Scene::from_json(const object &obj, const float aspect_r) {
   return Scene(objs, mats, cam);
 }
 
+// this function is nearly identical to the multithreaded function
+// and if single threaded performance is wanted you can just run
+// it with --threads=1. but the single threaded version is convenient
+// to keep around just for sanity checks against the multi threaded version
 Image Scene::render_single_threaded(const Config &config) const {
   const auto width = config.width;
   const auto height = config.height;
@@ -230,6 +232,11 @@ Image Scene::render_multi_threaded(const Config &config) const {
 
   auto img = Image(width, height, ToneMappingOperator::ReinhardJodie);
 
+  // the queues here will be used to distribute work to the threads. it's
+  // not at all a hot part of the code but it still has to be thread safe
+  // and the lock free queue was convenient. I was looking for something similar
+  // to Rust's MPMC broadcast channel, but it didn't seem like anything like
+  // that really existed in the C++ ecosystem sadly.
   boost::lockfree::queue<size_t> in_progress_rows(num_threads);
   boost::lockfree::queue<size_t> completed_rows(num_threads);
   in_progress_rows.reserve(height);
@@ -254,12 +261,6 @@ Image Scene::render_multi_threaded(const Config &config) const {
       const auto yf = static_cast<float>(height - 1 - y);
 
       // We did get a row to render -- go ahead and render it
-      // THREAD SAFETY: geometry and material info from `this` is being
-      // concurrently read by all threads. This is fine since it's all readonly
-      //
-      // `img` from the function scope is being concurrently written to by all
-      // threads. This is also fine since the write portions of the array will
-      // be non-overlapping
       for (size_t x = 0; x < width; ++x) {
         const auto xf = static_cast<float>(x);
 
@@ -288,7 +289,7 @@ Image Scene::render_multi_threaded(const Config &config) const {
   size_t rows_completed = 0;
 
   // There's no native way to "block on" the output queue so we'll just read it
-  // every 300ms. It's not really worth the effort to implement a notification
+  // every 300ms. it's not really worth the effort to implement a notification
   // system with condvars for just a progress bar
   for (;;) {
     size_t tmp;

@@ -54,6 +54,8 @@ Lambertian::Lambertian(const object &obj) {
 
 std::optional<Scatter> Lambertian::scatter(__attribute__((unused)) Ray const &r,
                                            Intersection const &h) const {
+  // an ideal approximation to matte scatters the light ray
+  // by bouncing it in a random direction off the intersection point.
   const auto scattered = h.point + h.normal + random_on_unit_sphere();
   const Ray specular(h.point, scattered - h.point);
   return std::optional<Scatter>{{specular, albedo}};
@@ -129,9 +131,6 @@ float schlick(const float cosine, const float ref_idx) {
   return r1 + (1.0f - r1) * powf(1.0f - cosine, 5.0);
 }
 
-/**
- * The Reflector material reflects rays according to the law of reflection
- */
 std::optional<Scatter> Dielectric::scatter(Ray const &r,
                                            Intersection const &i) const {
   const auto ray_dir = r.direction().normalize();
@@ -147,6 +146,16 @@ std::optional<Scatter> Dielectric::scatter(Ray const &r,
   const auto refracted = vector_refract(ray_dir, outward_normal, ni_over_nt);
 
   if (refracted.has_value()) {
+    // determine whether this ray should reflect or refract based on the
+    // Schlick approximation function. in real life the ray would split into
+    // both refracted and reflected rays with some percentage of the energy
+    // going to the refracted and some percentage going to the reflected. in
+    // our path tracer it's problematic to have functions that can return
+    // multiple rays. we use this probability "hack" to simulate it by using
+    // the Fresnel factor of the split as the probability of choosing either a
+    // reflection or refraction. since we will be using Monte Carlo integration
+    // this is actually mathematically equivalent to splitting into multiple
+    // rays.
     const auto reflect_probability =
         refracted.has_value() ? schlick(cosine, ni_over_nt) : 1.0f;
 
@@ -158,6 +167,7 @@ std::optional<Scatter> Dielectric::scatter(Ray const &r,
     }
   }
 
+  // no refracted value -- total internal reflection
   const auto reflected = vector_reflect(ray_dir, i.normal);
   return {{
       .specular = Ray(i.point, reflected),

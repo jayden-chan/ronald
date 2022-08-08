@@ -30,10 +30,14 @@ BVH::BVH(const NodeType _type, const AABB &_bbox, const Object &obj)
     : type(_type), bbox(_bbox), data(obj){};
 
 BVH BVH::build_bvh(std::vector<Object> &objs, size_t *total_nodes) {
-  // choose the axis to split on. for now we will just split on
-  // a random axis -- this is pretty suboptimal but it's very
-  // easy so we'll leave it as is for now
-  // const auto axis = static_cast<size_t>(3.0 * random_float());
+  // chose the axis along which to split this node of the BVH.
+  // one simple way to do this would be to simply select randomly.
+  // here we will select based on the largest extend of the current AABB,
+  // essentially we split along the dimension where the objects are the
+  // most spread out.
+  //
+  // see figure 4.3 here:
+  // https://www.pbr-book.org/3ed-2018/Primitives_and_Intersection_Acceleration/Bounding_Volume_Hierarchies
   auto full_bounds = AABB();
   for (const auto &o : objs) {
     full_bounds = AABB::surrounding_box(full_bounds, o.primitive->aabb());
@@ -56,6 +60,12 @@ BVH BVH::build_bvh(std::vector<Object> &objs, size_t *total_nodes) {
   // partition the elements in the vector according to the split criteria.
   // for now we will split at the midpoint of the minimums of the child bboxes.
   // this is not really optimal but it will get the job done for the time being
+  //
+  // see figure 4.4 here:
+  // https://www.pbr-book.org/3ed-2018/Primitives_and_Intersection_Acceleration/Bounding_Volume_Hierarchies
+  //
+  // and the section on the SAH split method (not implemented in this project)
+  // https://www.pbr-book.org/3ed-2018/Primitives_and_Intersection_Acceleration/Bounding_Volume_Hierarchies#TheSurfaceAreaHeuristic
   std::nth_element(
       objs.begin(), m, objs.end(), [axis](const auto &a, const auto &b) {
         const auto box_left = a.primitive->aabb();
