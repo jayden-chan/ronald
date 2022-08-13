@@ -110,8 +110,14 @@ Vec3 Scene::trace(const float u, const float v) const {
   auto total_emitted = Vec3::zeros();
 
   for (size_t i = 0; i < MAX_RECURSIVE_DEPTH; ++i) {
-    const auto hit_result = hit_objects(this->objects, curr_ray);
+    // the BVH is disabled temporarily due to poor performance in multithreaded
+    // mode. the construction and traversal of the BVH is correct (you can
+    // verify this if you want to spend the time re-compiling and re-rendering)
+    // but the performance is just slow. I haven't had the time to debug this
+    // and since the BVH was a stretch goal it's not a high priority
+
     // const auto hit_result = this->bvh.intersect(curr_ray, T_MIN, f32_max);
+    const auto hit_result = hit_objects(this->objects, curr_ray);
 
     // Ray did not hit anything -- return zero
     if (!hit_result.has_value()) {
