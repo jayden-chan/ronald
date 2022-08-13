@@ -57,7 +57,7 @@ material_map materials_from_json(const object &obj) {
   ret.reserve(obj.size());
 
   for (const auto &jv : obj) {
-    const std::string key = jv.key();
+    const std::string key = jv.key_c_str();
     ret.insert({key, Material::from_json(jv.value().as_object())});
   }
 
@@ -110,8 +110,8 @@ Vec3 Scene::trace(const float u, const float v) const {
   auto total_emitted = Vec3::zeros();
 
   for (size_t i = 0; i < MAX_RECURSIVE_DEPTH; ++i) {
-    // const auto hit_result = hit_objects(this->objects, curr_ray);
-    const auto hit_result = this->bvh.intersect(curr_ray, T_MIN, f32_max);
+    const auto hit_result = hit_objects(this->objects, curr_ray);
+    // const auto hit_result = this->bvh.intersect(curr_ray, T_MIN, f32_max);
 
     // Ray did not hit anything -- return zero
     if (!hit_result.has_value()) {
