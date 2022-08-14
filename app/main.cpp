@@ -32,12 +32,12 @@ int main(int argc, char **argv) {
   /* clang-format off */
   desc.add_options()
     ("help",                                                               "produce help message")
-    ("width",      po::value<int>()     ->required(),                   "width of the output image in pixels")
-    ("height",     po::value<int>()     ->required(),                   "height of the output image in pixels")
+    ("width",      po::value<int>()     ->required(),                      "width of the output image in pixels")
+    ("height",     po::value<int>()     ->required(),                      "height of the output image in pixels")
     ("out",        po::value<std::string>()->default_value("./image.ppm"), "path to the output file")
     ("input-file", po::value<std::string>()->required(),                   "path to the input scene description JSON file")
-    ("samples",    po::value<int>()     ->required(),                   "number of samples per pixel")
-    ("threads",    po::value<int>()     ->default_value(1),             "number of threads to spawn when running in multithreaded mode");
+    ("samples",    po::value<int>()     ->required(),                      "number of samples per pixel")
+    ("threads",    po::value<int>()     ->default_value(1),                "number of threads to spawn when running in multithreaded mode");
   /* clang-format on */
 
   po::positional_options_description p;
