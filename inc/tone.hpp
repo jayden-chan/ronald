@@ -73,9 +73,11 @@ constexpr Vec3 luminance_triple = Vec3(0.2126f, 0.7152f, 0.0722f);
  * these but there just wasn't time.
  */
 inline void tmo_reinhard_jodie(Vec3 &pixel) {
-  const auto l = luminance(pixel);
-  const auto tv = pixel / (pixel + 1.0f);
-  pixel = lerp(pixel / (1.0f + l), tv, tv);
+  const auto p_new = pixel / (pixel + 1.0f);
+
+  pixel.set_x(p_new.x());
+  pixel.set_y(p_new.y());
+  pixel.set_z(p_new.z());
 }
 
 } // namespace ronald

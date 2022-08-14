@@ -34,12 +34,12 @@ void Config::print() const {
 }
 
 Config::Config(const po::variables_map &vm) {
-  auto vm_width = vm["width"].as<size_t>();
-  auto vm_height = vm["height"].as<size_t>();
+  auto vm_width = vm["width"].as<int>();
+  auto vm_height = vm["height"].as<int>();
   auto vm_out = vm["out"].as<std::string>();
   auto vm_in = vm["input-file"].as<std::string>();
-  auto vm_samples = vm["samples"].as<size_t>();
-  auto vm_threads = vm["threads"].as<size_t>();
+  auto vm_samples = vm["samples"].as<int>();
+  auto vm_threads = vm["threads"].as<int>();
 
   if (vm_width <= 0) {
     throw "Width must be greater than zero";
@@ -60,15 +60,15 @@ Config::Config(const po::variables_map &vm) {
     if (hw_concurr == 0) {
       throw "Hardware concurrency value is not available on this machine";
     }
-    vm_threads = hw_concurr;
+    vm_threads = static_cast<int>(hw_concurr);
   }
 
-  width = vm_width;
-  height = vm_height;
+  width = static_cast<size_t>(vm_width);
+  height = static_cast<size_t>(vm_height);
   out = vm_out;
   in = vm_in;
-  samples = vm_samples;
-  threads = vm_threads;
+  samples = static_cast<size_t>(vm_samples);
+  threads = static_cast<size_t>(vm_threads);
 }
 
 } // namespace ronald
