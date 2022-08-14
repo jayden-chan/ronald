@@ -1,0 +1,181 @@
+{
+  "camera": {
+    "look_from": [100, 20, -75],
+    "look_at": [10, 5, 12],
+    "vup": [0, 1.0, 0],
+    "vfov": 10,
+    "aperture": 0.0
+  },
+  "materials": {
+    "light": {
+      "type": "light",
+      "emittance": [23.8635, 17.708, 5.6817]
+    },
+    "dim_light": {
+      "type": "light",
+      "emittance": [7.9545, 5.902666, 1.8939]
+    },
+    "white": {
+      "type": "lambertian",
+      "albedo": [1, 1, 1]
+    },
+    "gray": {
+      "type": "lambertian",
+      "albedo": [0.1, 0.1, 0.1]
+    },
+    "green": {
+      "type": "lambertian",
+      "albedo": [0.12, 0.45, 0.15]
+    },
+    "blue": {
+      "type": "lambertian",
+      "albedo": [0, 0.5, 1]
+    },
+    "red": {
+      "type": "lambertian",
+      "albedo": [0.69, 0.05, 0.05]
+    },
+    "mirror": {
+      "type": "reflector",
+      "attenuation": [1, 1, 1]
+    },
+    "tinted mirror": {
+      "type": "reflector",
+      "attenuation": [0.3, 0.7, 1]
+    },
+    "glass": {
+      "type": "dielectric",
+      "refractive_index": 1.52,
+      "attenuation": [1, 1, 1]
+    }
+  },
+  "objects": [
+    {
+      "name": "background mirror",
+      "material": "tinted mirror",
+      "primitives": [
+        {
+          "type": "triangle",
+          "normal": 1,
+          "vertices": [
+            [-30, 2, 80],
+            [-30, 2, -40],
+            [-30, 40, -40]
+          ]
+        },
+        {
+          "type": "triangle",
+          "normal": 1,
+          "vertices": [
+            [-30, 2, 80],
+            [-30, 40, -40],
+            [-30, 40, 80]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "blue sphere",
+      "material": "blue",
+      "primitives": [
+        {
+          "type": "sphere",
+          "radius": 4,
+          "origin": [15, 4, -10]
+        }
+      ]
+    },
+    {
+      "name": "red sphere",
+      "material": "red",
+      "primitives": [
+        {
+          "type": "sphere",
+          "radius": 10,
+          "origin": [0, 10, 0]
+        }
+      ]
+    },
+    {
+      "name": "mirror sphere",
+      "material": "mirror",
+      "primitives": [
+        {
+          "type": "sphere",
+          "radius": 5,
+          "origin": [15, 5, 15]
+        }
+      ]
+    },
+    {
+      "name": "light sphere",
+      "material": "dim_light",
+      "primitives": [
+        {
+          "type": "sphere",
+          "radius": 2,
+          "origin": [20, 2, 0]
+        }
+      ]
+    },
+    {
+      "name": "glass sphere",
+      "material": "glass",
+      "primitives": [
+        {
+          "type": "sphere",
+          "radius": 6,
+          "origin": [10, 6, -25]
+        }
+      ]
+    },
+    {
+      "name": "sphere light",
+      "material": "light",
+      "primitives": [
+        {
+          "type": "triangle",
+          "normal": -1,
+          "vertices": [
+            [10, 30, 20],
+            [10, 30, -20],
+            [-10, 30, -20]
+          ]
+        },
+        {
+          "type": "triangle",
+          "normal": -1,
+          "vertices": [
+            [10, 30, 20],
+            [-10, 30, -20],
+            [-10, 30, 20]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "floor",
+      "material": "gray",
+      "primitives": [
+        {
+          "type": "triangle",
+          "normal": 1,
+          "vertices": [
+            [10000, 0, 10000],
+            [10000, 0, -10000],
+            [-10000, 0, -10000]
+          ]
+        },
+        {
+          "type": "triangle",
+          "normal": 1,
+          "vertices": [
+            [10000, 0, 10000],
+            [-10000, 0, -10000],
+            [-10000, 0, 10000]
+          ]
+        }
+      ]
+    }
+  ]
+}

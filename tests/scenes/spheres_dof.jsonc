@@ -1,0 +1,124 @@
+{
+  "camera": {
+    "look_from": [110, 8, 7],
+    "look_at": [20, 5, 0],
+    "vup": [0, 1.0, 0],
+    "vfov": 8,
+    "aperture": 1.5
+  },
+  "materials": {
+    "light": {
+      "type": "light",
+      "emittance": [23.8635, 17.708, 5.6817]
+    },
+    "white": {
+      "type": "lambertian",
+      "albedo": [0.8, 0.8, 0.8]
+    },
+    "gray": {
+      "type": "lambertian",
+      "albedo": [0.1, 0.1, 0.1]
+    },
+    "green": {
+      "type": "lambertian",
+      "albedo": [0.12, 0.45, 0.15]
+    },
+    "blue": {
+      "type": "lambertian",
+      "albedo": [0, 0.5, 1]
+    },
+    "red": {
+      "type": "lambertian",
+      "albedo": [0.69, 0.05, 0.05]
+    },
+    "yellow": {
+      "type": "lambertian",
+      "albedo": [0.9607843137, 0.89019607, 0.2588235]
+    }
+  },
+  "objects": [
+    {
+      "name": "sphere 1",
+      "material": "blue",
+      "primitives": [{ "type": "sphere", "radius": 3, "origin": [30, 3, 0] }]
+    },
+    {
+      "name": "sphere 2",
+      "material": "green",
+      "primitives": [{ "type": "sphere", "radius": 3, "origin": [20, 3, 0] }]
+    },
+    {
+      "name": "sphere 3",
+      "material": "yellow",
+      "primitives": [{ "type": "sphere", "radius": 3, "origin": [10, 3, 0] }]
+    },
+    {
+      "name": "sphere 4",
+      "material": "blue",
+      "primitives": [{ "type": "sphere", "radius": 3, "origin": [0, 3, 0] }]
+    },
+    {
+      "name": "sphere 5",
+      "material": "green",
+      "primitives": [{ "type": "sphere", "radius": 3, "origin": [-10, 3, 0] }]
+    },
+    {
+      "name": "sphere 6",
+      "material": "yellow",
+      "primitives": [{ "type": "sphere", "radius": 3, "origin": [-20, 3, 0] }]
+    },
+    {
+      "name": "sphere 7",
+      "material": "red",
+      "primitives": [{ "type": "sphere", "radius": 3, "origin": [-30, 3, 0] }]
+    },
+    {
+      "name": "sphere light",
+      "material": "light",
+      "primitives": [
+        {
+          "type": "triangle",
+          "normal": -1,
+          "vertices": [
+            [10, 30, 20],
+            [10, 30, -20],
+            [-10, 30, -20]
+          ]
+        },
+        {
+          "type": "triangle",
+          "normal": -1,
+          "vertices": [
+            [10, 30, 20],
+            [-10, 30, -20],
+            [-10, 30, 20]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "floor",
+      "material": "white",
+      "primitives": [
+        {
+          "type": "triangle",
+          "normal": 1,
+          "vertices": [
+            [10000, 0, 10000],
+            [10000, 0, -10000],
+            [-10000, 0, -10000]
+          ]
+        },
+        {
+          "type": "triangle",
+          "normal": 1,
+          "vertices": [
+            [10000, 0, 10000],
+            [-10000, 0, -10000],
+            [-10000, 0, 10000]
+          ]
+        }
+      ]
+    }
+  ]
+}
