@@ -22,20 +22,24 @@ Basic Feature Set
 - [x] PPM image generation
 - [x] Vec3 class implementation
 - [x] Ray/Sphere intersection calculation
+- [x] Ray/Triangle intersection
 - [x] Diffuse material scatter function
 - [x] Light source material
+- [x] Dielectric material
 - [x] Recursive tracing function
+- [x] Realistic camera model with aperture and field of view
 - [x] Single threaded render loop
-- [x] Scene description parsing w/ Boost
-- [x] Ray/Triangle intersection
-- [x] Dielectric material scatter function
+- [x] Clamp to [0, 1] tone mapping
+- [x] Scene description using JSON/JSONC config file
 
 Extended Feature Set (Not considered MVP or required for final submission)
 
+- [x] Axis-aligned bounding box class
 - [x] Bounding Volume Hierarchy [1]
 - [x] Multithreaded render loop
-- [x] Reinhard-Jodie Tone Mapping
-- [x] Reflective/semi-reflective material
+- [x] Reinhard Tone Mapping
+- [x] Reflective/semi-reflective material, including shallow-angle reflection and total
+      internal reflection
 - [x] Russian Roulette path termination
 
 [1] BVH is implemented but currently has poor (but still correct) performance when used
