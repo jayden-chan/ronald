@@ -32,12 +32,12 @@ int main(int argc, char **argv) {
   /* clang-format off */
   desc.add_options()
     ("help",                                                               "produce help message")
-    ("width",      po::value<int>()     ->required(),                      "width of the output image in pixels")
-    ("height",     po::value<int>()     ->required(),                      "height of the output image in pixels")
+    ("width",      po::value<int>()        ->required(),                   "width of the output image in pixels")
+    ("height",     po::value<int>()        ->required(),                   "height of the output image in pixels")
     ("out",        po::value<std::string>()->default_value("./image.ppm"), "path to the output file")
     ("input-file", po::value<std::string>()->required(),                   "path to the input scene description JSON file")
-    ("samples",    po::value<int>()     ->required(),                      "number of samples per pixel")
-    ("threads",    po::value<int>()     ->default_value(1),                "number of threads to spawn when running in multithreaded mode");
+    ("samples",    po::value<int>()        ->required(),                   "number of samples per pixel")
+    ("threads",    po::value<int>()        ->default_value(1),             "number of threads to spawn when running in multithreaded mode");
   /* clang-format on */
 
   po::positional_options_description p;
@@ -75,10 +75,6 @@ int main(int argc, char **argv) {
 
   config.print();
 
-  // TODO: handle all the error cases here
-  // * file doesn't exist
-  // * file isn't valid json
-  // * anything else?
   std::ifstream input(config.in);
   std::stringstream sstr;
   while (input >> sstr.rdbuf())
@@ -98,23 +94,28 @@ int main(int argc, char **argv) {
   try {
     jv = parse(sstr.str(), &mr, opt);
   } catch (std::exception &e) {
-    std::cout << "ERROR: Failed to parse JSON: " << e.what() << '\n';
+    std::cout << "Error: Failed to parse JSON: " << e.what() << '\n';
     return 1;
   }
 
-  const auto aspect_r = (float)config.width / (float)config.height;
-  const auto scene = ronald::Scene::from_json(jv.as_object(), aspect_r);
+  try {
+    const auto aspect_r = (float)config.width / (float)config.height;
+    const auto scene = ronald::Scene::from_json(jv.as_object(), aspect_r);
 
-  ronald::Image im;
-  // Technically calling render_multi_threaded with one thread is fine, but the
-  // code is a lot cleaner when it's just one thread so we'll have separate
-  // methods
-  if (config.threads == 1) {
-    im = scene.render_single_threaded(config);
-  } else {
-    im = scene.render_multi_threaded(config);
+    ronald::Image im;
+    // Technically calling render_multi_threaded with one thread is fine, but
+    // the code is a lot cleaner when it's just one thread so we'll have
+    // separate methods
+    if (config.threads == 1) {
+      im = scene.render_single_threaded(config);
+    } else {
+      im = scene.render_multi_threaded(config);
+    }
+
+    im.apply_tmo();
+    im.write(config.out);
+  } catch (std::exception &e) {
+    std::cout << "Error: Rendering failed: " << e.what() << '\n';
+    return 1;
   }
-
-  im.apply_tmo();
-  im.write(config.out);
 }

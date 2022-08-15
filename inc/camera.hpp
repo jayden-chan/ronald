@@ -53,8 +53,6 @@ class Camera {
     const auto viewport_w = cam.aspect_r * viewport_h;
     const auto focus_dist = (cam.look_from - cam.look_at).length();
 
-    // TODO: this is a bit of a hack, should really diagnose the underlying
-    // issue
     const auto aperture = cam.aperture < 0.005 ? 0.005f : cam.aperture;
 
     origin = cam.look_from;
