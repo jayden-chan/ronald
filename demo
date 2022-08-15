@@ -1,13 +1,21 @@
 #!/usr/bin/env bash
 
 throw() {
-	echo "Error: " "$@"
-	exit 1
+    echo "Error:" "$@"
+    exit 1
 }
+
+ if [ ! -t 0 ] ; then
+    throw "Demo script must be run in interactive mode. Exiting."
+ fi
 
 runtime_dir=$(dirname "$0") || throw "Failed to determine runtime directory"
 ronald_path="$runtime_dir/ronald"
 scenes_dir=$(realpath "$runtime_dir/../scenes") || throw "Failed to locate scenes directory"
+
+if [ ! -d "$scenes_dir" ]; then
+    throw "Could not locate scenes directory"
+fi
 
 mapfile -t files < <(ls "$scenes_dir")
 
@@ -41,7 +49,7 @@ do
             "$scene_path"
 
         { { rc=$?; set +x; }; } 2>/dev/null
-        
+
         if [ "$rc" != "0" ]; then
             echo "Problem ocurred while rendering."
         else
