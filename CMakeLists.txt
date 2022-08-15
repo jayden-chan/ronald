@@ -44,9 +44,14 @@ include_directories(inc vendor ${Boost_INCLUDE_DIR})
 file(GLOB SOURCES "lib/*.cpp")
 file(GLOB RONALD_SOURCES "app/*.cpp")
 file(GLOB TEST_SOURCES "tests/*.cpp")
+file(GLOB DEMO_SCENES "tests/scenes/*.jsonc")
 
 add_executable(ronald ${SOURCES} ${RONALD_SOURCES})
 add_executable(tests ${SOURCES} ${TEST_SOURCES})
+
+install(TARGETS ronald)
+install(PROGRAMS "demo" DESTINATION bin)
+install(FILES ${DEMO_SCENES} DESTINATION scenes)
 
 target_link_libraries(ronald Boost::program_options Boost::json)
 target_link_libraries(tests PRIVATE Catch2::Catch2 Boost::program_options Boost::json)
