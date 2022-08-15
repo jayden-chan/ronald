@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+
+throw() {
+	echo "Error: " "$@"
+	exit 1
+}
+
+runtime_dir=$(dirname "$0") || throw "Failed to determine runtime directory"
+ronald_path="$runtime_dir/ronald"
+scenes_dir=$(realpath "$runtime_dir/../scenes") || throw "Failed to locate scenes directory"
+
+mapfile -t files < <(ls "$scenes_dir")
+
+PS3="Select demo scene: "
+
+select selection in "${files[@]}"
+do
+    if [ "$selection" = "" ]; then
+        echo "Invalid selection. Try again."
+    else
+        scene_path="$scenes_dir/$selection"
+        echo
+        echo "Using scene: $scene_path"
+        echo
+        read -r -e -p "Width (suggested under 512px x 512px resolution for reasonable runtime): " WIDTH
+        read -r -e -p "Height: " HEIGHT
+        read -r -e -p "Samples per pixel (suggested under 1500 for reasonable runtime): " SAMPLES
+        read -r -e -p "Number of threads (0 for hardware_concurrency): " THREADS
+        read -r -e -p "Output file name (.ppm extension): " OUTFILE
+
+        rc=0
+
+        echo
+        set -x
+        "$ronald_path" \
+            --width "$WIDTH" \
+            --height "$HEIGHT" \
+            --samples "$SAMPLES" \
+            --threads "$THREADS" \
+            --out "$OUTFILE" \
+            "$scene_path"
+
+        { { rc=$?; set +x; }; } 2>/dev/null
+        
+        if [ "$rc" != "0" ]; then
+            echo "Problem ocurred while rendering."
+        else
+            full_out_path=$(realpath "$OUTFILE") || throw "Failed to determine output file path"
+            echo "Rendering finished! Output file: $full_out_path"
+        fi
+
+        break;
+    fi
+done
