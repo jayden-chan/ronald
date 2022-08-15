@@ -1,9 +1,9 @@
 {
   "camera": {
     "look_from": [100, 20, -75],
-    "look_at": [10, 5, 12],
+    "look_at": [0, 10, -7],
     "vup": [0, 1.0, 0],
-    "vfov": 10,
+    "vfov": 25,
     "aperture": 0.0
   },
   "materials": {

@@ -59,14 +59,14 @@ Config::Config(const po::variables_map &vm) {
     throw "Number of samples is too large";
   }
 
-  const auto hw_concurr = std::thread::hardware_concurrency();
+  const auto hw_concurr = static_cast<int>(std::thread::hardware_concurrency());
   if (vm_threads < 0) {
     throw "Number of samples must be greater than zero";
   } else if (vm_threads == 0) {
     if (hw_concurr == 0) {
       throw "Hardware concurrency value is not available on this machine";
     }
-    vm_threads = static_cast<int>(hw_concurr);
+    vm_threads = hw_concurr;
   } else if (vm_threads > hw_concurr) {
     throw "Using more threads than hardware_concurrency value is not supported";
   }

@@ -28,3 +28,8 @@ Running:
     is wrong, but it's hard to do this without just writing piles and piles of
     validation code. The program will never attempt to render using an invalid
     scene file, though.
+
+    The program uses the PPM image format for its output. If your image viewer
+    cannot open this type of file, you can convert it using ImageMagick:
+
+    convert image.ppm image.png

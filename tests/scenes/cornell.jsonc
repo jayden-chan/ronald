@@ -22,29 +22,9 @@
     "red": {
       "type": "lambertian",
       "albedo": [0.69, 0.05, 0.05]
-    },
-    "mirror": {
-      "type": "reflector",
-      "attenuation": [1, 1, 1]
-    },
-    "glass": {
-      "type": "dielectric",
-      "refractive_index": 1.52,
-      "attenuation": [1, 1, 1]
     }
   },
   "objects": [
-    {
-      "name": "glass sphere",
-      "material": "glass",
-      "primitives": [
-        {
-          "type": "sphere",
-          "origin": [185.5, 245, 130],
-          "radius": 80.0
-        }
-      ]
-    },
     {
       "name": "light",
       "material": "light",
@@ -366,13 +346,7 @@
             [265.0, 330.0, 296.0],
             [265.0, 0.0, 296.0]
           ]
-        }
-      ]
-    },
-    {
-      "name": "tall block mirror front",
-      "material": "mirror",
-      "primitives": [
+        },
         {
           "type": "triangle",
           "normal": 1,
