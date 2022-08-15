@@ -6,7 +6,8 @@ throw() {
 }
 
  if [ ! -t 0 ] ; then
-    throw "Demo script must be run in interactive mode. Exiting."
+    echo "Error: demo script must be run in interactive mode. Exiting."
+    exit 0
  fi
 
 runtime_dir=$(dirname "$0") || throw "Failed to determine runtime directory"
