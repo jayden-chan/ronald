@@ -1,6 +1,6 @@
 # Ronald
 
-Path tracing rendering engine in C++20
+Path tracing rendering engine in poorly written C++20
 
 ## Building / Testing / Running
 
