@@ -2,6 +2,12 @@
 
 Path tracing rendering engine in poorly written C++20
 
+![](./img/spheres.png)
+![](./img/spheres-2.png)
+![](./img/suzanne_glass.png)
+![](./img/dof.png)
+![](./img/convergence/cornell-45000.png)
+
 ## Building / Testing / Running
 
 ```bash
